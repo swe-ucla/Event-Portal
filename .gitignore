@@ -1,3 +1,18 @@
+## GENERAL ##
+
+.DS_STORE
+.todo
+
+## AWS Elastic Beanstalk Source Code Versions ##
+
+versions/
+
+## REACT ##
+
+client/build
+
+## NODE ##
+
 # Logs
 logs
 *.log
