@@ -1,0 +1,12 @@
+version: "3"
+services:
+
+  client:
+    image: 387893159857.dkr.ecr.us-east-1.amazonaws.com/swedev/client:latest
+    ports:
+      - "8081:80"
+
+  server:
+    image: 387893159857.dkr.ecr.us-east-1.amazonaws.com/swedev/server:latest
+    ports:
+      - "3000:3000"
