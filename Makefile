@@ -21,7 +21,7 @@ push: ecr-login build
 
 # Creates a static build of the React client app. The Express server handles
 # both the API and serving the static client files.
-run:
+prod:
 	docker-compose up --build
 
 # Builds and runs the stack locally. Builds the client and server images if 
@@ -34,7 +34,18 @@ dev:
 stop:
 	docker-compose down
 
-# Stops running containers. Shouldn't be needed, but easier than manually
-# stopping containers from `docker ps`.
+#########################       STANDALONE DOCKER     ##########################
+
+# Build and run event portal image. 
+# View server in browser at http://localhost.
+run:
+	docker build . -t $(REPO_NAME)
+	docker run --rm --publish 80:80 $(REPO_NAME)
+
+# Remove image once finished.
+rm:
+	docker rmi $(REPO_NAME)
+
+# Stops running containers. Can manually stop containers from `docker ps`.
 kill:
 	-docker ps | tail -n +2 | cut -d ' ' -f 1 | xargs docker kill

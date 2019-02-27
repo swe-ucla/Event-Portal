@@ -1,21 +1,6 @@
 ECR_REPO=387893159857.dkr.ecr.us-east-1.amazonaws.com
 REPO_NAME=swedev/server
 
-##########################      AWS / PRODUCTION      ##########################
-
-# Authenticate Docker client
-ecr-login:
-	$(shell aws ecr get-login --no-include-email --region us-east-1)
-
-# Build backend image
-build:
-	docker build -t $(REPO_NAME) .
-
-# Login, build, and push latest image to AWS
-push: ecr-login build
-	docker tag $(REPO_NAME):latest $(ECR_REPO)/$(REPO_NAME):latest
-	docker push $(ECR_REPO)/$(REPO_NAME):latest
-
 #########################       LOCAL DEVELOPMENT     ##########################
 
 # One-time only: install necessary dependencies.
