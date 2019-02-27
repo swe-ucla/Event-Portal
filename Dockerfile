@@ -39,5 +39,6 @@ RUN yarn install
 COPY server/ .
 
 # Run Express server to handle API and React Client
-EXPOSE 8080
+ENV PORT 80
+EXPOSE 80
 CMD ["yarn", "start"]
