@@ -22,17 +22,17 @@ push: ecr-login build
 install:
 	yarn install
 
-# Start the app. View app in browser at http://localhost:3000. Exit with Ctrl+C.
+# Start the app. View app in browser at http://localhost:5000. Exit with Ctrl+C.
 dev:
 	yarn start 
 
 #########################       STANDALONE DOCKER     ##########################
 
 # Build and run server image. 
-# View server in browser at http://localhost:3000.
+# View server in browser at http://localhost:5000.
 run:
 	docker build . -t $(REPO_NAME)
-	docker run --rm --publish 3000:3000 $(REPO_NAME)
+	docker run --rm --publish 5000:5000 $(REPO_NAME)
 
 # Remove image once finished.
 rm:
