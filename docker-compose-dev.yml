@@ -1,12 +1,24 @@
 version: "3"
 services:
 
-  client:
-    build: ./client
-    ports:
-      - "8081:80"
-
   server:
     build: ./server
+    volumes:
+      - ./server/:/usr/app
+      - /usr/app/node_modules
     ports:
-      - "3000:3000"
+      - ${API_SERVER_PORT}:${API_SERVER_PORT}
+    environment:
+      - NODE_ENV=development
+      - CHOKIDAR_USEPOLLING=true
+
+  client:
+    build: ./client
+    volumes:
+      - ./client/:/usr/app
+      - /usr/app/node_modules
+    depends_on:
+      - server
+    ports:
+      - ${REACT_APP_PORT}:${REACT_APP_PORT}
+
