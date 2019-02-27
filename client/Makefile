@@ -23,16 +23,17 @@ install:
 	yarn install
 
 # Start the app. View app in browser at http://localhost:3000. Exit with Ctrl+C.
+# Since server is not running, cannot proxy API calls.
 dev:
 	yarn start 
 
 #########################       STANDALONE DOCKER     ##########################
 
 # Build and run client image. 
-# View React client in browser at http://localhost:8081.
+# View React client in browser at http://localhost:3000.
 run:
 	docker build . -t $(REPO_NAME)
-	docker run --rm --publish 8081:80 $(REPO_NAME)
+	docker run --rm --publish 3000:3000 $(REPO_NAME)
 
 # Remove image once finished.
 rm:
