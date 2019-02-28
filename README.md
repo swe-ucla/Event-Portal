@@ -128,7 +128,7 @@ $ make stop
   - Call command from the repo root, at the level of this `README`
 
 ```bash
-$ git archive -v -o event_portal_v4.2.zip --format=zip HEAD
+$ git archive -v -o event_portal_v0.4.zip --format=zip HEAD
 ```
 
 - [Login](https://swe-dev.signin.aws.amazon.com) to AWS Developer Console
@@ -136,7 +136,7 @@ $ git archive -v -o event_portal_v4.2.zip --format=zip HEAD
   - Select the environment `EventPortalEnv` in application `swe-event-portal`
 - Select `Upload and Deploy` in the EB dashboard
   - Upload zip from earlier step
-  - Should autogenerate label of the format: `event-portal-v#.#`
+  - Should autogenerate label of the format: `event_portal_v#.#`
 - Deploy! 
   - Changes should appear after environment update has completed successfully
 
