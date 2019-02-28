@@ -26,7 +26,7 @@ prod:
 # Builds and runs the stack locally. Builds the client and server images if 
 # they do not already exist and starts the containers.
 dev:
-	docker-compose -f $(DEV_COMPOSE_FILE) up --build 
+	docker-compose -f $(DEV_COMPOSE_FILE) up --build
 
 # Stops the stack. Can also Ctrl+C in the same terminal window stack was run.
 # NOTE: Ctrl+C may not tear down the containers and free the ports.
@@ -48,6 +48,14 @@ rm:
 # Stops running containers. Can manually stop containers from `docker ps`.
 kill:
 	-docker ps | tail -n +2 | cut -d ' ' -f 1 | xargs docker kill
+
+# This will remove:
+#        - all stopped containers
+#        - all networks not used by at least one container
+#        - all dangling images
+#        - all build cache
+prune:
+	docker system prune
 
 #######################       AWS RDS for Postgres     #########################
 
