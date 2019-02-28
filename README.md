@@ -38,6 +38,7 @@ Hosted on GitHub Pages at TODO: [Swagger](https://swagger.io/docs/)? http://apid
       - Should include [Docker-Compose](https://docs.docker.com/compose/install/) in install
     - Node [install](https://nodejs.org/en/)
       - Create React App [docs](https://github.com/facebookincubator/create-react-app)
+    - Postgres [install](https://postgresapp.com/downloads.html)
 
 
 
@@ -56,35 +57,63 @@ Hosted on GitHub Pages at TODO: [Swagger](https://swagger.io/docs/)? http://apid
   - Serves the Companies, Events, and Users APIs
   - Serves the static files from the production build of the React Client in`client/`
 
-- Database: Amazon RDS for PostgreSQL
+- Database: Postgres
 
-  - TODO
+  - Docker Postgres used for local development
+  - Amazon RDS for PostgreSQL used for production
+  - Main configuration with connection information in `server/db/index.js` 
 
-  
+
 
 ## Stack Commands
 
-- Run the stack in **production** mode
-  - Creates static build of the React Client app
-  - Runs Express Server which handles serving both the API and the static client files
+##### Run Stack in Production Mode
+
 ```bash
 $ make prod
 ```
 
-- Run the stack in **development** mode
-  - Both `client/` and `server/` are separate Docker Containers linked with `docker-compose-dev.yml`
-  - The React Client is available at [http://localhost:3000](http://localhost:3000)
-  - The Express Server is available at [http://localhost:5000](http://localhost:5000)
-  - Local directories are mounted into the containers
-    - Changes will reflect upon save/refresh
-      - Exceptions: changes to package.json, new css files, etc.
+- Creates static build of the React Client app in `client/build/`
+
+- Runs Express Server which handles serving both the API and the static client files
+
+- Uses environment variables from `docker-compose.yml` to connect with Amazon Postgres database
+
+  - Can access `psql` shell for Amazon RDS for PostgreSQL database
+
+  - ```bash
+    $ make db
+    ```
+
+##### Run Stack in Development Mode
 
 ```bash
 $ make dev
 ```
 
-- Stop the stack (works for both production and development modes)
-  - In same terminal tab that we ran stack, Ctrl+C or: 
+  - Both `client/` and `server/` are separate Docker Containers linked with `docker-compose-dev.yml`
+    - The React Client is available at [http://localhost:3000](http://localhost:3000)
+    - The Express Server is available at [http://localhost:5000](http://localhost:5000)
+  - The `database/` container has locally mounted data for development at port `5432`
+
+    - Can access `psql` shell by finding the container ID for the database container from `docker ps` and using it to interact with container
+
+    - ```bash
+      # Use <container-id> from `docker ps` output
+      $ docker ps
+      $ docker exec -ti <container-id> psql -U postgres
+      ```
+
+  - Local directories are mounted into the containers
+    - Changes will reflect upon save/refresh
+      - Exceptions: changes to package.json, new css files, etc.
+
+##### Stop the Stack
+
+- Works for both production and development modes
+
+- In same terminal tab that we ran stack, Ctrl+C or: 
+
 ```bash
 $ make stop
 ```
@@ -110,79 +139,6 @@ $ git archive -v -o event_portal_v4.2.zip --format=zip HEAD
   - Should autogenerate label of the format: `event-portal-v#.#`
 - Deploy! 
   - Changes should appear after environment update has completed successfully
-
-
-
-## Test Container Locally
-
-#### With AWS EB CLI
-
-###### Setup AWS EB CLI
-
-- Install EB command line tool
-  - May require adding Python version to `$PATH` variable
-
-```bash
-$ pip install awsebcli --upgrade --user
-$ export PATH=~/Library/Python/3.4/bin:~/Library/Python/2.7/bin:$PATH
-```
-
-- Check that tool has successfully installed
-
-```bash
-$ eb --version
-```
-
-- Check that we are at repository root, at the same level as the `Dockerfile`
-- Configure EB for the repo
-  - Only needs to be done once
-  - Will add hidden `.elasticbeanstalk` to repo which will store EB config data regarding region, application, and environment
-  - Options:
-    - Region: `us-east-1`, N. Virginia
-    - Application: `swe-event-portal`
-    - Environment: `EventPortalEnv`
-    - Else choose default option
-
-```bash
-$ eb init
-```
-
-###### Test Container
-
-- Build and run container locally
-  - Learn more about the [eb local](https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/eb3-local.html) command
-
-```bash
-$ eb local run
-```
-
-- While the container is running, use the `eb local open` command to view the application in a web browser
-  - Alternatively, navigate to [http://localhost](http://localhost) (at port 80)
-
-```bash
-$ eb local open
-```
-
-#### With Docker
-
-- Navigate to the repository root, at the level of the `Dockerfile`
-
-```bash
-$ make run
-```
-
-- View the app at [http://localhost](http://localhos) (port 80) in a browser
-- Remove the image once finished:
-
-```bash
-$ make rm
-```
-
-
-
-## Testing
-
-TODO: [Codcept](http://codecept.io/), [TestCafe](https://github.com/DevExpress/testcafe)?
 
 
 
@@ -242,6 +198,7 @@ TODO: [Codcept](http://codecept.io/), [TestCafe](https://github.com/DevExpress/t
 - https://aws.amazon.com/getting-started/tutorials/create-connect-postgresql-db/
 - https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.IAMDBAuth.Connecting.AWSCLI.PostgreSQL.html
 - https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_ConnectToPostgreSQLInstance.html
+- https://node-postgres.com/guides/project-structure
 - https://node-postgres.com/features/pooling
 - https://node-postgres.com/guides/async-express
 - https://node-postgres.com/features/connecting
@@ -255,6 +212,22 @@ TODO: [Codcept](http://codecept.io/), [TestCafe](https://github.com/DevExpress/t
 - https://unix.stackexchange.com/questions/235223/makefile-include-env-file/235254
 - https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/create_deploy_docker.container.console.html
 - https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/environments-cfg-softwaresettings.html?icmpid=docs_elasticbeanstalk_console
-- 
+- https://stackoverflow.com/questions/10560241/how-to-use-nodemon-with-env-files
+- https://stackoverflow.com/questions/25112510/how-to-set-environment-variables-from-within-package-json-node-js
+- Local Database for Testing
+- https://github.com/docker-library/postgres/issues/297
+- https://stackoverflow.com/questions/50983177/how-to-connect-to-postgresql-using-docker-compose
+- https://docs.docker.com/samples/library/postgres/#-via-docker-stack-deploy-or-docker-compose
+- https://www.reddit.com/r/docker/comments/7v6tqc/use_local_postgresql_database_in_docker/
+- https://stackoverflow.com/questions/24319662/from-inside-of-a-docker-container-how-do-i-connect-to-the-localhost-of-the-mach/52858101#52858101
+- https://stackoverflow.com/questions/48350843/how-to-connect-from-docker-compose-to-host-postgresql
+- https://stackoverflow.com/questions/44720694/how-to-connect-to-localhost-postgres-database-from-docker-container
+- https://github.com/mjhea0/microservice-movies/blob/master/docker-compose.yml
+- API Documentation Generation
+- https://github.com/Surnet/swagger-jsdoc
+- https://github.com/Surnet/swagger-jsdoc/blob/master/docs/GETTING-STARTED.md
+- https://dev.to/akshendra/generating-documentation-on-the-fly-in-express-2652
+- https://github.com/stallmanwotr/docker-compose-nodejs/blob/91acd2ed83e0209042f50a7844adb4f930763d7a/nodejs-rest-server/src/endpoints/ServerRouter.js
+- https://github.com/cagria/swagger-jsdoc-test/blob/3669c696383dc92fc205d6e7be375779bab99d8a/app.js
 
 
