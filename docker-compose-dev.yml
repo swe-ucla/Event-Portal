@@ -20,5 +20,5 @@ services:
     depends_on:
       - server
     ports:
-      - ${REACT_APP_PORT}:${REACT_APP_PORT}
+      - ${REACT_CLIENT_PORT}:${REACT_CLIENT_PORT}
 

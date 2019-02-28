@@ -1,6 +1,5 @@
-ECR_REPO=387893159857.dkr.ecr.us-east-1.amazonaws.com
-REPO_NAME=swedev/event-portal
-DEV_COMPOSE_FILE=./docker-compose-dev.yml
+# Include Environment Variables from .env file
+include .env 
 
 ##########################      AWS / PRODUCTION      ##########################
 
@@ -10,12 +9,12 @@ ecr-login:
 
 # Build backend image
 build:
-	docker build -t $(REPO_NAME) .
+	docker build -t $(REPO) .
 
 # Login, build, and push latest image to AWS
 push: ecr-login build
-	docker tag $(REPO_NAME):latest $(ECR_REPO)/$(REPO_NAME):latest
-	docker push $(ECR_REPO)/$(REPO_NAME):latest
+	docker tag $(REPO):latest $(ECR_REPO)/$(REPO):latest
+	docker push $(ECR_REPO)/$(REPO):latest
 
 #########################       LOCAL DEVELOPMENT     ##########################
 
@@ -37,15 +36,27 @@ stop:
 #########################       STANDALONE DOCKER     ##########################
 
 # Build and run event portal image. 
-# View server in browser at http://localhost.
+# View server in browser at http://localhost:$(APP_PORT).
 run:
-	docker build . -t $(REPO_NAME)
-	docker run --rm --publish 80:80 $(REPO_NAME)
+	docker build . -t $(REPO)
+	docker run --rm --publish $(APP_PORT):$(APP_PORT) $(REPO)
 
 # Remove image once finished.
 rm:
-	docker rmi $(REPO_NAME)
+	docker rmi $(REPO)
 
 # Stops running containers. Can manually stop containers from `docker ps`.
 kill:
 	-docker ps | tail -n +2 | cut -d ' ' -f 1 | xargs docker kill
+
+#######################       AWS RDS for Postgres     #########################
+
+# Connect via shell to Postgres database.
+db:
+	psql \
+	   --host=$(PGHOST) \
+	   --port=$(PGPORT) \
+	   --username=$(PGUSER) \
+	   --password \
+	   --dbname=$(PGDATABASE) \
+

@@ -242,5 +242,19 @@ TODO: [Codcept](http://codecept.io/), [TestCafe](https://github.com/DevExpress/t
 - https://aws.amazon.com/getting-started/tutorials/create-connect-postgresql-db/
 - https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.IAMDBAuth.Connecting.AWSCLI.PostgreSQL.html
 - https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_ConnectToPostgreSQLInstance.html
+- https://node-postgres.com/features/pooling
+- https://node-postgres.com/guides/async-express
+- https://node-postgres.com/features/connecting
+- https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/nodejs-getstarted.html
+- https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.IAMDBAuth.Connecting.AWSCLI.PostgreSQL.html
+- https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_ConnectToPostgreSQLInstance.html#USER_ConnectToPostgreSQLInstance.psql
+- https://www.reddit.com/r/aws/comments/a75gfw/database_does_not_exist_when_connecting_to/
+- https://forums.aws.amazon.com/thread.jspa?threadID=156069
+- https://serverfault.com/questions/656079/unable-to-connect-to-public-postgresql-rds-instance
+- https://stackoverflow.com/questions/30300830/load-env-file-in-makefile
+- https://unix.stackexchange.com/questions/235223/makefile-include-env-file/235254
+- https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/create_deploy_docker.container.console.html
+- https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/environments-cfg-softwaresettings.html?icmpid=docs_elasticbeanstalk_console
+- 
 
 

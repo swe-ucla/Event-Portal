@@ -1,5 +1,5 @@
-ECR_REPO=387893159857.dkr.ecr.us-east-1.amazonaws.com
-REPO_NAME=swedev/client
+# Include Environment Variables from .env file
+include ../.env 
 
 #########################       LOCAL DEVELOPMENT     ##########################
 
@@ -7,7 +7,7 @@ REPO_NAME=swedev/client
 install:
 	yarn install
 
-# Start the app. View app in browser at http://localhost:3000. Exit with Ctrl+C.
+# Start the app. View app in browser at http://localhost:$(REACT_CLIENT_PORT). Exit with Ctrl+C.
 # Since server is not running, cannot proxy API calls.
 dev:
 	yarn start 
@@ -15,14 +15,14 @@ dev:
 #########################       STANDALONE DOCKER     ##########################
 
 # Build and run client image. 
-# View React client in browser at http://localhost:3000.
+# View React client in browser at http://localhost:$(REACT_CLIENT_PORT).
 run:
-	docker build . -t $(REPO_NAME)
-	docker run --rm --publish 3000:3000 $(REPO_NAME)
+	docker build . -t $(CLIENT_REPO)
+	docker run --rm --publish $(REACT_CLIENT_PORT):$(REACT_CLIENT_PORT) $(CLIENT_REPO)
 
 # Remove image once finished.
 rm:
-	docker rmi $(REPO_NAME)
+	docker rmi $(CLIENT_REPO)
 
 # Stops running containers. Shouldn't be needed, but easier than manually
 # stopping containers from `docker ps`.

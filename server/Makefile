@@ -1,5 +1,5 @@
-ECR_REPO=387893159857.dkr.ecr.us-east-1.amazonaws.com
-REPO_NAME=swedev/server
+# Include Environment Variables from .env file
+include ../.env 
 
 #########################       LOCAL DEVELOPMENT     ##########################
 
@@ -7,21 +7,21 @@ REPO_NAME=swedev/server
 install:
 	yarn install
 
-# Start the app. View app in browser at http://localhost:5000. Exit with Ctrl+C.
+# Start the app. View app in browser at http://localhost:$(API_SERVER_PORT). Exit with Ctrl+C.
 dev:
 	yarn start 
 
 #########################       STANDALONE DOCKER     ##########################
 
 # Build and run server image. 
-# View server in browser at http://localhost:5000.
+# View server in browser at http://localhost:$(API_SERVER_PORT).
 run:
-	docker build . -t $(REPO_NAME)
-	docker run --rm --publish 5000:5000 $(REPO_NAME)
+	docker build . -t $(SERVER_REPO)
+	docker run --rm --publish $(API_SERVER_PORT):$(API_SERVER_PORT) $(SERVER_REPO)
 
 # Remove image once finished.
 rm:
-	docker rmi $(REPO_NAME)
+	docker rmi $(SERVER_REPO)
 
 # Stops running containers. Shouldn't be needed, but easier than manually
 # stopping containers from `docker ps`.
