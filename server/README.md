@@ -14,16 +14,16 @@ TODO: the backend
 - From `server/` install the necessary dependencies:
 
 ```bash
-$ yarn install
+$ make install
 ```
 
 - Start the app:
 
 ```bash
-$ yarn start
+$ make dev
 ```
 
-- View the app at [http://localhost:3000](http://localhost:3000) in a browser.
+- View the app at [http://localhost:5000](http://localhost:5000) in a browser.
 - Exit the app in terminal with `Ctrl+C`
 
 
@@ -40,14 +40,13 @@ TODO:  [Mocha](https://mochajs.org/)? `yarn test`
 - From `server/`:
 
 ```bash
-$ docker build -t swedev-server .
-$ docker run --rm --publish 3000:3000 swedev-server
+$ make run
 ```
-- View the Express server at [http://localhost:3000](http://localhost:3000) in a browser
+- View the Express server at [http://localhost:5000](http://localhost:5000) in a browser
 - Remove the image once finished:
 
 ```bash
-$ docker rmi swedev-server
+$ make rm
 ```
 
 

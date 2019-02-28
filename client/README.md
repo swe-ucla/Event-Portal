@@ -10,7 +10,7 @@ TODO: the frontend
 
 ## Endpoints
 
-##### Client - [http://localhost:8081](http://localhost:8081)
+##### Client - [http://localhost:3000](http://localhost:3000)
 
 | Endpoint | HTTP Method | CRUD Method | Result                   |
 | -------- | ----------- | ----------- | ------------------------ |
@@ -26,11 +26,11 @@ TODO: the frontend
 - Instead of running the full stack, we can develop the React client locally.
 - From `client/` install the necessary dependencies:
 ```bash
-$ yarn install
+$ make install
 ```
 - Start the app:
 ```bash
-$ yarn start
+$ make dev
 ```
 - View the app at [http://localhost:3000](http://localhost:3000) in a browser.
 - Exit the app in terminal with `Ctrl+C`
@@ -50,12 +50,11 @@ TODO: [Jest](https://facebook.github.io/jest/)? `yarn test`
 - From `client/`:
 
 ```bash
-$ docker build -t swedev-client .
-$ docker run --rm --publish 8081:80 swedev-client
+$ make run
 ```
-- View the React client at [http://localhost:8081](http://localhost:8081) in a browser
+- View the React client at [http://localhost:3000](http://localhost:3000) in a browser
 - Remove the image once finished:
 
 ```bash
-$ docker rmi swedev-client
+$ make rm
 ```

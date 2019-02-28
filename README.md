@@ -41,13 +41,34 @@ Hosted on GitHub Pages at TODO: [Swagger](https://swagger.io/docs/)? http://apid
 
 
 
+## Architecture
+
+- More specific READMEs are located in `client/` and `server/`.
+
+- Client: React
+
+  - The client service contains the React app
+  - Makes API calls to the Express server through proxy in `client/package.json`
+
+- Server: ExpressJS
+
+  - The server service runs the Express app 
+  - Serves the Companies, Events, and Users APIs
+  - Serves the static files from the production build of the React Client in`client/`
+
+- Database: Amazon RDS for PostgreSQL
+
+  - TODO
+
+  
+
 ## Stack Commands
 
 - Run the stack in **production** mode
   - Creates static build of the React Client app
   - Runs Express Server which handles serving both the API and the static client files
 ```bash
-$ make run
+$ make prod
 ```
 
 - Run the stack in **development** mode
@@ -70,28 +91,94 @@ $ make stop
 
 
 
-## Architecture
-
-- More specific READMEs are located in `client/` and `server/`.
-- Client: React
-
-  - The client service contains the React app
-  - Makes API calls to the Express server through proxy in `client/package.json`
-
-- Server: ExpressJS
-
-   - The server service runs the Express app 
-   - Serves the Companies, Events, and Users APIs
-   - Serves the static files from the production build of the React Client in`client/`
-
-- Database: Amazon RDS for PostgreSQL
-
-   - TODO
-
 
 ## Deploy to AWS EB
-- TODO
-- `git archive -v -o swe_event_portal_v0.0.zip --format=zip HEAD`
+- Commit all relevant changes in `swe-ucla/Event-Portal` repository
+- Bundle application source code
+  - Only includes files stored in git, excluding ignored files and git files
+  - Call command from the repo root, at the level of this `README`
+
+```bash
+$ git archive -v -o event_portal_v4.2.zip --format=zip HEAD
+```
+
+- [Login](https://swe-dev.signin.aws.amazon.com) to AWS Developer Console
+  - Navigate to the Elastic Beanstalk Service in region `us-east-1`, aka N. Virginia
+  - Select the environment `EventPortalEnv` in application `swe-event-portal`
+- Select `Upload and Deploy` in the EB dashboard
+  - Upload zip from earlier step
+  - Should autogenerate label of the format: `event-portal-v#.#`
+- Deploy! 
+  - Changes should appear after environment update has completed successfully
+
+
+
+## Test Container Locally
+
+#### With AWS EB CLI
+
+###### Setup AWS EB CLI
+
+- Install EB command line tool
+  - May require adding Python version to `$PATH` variable
+
+```bash
+$ pip install awsebcli --upgrade --user
+$ export PATH=~/Library/Python/3.4/bin:~/Library/Python/2.7/bin:$PATH
+```
+
+- Check that tool has successfully installed
+
+```bash
+$ eb --version
+```
+
+- Check that we are at repository root, at the same level as the `Dockerfile`
+- Configure EB for the repo
+  - Only needs to be done once
+  - Will add hidden `.elasticbeanstalk` to repo which will store EB config data regarding region, application, and environment
+  - Options:
+    - Region: `us-east-1`, N. Virginia
+    - Application: `swe-event-portal`
+    - Environment: `EventPortalEnv`
+    - Else choose default option
+
+```bash
+$ eb init
+```
+
+###### Test Container
+
+- Build and run container locally
+  - Learn more about the [eb local](https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/eb3-local.html) command
+
+```bash
+$ eb local run
+```
+
+- While the container is running, use the `eb local open` command to view the application in a web browser
+  - Alternatively, navigate to [http://localhost](http://localhost) (at port 80)
+
+```bash
+$ eb local open
+```
+
+#### With Docker
+
+- Navigate to the repository root, at the level of the `Dockerfile`
+
+```bash
+$ make run
+```
+
+- View the app at [http://localhost](http://localhos) (port 80) in a browser
+- Remove the image once finished:
+
+```bash
+$ make rm
+```
+
+
 
 ## Testing
 
@@ -145,5 +232,15 @@ TODO: [Codcept](http://codecept.io/), [TestCafe](https://github.com/DevExpress/t
 - https://stackoverflow.com/questions/41265885/elastic-beanstalk-vs-ecs-for-multi-container-docker
 - https://stackoverflow.com/questions/25832554/amazon-elastic-beanstalk-vs-ec2-instance-with-docker-containers?rq=1
 - https://stackoverflow.com/questions/25956193/difference-between-amazon-ec2-and-aws-elastic-beanstalk
+- https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/applications-sourcebundle.html
+- https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/GettingStarted.html?icmpid=docs_elasticbeanstalk_console
+- https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/configuring-https-elb.html
+- AWS Postgres
+- https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/using-features.managing.db.html
+- https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/create-deploy-nodejs.rds.html#nodejs-rds-connect
+- https://gist.github.com/syafiqfaiz/5273cd41df6f08fdedeb96e12af70e3b
+- https://aws.amazon.com/getting-started/tutorials/create-connect-postgresql-db/
+- https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.IAMDBAuth.Connecting.AWSCLI.PostgreSQL.html
+- https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_ConnectToPostgreSQLInstance.html
 
 
