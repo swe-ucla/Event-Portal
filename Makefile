@@ -57,7 +57,7 @@ kill:
 prune:
 	docker system prune
 
-#######################       AWS RDS for Postgres     #########################
+#####################       Amazon RDS for PostgreSQL     ######################
 
 # Connect via shell to Postgres database.
 db:
