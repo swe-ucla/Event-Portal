@@ -11,6 +11,7 @@ services:
     environment:
       - NODE_ENV=development
       - CHOKIDAR_USEPOLLING=true
+      - POSTGRES_URL=${POSTGRES_URL}
 
   client:
     build: ./client
@@ -20,5 +21,15 @@ services:
     depends_on:
       - server
     ports:
-      - ${REACT_APP_PORT}:${REACT_APP_PORT}
+      - ${REACT_CLIENT_PORT}:${REACT_CLIENT_PORT}
 
+  postgres:
+    build: ./database
+    restart: always
+    ports:
+      - ${PGPORT}:${PGPORT}
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    volumes:
+      - ./database/data/postgres:/var/lib/postgresql/data

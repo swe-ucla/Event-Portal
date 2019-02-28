@@ -3,9 +3,14 @@ services:
 
   portal:
     build: .
+    restart: always
     ports:
       - ${APP_PORT}:${APP_PORT}
-    restart: always
     environment:
       NODE_ENV: production
       PORT: ${APP_PORT}
+      PGHOST: ${PGHOST}
+      PGPORT: ${PGPORT}
+      PGUSER: ${PGUSER}
+      PGPASSWORD: ${PGPASSWORD}
+      PGDATABASE: ${PGDATABASE}

@@ -3,9 +3,9 @@
 .DS_STORE
 .todo
 
-## AWS Elastic Beanstalk Source Code Versions ##
+## Database Data ##
 
-versions/
+database/data
 
 ## REACT ##
 

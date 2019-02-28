@@ -8,49 +8,6 @@ TODO: the backend
 
 
 
-## Local Development
-
-- Instead of running the full stack, we can develop the server locally.
-- From `server/` install the necessary dependencies:
-
-```bash
-$ make install
-```
-
-- Start the app:
-
-```bash
-$ make dev
-```
-
-- View the app at [http://localhost:5000](http://localhost:5000) in a browser.
-- Exit the app in terminal with `Ctrl+C`
-
-
-
-## Testing in Local Development
-
-TODO:  [Mocha](https://mochajs.org/)? `yarn test`
-
-
-
-## Standalone Docker
-
-- Rather than running the full stack from root, we can run each service separately
-- From `server/`:
-
-```bash
-$ make run
-```
-- View the Express server at [http://localhost:5000](http://localhost:5000) in a browser
-- Remove the image once finished:
-
-```bash
-$ make rm
-```
-
-
-
 
 ## TODO: MVP API Endpoints
 

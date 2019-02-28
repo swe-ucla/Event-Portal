@@ -1,4 +1,4 @@
-# Amazon RDS for Postgres Databases
+# Postgres Database
 
 
 
@@ -6,7 +6,7 @@
 
 TODO: the databases
 
-TODO: Amazon RDS Postgres??
+TODO: Amazon RDS for PostgreSQL??
 
 
 

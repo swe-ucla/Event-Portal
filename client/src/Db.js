@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import './css/App.css';
 
-class App extends Component {
+class Db extends Component {
   constructor() {
     super();
 
@@ -16,7 +16,7 @@ class App extends Component {
   }
 
   callApi = async () => {
-    const resp = await fetch('/swe/api');
+    const resp = await fetch('/db');
 
     window._resp = resp;
 
@@ -29,10 +29,11 @@ class App extends Component {
       console.err(`Invalid json\n${e}`);
     }
 
-    if (resp.status !== 200) {
-      throw Error(data ? data.message : 'No data');
-    }
-
+    console.log(data);
+    console.log(data[0].id);
+    data.zero = data[0].id;
+    data.one = data[1].id;
+    data.two = data[2].id;
     return data;
   };
 
@@ -46,10 +47,12 @@ class App extends Component {
         <p className="App-intro">
           To get started, edit <code>src/App.js</code> and save to reload.
         </p>
-        <p>{this.state.message || 'No message'}</p>
+        <p>{this.state.zero || 'No message'}</p>
+        <p>{this.state.one || 'No message'}</p>
+        <p>{this.state.two || 'No message'}</p>
       </div>
     );
   }
 }
 
-export default App;
+export default Db;
