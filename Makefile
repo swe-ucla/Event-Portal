@@ -1,21 +1,6 @@
 # Include Environment Variables from .env file
 include .env 
 
-##########################      AWS / PRODUCTION      ##########################
-
-# Authenticate Docker client
-ecr-login:
-	$(shell aws ecr get-login --no-include-email --region us-east-1)
-
-# Build backend image
-build:
-	docker build -t $(REPO) .
-
-# Login, build, and push latest image to AWS
-push: ecr-login build
-	docker tag $(REPO):latest $(ECR_REPO)/$(REPO):latest
-	docker push $(ECR_REPO)/$(REPO):latest
-
 #########################       LOCAL DEVELOPMENT     ##########################
 
 # Creates a static build of the React client app. The Express server handles
@@ -32,6 +17,25 @@ dev:
 # NOTE: Ctrl+C may not tear down the containers and free the ports.
 stop:
 	docker-compose down
+
+#####################       Amazon RDS for PostgreSQL     ######################
+
+# Bundle application code and move to versions folder
+# Specify VERSION (default 666) by passing environment variable with call
+# $ make zip VERSION=4.2
+zip:
+	git archive -v -o ./versions/event_portal_v$(VERSION).zip --format=zip HEAD
+
+#####################       Amazon RDS for PostgreSQL     ######################
+
+# Connect via shell to Postgres database.
+db:
+	psql \
+	   --host=$(PGHOST) \
+	   --port=$(PGPORT) \
+	   --username=$(PGUSER) \
+	   --password \
+	   --dbname=$(PGDATABASE) \
 
 #########################       STANDALONE DOCKER     ##########################
 
@@ -57,14 +61,18 @@ kill:
 prune:
 	docker system prune
 
-#####################       Amazon RDS for PostgreSQL     ######################
+#########################      AWS ECR Repository      #########################
 
-# Connect via shell to Postgres database.
-db:
-	psql \
-	   --host=$(PGHOST) \
-	   --port=$(PGPORT) \
-	   --username=$(PGUSER) \
-	   --password \
-	   --dbname=$(PGDATABASE) \
+# Authenticate Docker client
+ecr-login:
+	$(shell aws ecr get-login --no-include-email --region us-east-1)
+
+# Build backend image
+build:
+	docker build -t $(REPO) .
+
+# Login, build, and push latest image to AWS
+push: ecr-login build
+	docker tag $(REPO):latest $(ECR_REPO)/$(REPO):latest
+	docker push $(ECR_REPO)/$(REPO):latest
 

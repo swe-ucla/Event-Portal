@@ -119,10 +119,11 @@ $ make stop
 - Commit all relevant changes in `swe-ucla/Event-Portal` repository
 - Bundle application source code
   - Only includes files stored in git, excluding ignored files and git files
-  - Call command from the repo root, at the level of this `README`
+  - Specify version number by setting environment variable with call
+    - Version defaults to 666, should be manually fixed
 
 ```bash
-$ git archive -v -o event_portal_v0.4.zip --format=zip HEAD
+$ make zip VERSION=4.2
 ```
 
 - [Login](https://swe-dev.signin.aws.amazon.com) to AWS Developer Console
