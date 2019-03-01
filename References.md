@@ -1,0 +1,96 @@
+# References
+
+- Repository Structure/Basics
+  - https://mherman.org/blog/developing-microservices-node-react-docker/
+  - https://github.com/mattpauldavies/nerp
+  - https://stackoverflow.com/questions/3370334/difference-between-acceptance-test-and-functional-test
+  - https://expressjs.com/en/guide/using-template-engines.html
+  - https://stackoverflow.com/questions/46872922/broken-c-std-libraries-on-macos-high-sierra-10-13/47401866
+  - https://medium.freecodecamp.org/expose-vs-publish-docker-port-commands-explained-simply-434593dbc9a3
+  - https://yarnpkg.com/en/docs/cli/run
+  - https://stackoverflow.com/questions/37929173/significance-of-port-3000-in-express-apps
+  - https://ux.stackexchange.com/questions/4752/search-vs-filter-what-is-the-difference
+  - https://stackoverflow.com/questions/27613724/need-to-create-an-api-doc-for-an-existing-application-written-with-nodejs-expres
+  - https://github.com/swagger-api/swagger-node
+  - https://swagger.io/swagger/media/blog/wp-content/uploads/2017/02/Documenting-An-Existing-API-with-Swagger-2.pdf
+  - https://stackoverflow.com/questions/26515473/writing-an-api-doc-for-swagger
+  - https://github.com/OAI/OpenAPI-Specification/tree/master/examples/v3.0
+  - https://scotch.io/tutorials/document-your-already-existing-apis-with-swagger
+  - https://www.reddit.com/r/docker/comments/8e9nj4/should_i_use_multiple_postgres_containers/
+  - https://stackoverflow.com/questions/38762709/one-or-multiple-databases-per-docker-container
+  - https://www.reddit.com/r/docker/comments/8tkq2v/one_database_container_for_everything_or_a/
+  - http://catlau.co/how-to-modularize-routes-with-the-express-router/
+- Setting up React/Express with Docker-Compose
+  - https://stackoverflow.com/questions/40801772/what-is-the-difference-between-docker-compose-ports-vs-expose
+  - https://github.com/mrcoles/node-react-docker-compose
+  - https://daveceddia.com/deploy-react-express-app-heroku/
+  - https://github.com/jackall3n/millymollymandycakes.co.uk/blob/master/Dockerfile
+  - https://stackoverflow.com/questions/34896279/how-to-compile-scss-to-css-with-node-sass
+  - https://www.npmjs.com/package/node-sass
+  - https://github.com/remy/nodemon/issues/472
+  - https://stackoverflow.com/questions/30604846/docker-error-no-space-left-on-device
+  - https://medium.com/@xiaolishen/develop-in-docker-a-node-backend-and-a-react-front-end-talking-to-each-other-5c522156f634
+  - https://medium.com/thepeaklab/how-to-deploy-a-react-application-to-production-with-docker-multi-stage-builds-4da347f2d681
+  - https://stackoverflow.com/questions/50431144/how-do-i-get-my-react-app-to-point-to-my-node-express-api-in-production-proxy-o
+  - https://www.reddit.com/r/node/comments/8wagiz/is_nginx_required_for_an_express_api_server/
+  - https://www.reddit.com/r/node/comments/5jz60j/working_on_a_separate_api_expressjs_and_frontend/
+  - https://facebook.github.io/create-react-app/docs/deployment
+  - https://github.com/facebook/create-react-app/issues/1049
+  - https://stackoverflow.com/questions/23595282/error-no-default-engine-was-specified-and-no-extension-was-provided
+- AWS EB
+  - https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/GettingStarted.html
+  - https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/create_deploy_docker_ecs.html
+  - https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/eb-cli3-getting-started.html#ebcli3-basics-deploy
+  - https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/single-container-docker.html
+  - https://stackoverflow.com/questions/41265885/elastic-beanstalk-vs-ecs-for-multi-container-docker
+  - https://stackoverflow.com/questions/25832554/amazon-elastic-beanstalk-vs-ec2-instance-with-docker-containers?rq=1
+  - https://stackoverflow.com/questions/25956193/difference-between-amazon-ec2-and-aws-elastic-beanstalk
+  - https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/applications-sourcebundle.html
+  - https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/GettingStarted.html?icmpid=docs_elasticbeanstalk_console
+  - https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/configuring-https-elb.html
+  - https://stackoverflow.com/questions/2826029/passing-additional-variables-from-command-line-to-make/2826178
+- Amazon RDS for PostgreSQL
+  - https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/using-features.managing.db.html
+  - https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/create-deploy-nodejs.rds.html#nodejs-rds-connect
+  - https://gist.github.com/syafiqfaiz/5273cd41df6f08fdedeb96e12af70e3b
+  - https://aws.amazon.com/getting-started/tutorials/create-connect-postgresql-db/
+  - https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.IAMDBAuth.Connecting.AWSCLI.PostgreSQL.html
+  - https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_ConnectToPostgreSQLInstance.html
+  - https://node-postgres.com/guides/project-structure
+  - https://node-postgres.com/features/pooling
+  - https://node-postgres.com/guides/async-express
+  - https://node-postgres.com/features/connecting
+  - https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/nodejs-getstarted.html
+  - https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.IAMDBAuth.Connecting.AWSCLI.PostgreSQL.html
+  - https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_ConnectToPostgreSQLInstance.html#USER_ConnectToPostgreSQLInstance.psql
+  - https://www.reddit.com/r/aws/comments/a75gfw/database_does_not_exist_when_connecting_to/
+  - https://forums.aws.amazon.com/thread.jspa?threadID=156069
+  - https://serverfault.com/questions/656079/unable-to-connect-to-public-postgresql-rds-instance
+  - https://stackoverflow.com/questions/30300830/load-env-file-in-makefile
+  - https://unix.stackexchange.com/questions/235223/makefile-include-env-file/235254
+  - https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/create_deploy_docker.container.console.html
+  - https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/environments-cfg-softwaresettings.html?icmpid=docs_elasticbeanstalk_console
+  - https://stackoverflow.com/questions/10560241/how-to-use-nodemon-with-env-files
+  - https://stackoverflow.com/questions/25112510/how-to-set-environment-variables-from-within-package-json-node-js
+- Postgres with Docker
+  - https://github.com/docker-library/postgres/issues/297
+  - https://stackoverflow.com/questions/50983177/how-to-connect-to-postgresql-using-docker-compose
+  - https://docs.docker.com/samples/library/postgres/#-via-docker-stack-deploy-or-docker-compose
+  - https://www.reddit.com/r/docker/comments/7v6tqc/use_local_postgresql_database_in_docker/
+  - https://stackoverflow.com/questions/24319662/from-inside-of-a-docker-container-how-do-i-connect-to-the-localhost-of-the-mach/52858101#52858101
+  - https://stackoverflow.com/questions/48350843/how-to-connect-from-docker-compose-to-host-postgresql
+  - https://stackoverflow.com/questions/44720694/how-to-connect-to-localhost-postgres-database-from-docker-container
+  - https://github.com/mjhea0/microservice-movies/blob/master/docker-compose.yml
+- Swagger API Documentation Generation
+  - https://github.com/Surnet/swagger-jsdoc
+  - https://github.com/Surnet/swagger-jsdoc/blob/master/docs/GETTING-STARTED.md
+  - https://dev.to/akshendra/generating-documentation-on-the-fly-in-express-2652
+  - https://github.com/stallmanwotr/docker-compose-nodejs/blob/91acd2ed83e0209042f50a7844adb4f930763d7a/nodejs-rest-server/src/endpoints/ServerRouter.js
+  - https://github.com/cagria/swagger-jsdoc-test/blob/3669c696383dc92fc205d6e7be375779bab99d8a/app.js
+  - https://stackoverflow.com/questions/39088648/why-is-a-bracket-an-unexpected-token-when-trying-to-import-in-react
+  - https://swagger.io/docs/specification/basic-structure/
+  - https://swagger.io/docs/specification/components/
+  - https://swagger.io/docs/specification/describing-responses/
+  - https://swagger.io/docs/specification/describing-request-body/
+
+
