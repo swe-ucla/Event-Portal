@@ -6,7 +6,25 @@ var swe = require('./swe');
 var db = require('./db');
 
 module.exports = (app) => {
-  // Test Endpoint
+  /**
+  * @swagger
+  *
+  * /test:
+  *   get:
+  *     summary: Returns test string to verify that server is running.
+  *     tags:
+  *       - TEST
+  *     responses:
+  *       200:
+  *         description: OK
+  *         content:
+  *           text/plain:
+  *             schema:
+  *               type: string
+  *               example: Hello, World!
+  *       404:
+  *         $ref: '#/components/responses/NotFound' 
+  */
   app.get('/test', function(req, res, next) {
     res.send('Hello, World!');
   });

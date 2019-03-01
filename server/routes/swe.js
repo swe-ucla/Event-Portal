@@ -2,9 +2,27 @@
 var express = require('express');
 var router = express.Router();
 
-// Check that SWE API is running
+/**
+* @swagger
+*
+* /:
+*   get:
+*     summary: Returns test string to verify that SWE API is running.
+*     tags:
+*       - SWE
+*     responses:
+*       200:
+*         description: OK
+*         content:
+*           text/plain:
+*             schema:
+*               type: string
+*               example: SWE API is running!
+*       404:
+*         $ref: '#/components/responses/NotFound' 
+*/
 router.get('/', function(req, res, next) {
-  res.send('SWE API is running');
+  res.send('SWE API is running!');
 });
 
 // Simple test endpoint
