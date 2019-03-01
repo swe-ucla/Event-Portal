@@ -8,6 +8,16 @@ TODO: the backend
 
 
 
+## Documentation
+
+- REST API Documentation is generated using [swagger-jsdoc](https://github.com/Surnet/swagger-jsdoc).
+- Swagger is integrated by parsing [JSDoc](http://usejsdoc.org/) comments in `server/routes/` files and outputting an OpenAPI (Swagger) specification.
+  - Documentation regarding comment structure/specification can be found [here](https://swagger.io/docs/specification/basic-structure/).
+- Viewing API documentation when dev stack is running
+  - Access Swagger Spec in JSON at [http://localhost:5000/docs/json](http://localhost:5000/docs/json)
+  - Access Swagger UI at [http://localhost:5000/docs](http://localhost:5000/docs/json)
+
+
 
 ## TODO: MVP API Endpoints
 
