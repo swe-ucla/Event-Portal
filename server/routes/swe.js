@@ -5,7 +5,7 @@ var router = express.Router();
 /**
 * @swagger
 *
-* /:
+* /swe/:
 *   get:
 *     summary: Returns test string to verify that SWE API is running.
 *     tags:

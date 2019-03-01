@@ -14,14 +14,12 @@ TODO: the backend
 - Swagger is integrated by parsing [JSDoc](http://usejsdoc.org/) comments in `server/routes/` files and outputting an OpenAPI (Swagger) specification.
   - Documentation regarding comment structure/specification can be found [here](https://swagger.io/docs/specification/basic-structure/).
 - Viewing API documentation 
-  - With dev stack running (`make dev`)
-    - Access Swagger Spec in JSON at [http://localhost:5000/docs/json](http://localhost:5000/docs/json)
-    - Access Swagger UI at [http://localhost:5000/docs](http://localhost:5000/docs/json)
-  - With prod stack running (`make prod`)
-    - Access Swagger Spec in JSON at [http://localhost/docs/json](http://localhost/docs/json)
-    - Access Swagger UI at [http://localhost/docs/](http://localhost/docs/)
-  - From deployed website
-    - TODO
+
+|           Mode           |         Swagger UI          |       Swagger Spec (JSON)        |
+| :----------------------: | :-------------------------: | :------------------------------: |
+| Development (`make dev`) | [http://localhost:5000/docs](http://localhost:5000/docs)  | [http://localhost:5000/docs/json](http://localhost:5000/docs/json)  |
+| Production (`make prod`) |    [http://localhost/docs](http://localhost/docs)    |    [http://localhost/docs/json](http://localhost/docs/json)    |
+|         Deployed         | [http://www.sweucla.com/docs](http://www.sweucla.com/docs) | [http://www.sweucla.com/docs/json](http://www.sweucla.com/docs/json) |
 
 
 
