@@ -5,11 +5,16 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
+// Create the server for handling REST requests, initialize Express
 var app = express();
 
-// Register API routes in app
+// Register API routes in app, REST endpoints
 var routes = require('./routes');
 routes(app)
+
+// Swagger-jsdoc API Documentation
+var docs = require('./docs');
+app.use('/docs', docs);
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
@@ -19,6 +24,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 // Static path to production build of React Client
+// https://expressjs.com/en/starter/static-files.html
 app.use(express.static(path.join(__dirname, '../client/build')));
 
 // Catch 404 and forward to error handler
