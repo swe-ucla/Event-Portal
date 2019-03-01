@@ -137,6 +137,18 @@ $ make zip VERSION=4.2
 
 
 
+## Deployment Versions
+
+- `event_portal_v0.*`
+  - Figuring out EB deployment
+  - Structured client, server, and database interactions
+  - Set up documentation
+  - `v0.4`: database added
+  - `v0.5`: documentation added
+
+  
+
+
 ## References
 
 - Repository Structure/Basics
