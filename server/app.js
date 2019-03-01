@@ -37,10 +37,11 @@ app.use(function(req, res, next) {
 // Error handler
 app.use(function(err, req, res, next) {
   const error_msg = {
-    status: err.status || 500,
+    code: err.status || 500,
     message: err.message
   };
-  res.json(error_msg)
+  res.status(err.status || 500);
+  res.json(error_msg);
 });
 
 module.exports = app;
