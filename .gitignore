@@ -3,6 +3,10 @@
 .DS_STORE
 .todo
 
+## Deployment Source Code ##
+
+versions/
+
 ## Database Data ##
 
 database/data

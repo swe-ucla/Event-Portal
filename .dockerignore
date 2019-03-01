@@ -7,3 +7,5 @@
 .elasticbeanstalk/*
 .git
 .gitignore
+
+versions/
