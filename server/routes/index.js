@@ -22,6 +22,8 @@ module.exports = (app) => {
   *             schema:
   *               type: string
   *               example: Hello, World!
+  *       404:
+  *         $ref: '#/components/responses/NotFound' 
   */
   app.get('/test', function(req, res, next) {
     res.send('Hello, World!');

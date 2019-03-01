@@ -18,6 +18,8 @@ var router = express.Router();
 *             schema:
 *               type: string
 *               example: SWE API is running!
+*       404:
+*         $ref: '#/components/responses/NotFound' 
 */
 router.get('/', function(req, res, next) {
   res.send('SWE API is running!');
