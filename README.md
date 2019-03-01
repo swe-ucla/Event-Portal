@@ -145,6 +145,10 @@ $ make zip VERSION=4.2
   - Set up documentation
   - `v0.4`: database added
   - `v0.5`: documentation added
+- `event_portal_v1.*`
+  - Fully working but unimplemented boilerplate code
+  - Has functional simple examples and the intended structure for app
+  - `v1.0`: simple + functional base
 
   
 
