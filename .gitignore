@@ -9,7 +9,7 @@ versions/
 
 ## Database Data ##
 
-database/data
+database/postgres
 
 ## REACT ##
 
@@ -75,6 +75,7 @@ typings/
 
 # dotenv environment variables file
 .env
+*/.env
 
 # next.js build output
 .next
