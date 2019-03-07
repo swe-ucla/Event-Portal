@@ -88,18 +88,3 @@ kill:
 prune:
 	docker system prune
 
-#########################      AWS ECR Repository      #########################
-
-# Authenticate Docker client
-ecr-login:
-	$(shell aws ecr get-login --no-include-email --region us-east-1)
-
-# Build backend image
-build:
-	docker build -t $(REPO) .
-
-# Login, build, and push latest image to AWS
-push: ecr-login build
-	docker tag $(REPO):latest $(ECR_REPO)/$(REPO):latest
-	docker push $(ECR_REPO)/$(REPO):latest
-

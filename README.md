@@ -22,6 +22,8 @@ UCLA SWE's event portal. Coming Soon!
 
 ## Global Dependencies
 
+ - **NOTE**: In order to run app, developers need the `.env` file 
+     - Should be kept in the same directory as the Makefile/this README/etc.
  - General Dev Dependencies
     - Homebrew [install](https://brew.sh/)
     - Xcode Developer Tools (Mac)
@@ -56,10 +58,34 @@ UCLA SWE's event portal. Coming Soon!
   - Docker Postgres used for local development
   - Amazon RDS for PostgreSQL used for production
   - Main configuration with connection information in `server/db/index.js` 
+  - Diagrams for the database schema as of `3/7/19` is found in `./database/pg_db_diagram.pdf`
+  - **NOTE**: for test data, unzip `./database/pgdata.zip` and move the resulting `pgdata/` folder to `./database/postgres/pgdata/`
+    - Run commands as necessary from `load.sql` to populate running Postgres container with sample data
 
 
 
 ## Stack Commands
+
+##### Run Stack in Development Mode
+
+```bash
+$ make dev
+```
+
+  - Both `client/` and `server/` are separate Docker Containers linked with `docker-compose-dev.yml`
+    - The React Client is available at [http://localhost:3000](http://localhost:3000)
+    - The Express Server is available at [http://localhost:5000](http://localhost:5000)
+  - The `database/` container has locally mounted data for development at port `5432`
+
+    - Can access `psql` shell for running Postgres container
+
+    - ```bash
+      $ make pg
+      ```
+
+  - Local directories are mounted into the containers
+    - Changes will reflect upon save/refresh
+      - Exceptions: changes to package.json, new css files, etc.
 
 ##### Run Stack in Production Mode
 
@@ -78,30 +104,6 @@ $ make prod
   - ```bash
     $ make db
     ```
-
-##### Run Stack in Development Mode
-
-```bash
-$ make dev
-```
-
-  - Both `client/` and `server/` are separate Docker Containers linked with `docker-compose-dev.yml`
-    - The React Client is available at [http://localhost:3000](http://localhost:3000)
-    - The Express Server is available at [http://localhost:5000](http://localhost:5000)
-  - The `database/` container has locally mounted data for development at port `5432`
-
-    - Can access `psql` shell by finding the container ID for the database container from `docker ps` and using it to interact with container
-
-    - ```bash
-      # Use <container-id> from `docker ps` output
-      $ docker ps
-      $ docker exec -ti <container-id> psql -U postgres
-      ```
-
-  - Local directories are mounted into the containers
-    - Changes will reflect upon save/refresh
-      - Exceptions: changes to package.json, new css files, etc.
-
 ##### Stop the Stack
 
 - Works for both production and development modes
