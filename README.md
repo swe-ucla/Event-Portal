@@ -22,6 +22,8 @@ UCLA SWE's event portal. Coming Soon!
 
 ## Global Dependencies
 
+ - **NOTE**: In order to run app, developers need the `.env` file 
+     - Should be kept in the same directory as the Makefile/this README/etc.
  - General Dev Dependencies
     - Homebrew [install](https://brew.sh/)
     - Xcode Developer Tools (Mac)
@@ -57,6 +59,8 @@ UCLA SWE's event portal. Coming Soon!
   - Amazon RDS for PostgreSQL used for production
   - Main configuration with connection information in `server/db/index.js` 
   - Diagrams for the database schema as of `3/7/19` is found in `./database/pg_db_diagram.pdf`
+  - **NOTE**: for test data, unzip `./database/pgdata.zip` and move the resulting `pgdata/` folder to `./database/postgres/pgdata/`
+    - Run commands as necessary from `load.sql` to populate running Postgres container with sample data
 
 
 
