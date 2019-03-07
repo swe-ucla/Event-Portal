@@ -92,5 +92,36 @@
   - https://swagger.io/docs/specification/components/
   - https://swagger.io/docs/specification/describing-responses/
   - https://swagger.io/docs/specification/describing-request-body/
-
-
+- Database Design
+  - https://www.reddit.com/r/programming/comments/ahr2gf/dbeaver_free_universal_database_tool/
+  - http://www.postgresqltutorial.com/postgresql-create-table/
+  - http://www.postgresqltutorial.com/postgresql-data-types/
+  - http://www.postgresqltutorial.com/postgresql-serial/
+  - http://www.postgresqltutorial.com/postgresql-check-constraint/
+  - http://www.postgresqltutorial.com/postgresql-foreign-key/
+  - http://www.postgresqltutorial.com/postgresql-unique-constraint/
+  - https://stackoverflow.com/questions/338156/table-naming-dilemma-singular-vs-plural-names
+  - https://www.essentialsql.com/get-ready-to-learn-sql-database-normalization-explained-in-simple-english/
+  - https://www.essentialsql.com/get-ready-to-learn-sql-10-database-second-normal-form-explained-in-simple-english/
+  - https://www.holistics.io/blog/top-5-free-database-diagram-design-tools/
+  - https://dbdiagram.io/home
+  - https://hackernoon.com/dbdiagram-io-a-database-diagram-designer-built-for-developers-and-analysts-975f310d4f13
+  - https://stackoverflow.com/questions/338156/table-naming-dilemma-singular-vs-plural-names
+  - https://softwareengineering.stackexchange.com/questions/114728/why-is-naming-a-tables-primary-key-column-id-considered-bad-practice
+  - https://stackoverflow.com/questions/20958/list-of-standard-lengths-for-database-fields
+  - https://stackoverflow.com/questions/4848964/postgresql-difference-between-text-and-varchar-character-varying
+  - https://stackoverflow.com/questions/24353778/which-is-best-data-type-for-phone-number-in-mysql-and-what-should-java-type-mapp
+  - https://stackoverflow.com/questions/4728810/makefile-variable-as-prerequisite
+  - https://stackoverflow.com/questions/34496882/get-docker-container-id-from-container-name
+  - https://stackoverflow.com/questions/10024279/how-to-use-shell-commands-in-makefile
+  - https://stackoverflow.com/questions/307503/whats-a-concise-way-to-check-that-environment-variables-are-set-in-a-unix-shell
+  - https://stackoverflow.com/questions/9540681/list-postgres-enum-type
+  - https://stackoverflow.com/questions/25811017/how-to-delete-an-enum-type-value-in-postgres
+  - https://www.postgresql.org/docs/9.2/sql-copy.html
+  - https://www.postgresql.org/docs/current/ddl-default.html
+  - https://www.postgresql.org/docs/current/functions-datetime.html
+  - https://stackoverflow.com/questions/9556474/how-do-i-automatically-update-a-timestamp-in-postgresql/9556527#9556527
+  - https://stackoverflow.com/questions/1035980/update-timestamp-when-row-is-updated-in-postgresql
+  - https://stackoverflow.com/questions/2362871/postgresql-current-timestamp-on-update
+  - https://github.com/wadetb/Sublime-Text-Advanced-CSV
+  - https://www.reddit.com/r/css/comments/8zr1cm/why_should_or_shouldnt_you_use_css_preprocessors/
