@@ -1,32 +1,27 @@
 -- $ psql -f create.sql
+\c swetestdb;
 
 -- enums: \dT+, DROP TYPE enum_name
 -- VARCHAR Lengths
 -- short: 50, medium: 100, long: 255, very long: 1000
 
-CREATE DATABASE swetestdb;
-\c swetestdb;
+-- List all tables and types
 
-CREATE OR REPLACE FUNCTION update_timestamp_column() RETURNS TRIGGER AS 
-$$
-BEGIN
-   NEW.updated_at = CURRENT_TIMESTAMP; 
-   RETURN NEW;
-END;
-$$ language 'plpgsql';
+-- \dt
+-- \dT+
 
--- CREATE TRIGGER update_timestamp BEFORE UPDATE
---     ON table_name FOR EACH ROW EXECUTE PROCEDURE update_timestamp_column();
+-- Drop all tables and types
 
-----------------------------       TEST DATA        ----------------------------
+-- DROP TABLE table_name;
+-- DROP TYPE type_name;
+
+-- Test data
 
 CREATE TABLE test(id INT PRIMARY KEY, name VARCHAR (100) NOT NULL);
--- \copy test FROM '/var/lib/postgresql/data/pgdata/test.csv' DELIMITER ',' CSV HEADER;
+\copy test FROM '/var/lib/postgresql/data/pgdata/test.csv' DELIMITER ',' CSV HEADER;
 
-----------------------------       COMPANIES        ----------------------------
+-- Create all tables and types
 
--- E: Company Table
--- \copy company (id,name,website,logo,citizenship_requirement,description) FROM '/var/lib/postgresql/data/pgdata/company/company.csv' DELIMITER ',' CSV HEADER;
 CREATE TYPE requirement AS ENUM ('Y', 'N', 'Depends on the Position');
 CREATE TABLE company (
     id SERIAL PRIMARY KEY,
@@ -39,10 +34,6 @@ CREATE TABLE company (
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
---
-
--- E: Contact Table
--- \copy contact (id,first_name,last_name,email,phone,misc) FROM '/var/lib/postgresql/data/pgdata/company/contact.csv' DELIMITER ',' CSV HEADER;
 CREATE TABLE contact (
     id SERIAL PRIMARY KEY,
     first_name VARCHAR (50) NOT NULL,
@@ -54,8 +45,6 @@ CREATE TABLE contact (
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
--- R: Company Contact Table
--- \copy company_contact (company_id,contact_id) FROM '/var/lib/postgresql/data/pgdata/company/company_contact.csv' DELIMITER ',' CSV HEADER;
 CREATE TABLE company_contact (
     company_id INT REFERENCES company(id),
     contact_id INT REFERENCES contact(id),
@@ -64,12 +53,9 @@ CREATE TABLE company_contact (
     PRIMARY KEY (company_id, contact_id)
 );
 
--- E: UCLA Major Table
--- https://www.registrar.ucla.edu/Faculty-Staff/Courses-and-Programs/Major-and-Minor-Codes/Undergraduate-Majors-and-Premajors
--- \copy ucla_major (id,code,major,abbreviation,department,department_abbreviation,school,division) FROM '/var/lib/postgresql/data/pgdata/company/ucla_major.csv' DELIMITER ',' CSV HEADER;
 CREATE TABLE ucla_major (
     id SERIAL PRIMARY KEY,
-    code CHAR (4),
+    code VARCHAR (4),
     major VARCHAR (100) NOT NULL,
     abbreviation VARCHAR (50),
     department VARCHAR (100),
@@ -80,8 +66,6 @@ CREATE TABLE ucla_major (
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
--- E: Major Table
--- \copy major (id,name,ucla_id) FROM '/var/lib/postgresql/data/pgdata/company/major.csv' DELIMITER ',' CSV HEADER;
 CREATE TABLE major (
     id SERIAL PRIMARY KEY,
     name VARCHAR (100) NOT NULL,
@@ -90,8 +74,6 @@ CREATE TABLE major (
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
--- R: Company Major Table
--- \copy company_major (company_id,major_id) FROM '/var/lib/postgresql/data/pgdata/company/company_major.csv' DELIMITER ',' CSV HEADER;
 CREATE TABLE company_major (
     company_id INT REFERENCES company(id),
     major_id INT REFERENCES major(id),
@@ -100,8 +82,6 @@ CREATE TABLE company_major (
     PRIMARY KEY (company_id, major_id)
 );
 
--- E: Position Table
--- \copy position (id,role) FROM '/var/lib/postgresql/data/pgdata/company/position.csv' DELIMITER ',' CSV HEADER;
 CREATE TABLE position (
     id SERIAL PRIMARY KEY,
     role VARCHAR (100) NOT NULL,
@@ -109,8 +89,6 @@ CREATE TABLE position (
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
--- R: Company Position Table
--- \copy company_position (company_id,position_id) FROM '/var/lib/postgresql/data/pgdata/company/company_position.csv' DELIMITER ',' CSV HEADER;
 CREATE TABLE company_position (
     company_id INT REFERENCES company(id),
     position_id INT REFERENCES position(id),
@@ -119,10 +97,8 @@ CREATE TABLE company_position (
     PRIMARY KEY (company_id, position_id)
 );
 
-----------------------------         EVENTS         ----------------------------
+--
 
--- E: Address Table
--- \copy address (id,name,street)  FROM '/var/lib/postgresql/data/pgdata/event/address.csv' DELIMITER ',' CSV HEADER;
 CREATE TABLE address (
     id SERIAL PRIMARY KEY,
     name VARCHAR (255) NOT NULL,
@@ -131,8 +107,6 @@ CREATE TABLE address (
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
--- E: Location Table
--- \copy location (id,name,address_id,description)  FROM '/var/lib/postgresql/data/pgdata/event/location.csv' DELIMITER ',' CSV HEADER;
 CREATE TABLE location (
     id SERIAL PRIMARY KEY,
     name VARCHAR (255),
@@ -142,8 +116,7 @@ CREATE TABLE location (
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
--- E: Event Table
--- \copy event (fb_id,name,starts_at,ends_at,location_id,description,fb_event,picture)  FROM '/var/lib/postgresql/data/pgdata/event/event.csv' DELIMITER ',' CSV HEADER;
+
 CREATE TABLE event (
     fb_id VARCHAR (50) PRIMARY KEY,
     name VARCHAR (100) NOT NULL,
@@ -152,13 +125,11 @@ CREATE TABLE event (
     location_id INT REFERENCES location(id),
     description text,
     fb_event VARCHAR (255),
-    picture VARCHAR (255),
+    picture text,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
--- E: Category Table
--- \copy category (id,name)  FROM '/var/lib/postgresql/data/pgdata/event/category.csv' DELIMITER ',' CSV HEADER;
 CREATE TABLE category (
     id SERIAL PRIMARY KEY,
     name VARCHAR (100),
@@ -166,8 +137,6 @@ CREATE TABLE category (
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
--- R: Event Category Table
--- \copy event_category (event_id,category_id)  FROM '/var/lib/postgresql/data/pgdata/event/event_category.csv' DELIMITER ',' CSV HEADER;
 CREATE TABLE event_category (
     event_id VARCHAR (50) REFERENCES event(fb_id),
     category_id INT REFERENCES category(id),
@@ -176,8 +145,6 @@ CREATE TABLE event_category (
     PRIMARY KEY (event_id, category_id)
 );
 
--- R: Event Company Table
--- \copy event_company (event_id,company_id)  FROM '/var/lib/postgresql/data/pgdata/event/event_company.csv' DELIMITER ',' CSV HEADER;
 CREATE TABLE event_company (
     event_id VARCHAR (50) REFERENCES event(fb_id),
     company_id INT REFERENCES company(id),
@@ -186,10 +153,8 @@ CREATE TABLE event_company (
     PRIMARY KEY (event_id, company_id)
 );
 
-----------------------------         USERS          ----------------------------
+--
 
--- E: User Table
--- \copy swe_user (id,first_name,last_name,password,email,phone,university_id,is_admin)  FROM '/var/lib/postgresql/data/pgdata/user/swe_user.csv' DELIMITER ',' CSV HEADER;
 CREATE TABLE swe_user (
     id SERIAL PRIMARY KEY,
     first_name VARCHAR (50) NOT NULL,
@@ -203,10 +168,6 @@ CREATE TABLE swe_user (
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
---
-
--- R: Event Host Table
--- \copy event_host (event_id,host_id)  FROM '/var/lib/postgresql/data/pgdata/event/event_host.csv' DELIMITER ',' CSV HEADER;
 CREATE TABLE event_host (
     event_id VARCHAR (50) REFERENCES event(fb_id),
     host_id INT REFERENCES swe_user(id),
@@ -215,8 +176,6 @@ CREATE TABLE event_host (
     PRIMARY KEY (event_id, host_id)
 );
 
--- R: Event Check In Table
--- \copy event_checkin (event_id,user_id,checked_in)  FROM '/var/lib/postgresql/data/pgdata/event/event_checkin.csv' DELIMITER ',' CSV HEADER;
 CREATE TABLE event_checkin (
     event_id VARCHAR (50) REFERENCES event(fb_id),
     user_id INT REFERENCES swe_user(id),
@@ -226,8 +185,6 @@ CREATE TABLE event_checkin (
     PRIMARY KEY (event_id, user_id)
 );
 
--- R: Event Registration Table
--- \copy event_registration (event_id,user_id,has_paid)  FROM '/var/lib/postgresql/data/pgdata/event/event_registration.csv' DELIMITER ',' CSV HEADER;
 CREATE TABLE event_registration (
     event_id VARCHAR (50) REFERENCES event(fb_id),
     user_id INT REFERENCES swe_user(id),
@@ -237,8 +194,6 @@ CREATE TABLE event_registration (
     PRIMARY KEY (event_id, user_id)
 );
 
--- R: User Company Rank Table
--- \copy user_company_rank (user_id,company_id,rank)  FROM '/var/lib/postgresql/data/pgdata/user/user_company_rank.csv' DELIMITER ',' CSV HEADER;
 CREATE TYPE preference AS ENUM ('First Choice', 'Second Choice', 'Third Choice');
 CREATE TABLE user_company_rank (
     user_id INT REFERENCES swe_user(id),
@@ -249,8 +204,6 @@ CREATE TABLE user_company_rank (
     PRIMARY KEY (user_id, company_id, rank)
 );
 
--- E: Occupation Table
--- \copy occupation (id,name)  FROM '/var/lib/postgresql/data/pgdata/user/occupation.csv' DELIMITER ',' CSV HEADER;
 CREATE TABLE occupation (
     id SERIAL PRIMARY KEY,
     name VARCHAR (100) NOT NULL,
@@ -258,8 +211,6 @@ CREATE TABLE occupation (
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
--- R: User Occupation Table
--- \copy user_occupation (user_id,occupation_id)  FROM '/var/lib/postgresql/data/pgdata/user/user_occupation.csv' DELIMITER ',' CSV HEADER;
 CREATE TABLE user_occupation (
     user_id INT REFERENCES swe_user(id),
     occupation_id INT REFERENCES occupation(id),
@@ -268,8 +219,6 @@ CREATE TABLE user_occupation (
     PRIMARY KEY (user_id, occupation_id)
 );
 
--- E: Diet Table
--- \copy diet (id,type)  FROM '/var/lib/postgresql/data/pgdata/user/diet.csv' DELIMITER ',' CSV HEADER;
 CREATE TABLE diet (
     id SERIAL PRIMARY KEY,
     type VARCHAR (100) NOT NULL,
@@ -277,8 +226,6 @@ CREATE TABLE diet (
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
--- R: User Diet Table
--- \copy user_diet (user_id,diet_id)  FROM '/var/lib/postgresql/data/pgdata/user/user_diet.csv' DELIMITER ',' CSV HEADER;
 CREATE TABLE user_diet (
     user_id INT REFERENCES swe_user(id),
     diet_id INT REFERENCES diet(id),
@@ -287,8 +234,6 @@ CREATE TABLE user_diet (
     PRIMARY KEY (user_id, diet_id)
 );
 
--- R: User Major Table
--- \copy user_major (user_id,major_id)  FROM '/var/lib/postgresql/data/pgdata/user/user_major.csv' DELIMITER ',' CSV HEADER;
 CREATE TABLE user_major (
     user_id INT REFERENCES swe_user(id),
     major_id INT REFERENCES major(id),
@@ -297,8 +242,6 @@ CREATE TABLE user_major (
     PRIMARY KEY (user_id, major_id)
 );
 
--- R: User Position Table
--- \copy user_position (user_id,position_id)  FROM '/var/lib/postgresql/data/pgdata/user/user_position.csv' DELIMITER ',' CSV HEADER;
 CREATE TABLE user_position (
     user_id INT REFERENCES swe_user(id),
     position_id INT REFERENCES position(id),
@@ -307,7 +250,15 @@ CREATE TABLE user_position (
     PRIMARY KEY (user_id, position_id)
 );
 
---------------------------         TRIGGERS          ---------------------------
+-- Create update timestamp triggers
+
+CREATE OR REPLACE FUNCTION update_timestamp_column() RETURNS TRIGGER AS 
+$$
+BEGIN
+   NEW.updated_at = CURRENT_TIMESTAMP; 
+   RETURN NEW;
+END;
+$$ language 'plpgsql';
 
 CREATE TRIGGER update_timestamp BEFORE UPDATE
     ON address FOR EACH ROW EXECUTE PROCEDURE update_timestamp_column();
@@ -384,3 +335,32 @@ CREATE TRIGGER update_timestamp BEFORE UPDATE
 CREATE TRIGGER update_timestamp BEFORE UPDATE
     ON user_position FOR EACH ROW EXECUTE PROCEDURE update_timestamp_column();
 
+-- Populate all tables
+
+\copy company (id,name,website,logo,citizenship_requirement,description) FROM '/var/lib/postgresql/data/pgdata/company/company.csv' DELIMITER ',' CSV HEADER;
+\copy contact (id,first_name,last_name,email,phone,misc) FROM '/var/lib/postgresql/data/pgdata/company/contact.csv' DELIMITER ',' CSV HEADER;
+\copy company_contact (company_id,contact_id) FROM '/var/lib/postgresql/data/pgdata/company/company_contact.csv' DELIMITER ',' CSV HEADER;
+\copy ucla_major (id,code,major,abbreviation,department,department_abbreviation,school,division) FROM '/var/lib/postgresql/data/pgdata/company/ucla_major.csv' DELIMITER ',' CSV HEADER;
+\copy major (id,name,ucla_id) FROM '/var/lib/postgresql/data/pgdata/company/major.csv' DELIMITER ',' CSV HEADER;
+\copy company_major (company_id,major_id) FROM '/var/lib/postgresql/data/pgdata/company/company_major.csv' DELIMITER ',' CSV HEADER;
+\copy position (id,role) FROM '/var/lib/postgresql/data/pgdata/company/position.csv' DELIMITER ',' CSV HEADER;
+\copy company_position (company_id,position_id) FROM '/var/lib/postgresql/data/pgdata/company/company_position.csv' DELIMITER ',' CSV HEADER;
+
+\copy address (id,name,street)  FROM '/var/lib/postgresql/data/pgdata/event/address.csv' DELIMITER ',' CSV HEADER;
+\copy location (id,name,address_id,description)  FROM '/var/lib/postgresql/data/pgdata/event/location.csv' DELIMITER ',' CSV HEADER;
+\copy event (fb_id,name,starts_at,ends_at,location_id,description,fb_event,picture)  FROM '/var/lib/postgresql/data/pgdata/event/event.csv' DELIMITER ',' CSV HEADER;
+\copy category (id,name)  FROM '/var/lib/postgresql/data/pgdata/event/category.csv' DELIMITER ',' CSV HEADER;
+\copy event_category (event_id,category_id)  FROM '/var/lib/postgresql/data/pgdata/event/event_category.csv' DELIMITER ',' CSV HEADER;
+\copy event_company (event_id,company_id)  FROM '/var/lib/postgresql/data/pgdata/event/event_company.csv' DELIMITER ',' CSV HEADER;
+
+\copy swe_user (id,first_name,last_name,password,email,phone,university_id,is_admin)  FROM '/var/lib/postgresql/data/pgdata/user/swe_user.csv' DELIMITER ',' CSV HEADER;
+\copy event_host (event_id,host_id)  FROM '/var/lib/postgresql/data/pgdata/event/event_host.csv' DELIMITER ',' CSV HEADER;
+\copy event_checkin (event_id,user_id,checked_in)  FROM '/var/lib/postgresql/data/pgdata/event/event_checkin.csv' DELIMITER ',' CSV HEADER;
+\copy event_registration (event_id,user_id,has_paid)  FROM '/var/lib/postgresql/data/pgdata/event/event_registration.csv' DELIMITER ',' CSV HEADER;
+\copy user_company_rank (user_id,company_id,rank)  FROM '/var/lib/postgresql/data/pgdata/user/user_company_rank.csv' DELIMITER ',' CSV HEADER;
+\copy occupation (id,name)  FROM '/var/lib/postgresql/data/pgdata/user/occupation.csv' DELIMITER ',' CSV HEADER;
+\copy user_occupation (user_id,occupation_id)  FROM '/var/lib/postgresql/data/pgdata/user/user_occupation.csv' DELIMITER ',' CSV HEADER;
+\copy diet (id,type)  FROM '/var/lib/postgresql/data/pgdata/user/diet.csv' DELIMITER ',' CSV HEADER;
+\copy user_diet (user_id,diet_id)  FROM '/var/lib/postgresql/data/pgdata/user/user_diet.csv' DELIMITER ',' CSV HEADER;
+\copy user_major (user_id,major_id)  FROM '/var/lib/postgresql/data/pgdata/user/user_major.csv' DELIMITER ',' CSV HEADER;
+\copy user_position (user_id,position_id)  FROM '/var/lib/postgresql/data/pgdata/user/user_position.csv' DELIMITER ',' CSV HEADER;
