@@ -60,10 +60,15 @@ UCLA SWE's event portal. Coming Soon!
   - Main configuration with connection information in `server/db/index.js` 
   - Diagrams for the database schema as of `3/7/19` is found in `./database/pg_db_diagram.pdf`
   - **NOTE**: for test data, unzip `./database/pgdata.zip` and move the resulting `pgdata/` folder to `./database/postgres/pgdata/`
-    - Run commands as necessary from `load.sql` to populate running Postgres container with sample data
+    - Run sql files as necessary to populate running Postgres container with sample data
 
 ```bash
 $ make pg
+
+# Drops tables, creates tables, creates triggers, and populates from CSVs
+swetest=# \i /var/lib/postgresql/data/pgdata/load.sql;
+
+# Empties tables, populates from CSVs
 swetest=# \i /var/lib/postgresql/data/pgdata/load.sql;
 ```
 
