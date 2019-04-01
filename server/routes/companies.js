@@ -3,8 +3,8 @@ var express = require('express');
 var router = express.Router();
 
 /* GET companies listing. */
-router.get('/', function(req, res, next) {
-  res.send('respond with companies resource');
+router.get('/ping', function(req, res, next) {
+  res.send('pong - Companies API');
 });
 
 module.exports = router;
