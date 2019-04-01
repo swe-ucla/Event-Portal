@@ -2,6 +2,8 @@
 
 ##### Companies API
 
+[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/ea2af0f9e70c2d23d7e9)
+
 | Endpoint                               | HTTP Method | CRUD Method | Result                                                      | DB Query                                                     |
 | -------------------------------------- | ----------- | ----------- | ----------------------------------------------------------- | ------------------------------------------------------------ |
 | /companies/ping                        | GET         | READ        | `pong` - Sanity Check                                       | -                                                            |
@@ -30,6 +32,8 @@
 
 
 ##### Events API
+
+[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/e997331506df539120d4)
 
 | Endpoint                                    | HTTP Method | CRUD Method | Result                                                       | DB Query                                                     |
 | ------------------------------------------- | ----------- | ----------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
@@ -76,6 +80,8 @@
 
 ##### Users API
 
+[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/cd294d113b227cab0b0f)
+
 | Endpoint                             | HTTP Method | CRUD Method | Result                                                   | DB Query                                                     |
 | ------------------------------------ | ----------- | ----------- | -------------------------------------------------------- | ------------------------------------------------------------ |
 | /users/ping                          | GET         | READ        | `pong` - Sanity Check                                    | -                                                            |
@@ -88,12 +94,7 @@
 | /users/<user_id>                     | GET         | READ        | Get user info by `user_id`                               | SELECT * FROM swe_user WHERE id = `user_id`;                 |
 | /users/<user_id>/admin               | GET         | READ        | Get whether user is admin or not                         | SELECT is_admin FROM swe_user WHERE id = `user_id`;          |
 | /users/<user_id>?...                 | PUT         | UPDATE      | Update user info                                         |                                                              |
-| /users/<user_id>/past                | GET         | READ        | Get a user's past events                                 | SELECT event_id <br/>FROM event_checkin INNER JOIN event ON event_checkin.event_id = event.fb_id
-WHERE event_checkin.user_id = 3 AND event.ends_at < now()
-UNION
-SELECT event_id 
-FROM event_registration INNER JOIN event ON event_registration.event_id = event.fb_id
-WHERE event_registration.user_id = 3 AND event.ends_at < now(); |
+| /users/<user_id>/past                | GET         | READ        | Get a user's past events                                 | SELECT event_id FROM event_checkin INNER JOIN event ON event_checkin.event_id = event.fb_id WHERE event_checkin.user_id = 3 AND event.ends_at < now() UNION SELECT event_id FROM event_registration INNER JOIN event ON event_registration.event_id = event.fb_id WHERE event_registration.user_id = 3 AND event.ends_at < now(); |
 | /users/<user_id>/companies           | GET         | READ        | Get all companies a user is interested in                | SELECT company_id, rank FROM user_company_rank WHERE user_id = `user_id`; |
 | /users/<user_id>/events              | GET         | READ        | Get all events a user is attending                       | SELECT event_id FROM event_checkin WHERE user_id = `user_id` UNION SELECT event_id FROM event_registration WHERE user_id = `user_id`; |
 | /users/<user_id>/host                | GET         | READ        | Get all events a user is hosting                         | SELECT event_id FROM event_host WHERE user_id = `user_id`;   |
@@ -116,6 +117,8 @@ WHERE event_registration.user_id = 3 AND event.ends_at < now(); |
 
 
 ##### Misc. API
+
+[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/e997331506df539120d4)
 
 | Endpoint                         | HTTP Method | CRUD Method | Result                     | DB Query                   |
 | -------------------------------- | ----------- | ----------- | -------------------------- | -------------------------- |
