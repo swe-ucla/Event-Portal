@@ -69,7 +69,8 @@ $ make pg
 swetest=# \i /var/lib/postgresql/data/pgdata/load.sql;
 
 # Empties tables, populates from CSVs
-swetest=# \i /var/lib/postgresql/data/pgdata/load.sql;
+# NOTE: use this if you modify data when testing APIs and want to restore original sample data
+swetest=# \i /var/lib/postgresql/data/pgdata/restore.sql;
 ```
 
 
