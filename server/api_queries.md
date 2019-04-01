@@ -33,7 +33,7 @@
 
 ##### Events API
 
-[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/e997331506df539120d4)
+[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/2b12e19f52bf6805aff0)
 
 | Endpoint                                    | HTTP Method | CRUD Method | Result                                                       | DB Query                                                     |
 | ------------------------------------------- | ----------- | ----------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
