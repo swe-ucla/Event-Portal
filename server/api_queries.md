@@ -1,8 +1,6 @@
-## MVP API Endpoints
+MVP API Endpoints
 
 ##### Companies API
-
-[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/ea2af0f9e70c2d23d7e9)
 
 | Endpoint                               | HTTP Method | CRUD Method | Result                                                      | DB Query                                                     |
 | -------------------------------------- | ----------- | ----------- | ----------------------------------------------------------- | ------------------------------------------------------------ |
@@ -32,8 +30,6 @@
 
 
 ##### Events API
-
-[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/2b12e19f52bf6805aff0)
 
 | Endpoint                                    | HTTP Method | CRUD Method | Result                                                       | DB Query                                                     |
 | ------------------------------------------- | ----------- | ----------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
@@ -80,8 +76,6 @@
 
 ##### Users API
 
-[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/cd294d113b227cab0b0f)
-
 | Endpoint                             | HTTP Method | CRUD Method | Result                                                   | DB Query                                                     |
 | ------------------------------------ | ----------- | ----------- | -------------------------------------------------------- | ------------------------------------------------------------ |
 | /users/ping                          | GET         | READ        | `pong` - Sanity Check                                    | -                                                            |
@@ -117,8 +111,6 @@
 
 
 ##### Misc. API
-
-[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/e997331506df539120d4)
 
 | Endpoint                         | HTTP Method | CRUD Method | Result                     | DB Query                   |
 | -------------------------------- | ----------- | ----------- | -------------------------- | -------------------------- |
