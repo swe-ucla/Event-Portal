@@ -1,4 +1,4 @@
-MVP API Endpoints
+## MVP API Endpoints
 
 ##### Companies API
 

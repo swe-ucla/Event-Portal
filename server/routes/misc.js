@@ -1,10 +1,10 @@
-/* Route Prefix: /companies */
+/* Route Prefix: / */
 var express = require('express');
 var router = express.Router();
 
-/* GET companies listing. */
+// TODO
 router.get('/', function(req, res, next) {
-  res.send('respond with companies resource');
+  res.send('TODO: implement Misc. API');
 });
 
 module.exports = router;

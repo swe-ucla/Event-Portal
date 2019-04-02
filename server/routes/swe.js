@@ -25,12 +25,12 @@ router.get('/', function(req, res, next) {
   res.send('SWE API is running!');
 });
 
-// Simple test endpoint
+// Returns test string "pong" to verify that server is running.
 router.get('/ping', function(req, res, next) {
   res.send('pong');
 });
 
-// Returns simple JSON message
+// Returns simple JSON message.
 router.get('/api', function(req, res) {
   const data = {
     message: 'Hello, API!'
@@ -45,6 +45,7 @@ router.get('/random', function(req, res, next) {
     res.json(my_JSON);
 });
 
+// Use given name to return a JSON greeting message.
 router.post('/name', function(req, res) {
     var name = req.query.name;
     if (name == undefined) {
@@ -62,6 +63,7 @@ router.post('/name', function(req, res) {
     }
 });
 
+// Use given name to return a JSON greeting message.
 router.get('/name/:name', function(req, res) {
     const name = req.params.name;
     if (name == undefined) {
@@ -79,6 +81,7 @@ router.get('/name/:name', function(req, res) {
     }
 });
 
+// Use given first and last name to return a JSON greeting message.
 router.post('/name/:firstname', function(req, res) {
     const firstname = req.params.firstname;
     const lastname = req.query.lastname;
