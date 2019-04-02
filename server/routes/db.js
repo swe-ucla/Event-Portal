@@ -5,6 +5,7 @@ var router = express.Router();
 // Require database adapter file (not node-postgres directly)
 const db = require('../db')
 
+// GET all columns and rows from test table.
 router.get('/', function(req, res, next) {
   db.query('SELECT * FROM test', [], (err, result) => {
     if (err) {
@@ -14,6 +15,7 @@ router.get('/', function(req, res, next) {
   });
 });
 
+// GET all columns from test table given :id.
 router.get('/:id', function(req, res, next) {
   const id = req.params.id;
   db.query('SELECT * FROM test WHERE id = $1', [id], (err, result) => {
