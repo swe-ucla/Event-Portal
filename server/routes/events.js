@@ -4,7 +4,7 @@ var router = express.Router();
 
 // Returns test string to verify that Events server is running. 
 router.get('/ping', function(req, res, next) {
-  res.send('pong - Events API');
+  res.send('testing change');
 });
 
 // GET events listing. 
