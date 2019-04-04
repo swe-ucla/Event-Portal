@@ -9,12 +9,22 @@ const db = require('../db')
 router.get('/:event_id/register', function(req, res, next) {
 	const event = req.params.event_id;
 	db.query('SELECT user_id FROM event_registration WHERE event_id = \'' + event + '\'', [], (err, result) => {
-    if (err) {
-        return next(err);
-    }
-    res.send(result.rows);
-  });
-})
+		if (err) {
+        	return next(err);
+    	}
+    	res.send(result.rows);
+  	});
+});
+
+// Get all events
+router.get('/', function(req, res, next) {
+  db.query('SELECT * FROM event', [], (err, result) => 	{
+    	if (err) {
+      	  return next(err);
+    	}
+    	res.send(result.rows);
+  	});
+});
 
 // Get all unique event locations
 router.get('/locations', function(req, res, next) {
@@ -24,7 +34,7 @@ router.get('/locations', function(req, res, next) {
     }
     res.send(result.rows);
   });
-})
+});
 
 // // GET all columns from test table given :id.
 // router.get('/filter', function(req, res, next) {
@@ -42,6 +52,19 @@ router.get('/locations', function(req, res, next) {
 //   if (date != undefined) {
 
 //   }
+// });
+
+// GET events listing. 
+// router.get('/filter', function(req, res, next) {
+//   // const date = req.query.date;
+
+
+//   db.query('SELECT fb_id FROM event WHERE date(starts_at) <= \'' + date + '\' AND \'' + date + '\' <= date(ends_at)', [], (err, result) => {
+//     if (err) {
+//         return next(err);
+//     }
+//     res.send(result.rows);
+//   });
 // });
 
 module.exports = router;
