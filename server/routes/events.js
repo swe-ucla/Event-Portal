@@ -7,7 +7,17 @@ const db = require('../db')
 
 // Get all events
 router.get('/', function(req, res, next) {
-  db.query('SELECT * FROM event', [], (err, result) => 	{
+  db.query('SELECT * FROM event', [], (err, result) => {
+    	if (err) {
+      	  return next(err);
+    	}
+    	res.send(result.rows);
+  	});
+});
+
+// Get all event names
+router.get('/names', function(req, res, next) {
+  db.query('SELECT fb_id FROM event', [], (err, result) => {
     	if (err) {
       	  return next(err);
     	}
@@ -93,6 +103,7 @@ router.get('/search', function(req, res, next) {
     }
     res.send(result.rows);
   });
+});
 
 // // GET all columns from test table given :id.
 // router.get('/filter', function(req, res, next) {
