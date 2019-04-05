@@ -71,7 +71,6 @@ router.get('/:event_id/register', function(req, res, next) {
 
 // Get all users that registered and have paid or not paid for a given event
 router.get('/:event_id/register', function(req, res, next) {
-	
 	const event_id = req.params.event_id;
 	const paid = req.query.paid;
 	db.query('SELECT user_id FROM event_registration WHERE event_id = \'' + event_id + '\' AND has_paid = \'' + paid + '\'', [], (err, result) => {
