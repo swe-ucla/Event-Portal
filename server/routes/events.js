@@ -97,12 +97,13 @@ router.get('/:event_id/categories', function(req, res, next) {
 //Get all events containing term substring
 router.get('/search', function(req, res, next) {
 	const term = req.query.term;
-  db.query('SELECT * FROM event WHERE name ILIKE \‘%<\'' + term + '\'>%\’', [], (err, result) => {
+  db.query('SELECT * FROM event WHERE name ILIKE \'%' + term + '%\'', [], (err, result) => {
     if (err) {
         return next(err);
     }
     res.send(result.rows);
   });
+  
 });
 
 // // GET all columns from test table given :id.
