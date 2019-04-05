@@ -50,7 +50,7 @@ router.get('/:event_id/favorites', function(req, res, next) {
 // Get all users registered to a given event
 router.get('/:event_id/register', function(req, res, next) {
 	const event = req.params.event_id;
-	db.query('SELECT user_id FROM event_registration WHERE event_id = \'' + event + '\'', [], (err, result) => {
+	db.query('SELECT user_id FROM event_registration WHERE event_id = \'' + event_id + '\'', [], (err, result) => {
 		if (err) {
         	return next(err);
     	}
