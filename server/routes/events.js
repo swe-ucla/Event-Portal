@@ -16,6 +16,7 @@ router.get('/', function(req, res, next) {
 });
 
 // Get all event names
+// NOTE: chose to SELECT fb_id instead of name
 router.get('/names', function(req, res, next) {
   db.query('SELECT fb_id FROM event', [], (err, result) => {
     	if (err) {
@@ -39,6 +40,19 @@ router.get('/locations', function(req, res, next) {
 router.get('/:event_id/register', function(req, res, next) {
 	const event = req.params.event_id;
 	db.query('SELECT user_id FROM event_registration WHERE event_id = \'' + event + '\'', [], (err, result) => {
+		if (err) {
+        	return next(err);
+    	}
+    	res.send(result.rows);
+  	});
+});
+
+// Get all users that registered and have paid or not paid for a given event
+router.get('/:event_id/register', function(req, res, next) {
+	
+	const event_id = req.params.event_id;
+	const paid = req.query.paid;
+	db.query('SELECT user_id FROM event_registration WHERE event_id = \'' + event_id + '\' AND has_paid = \'' + paid + '\'', [], (err, result) => {
 		if (err) {
         	return next(err);
     	}
