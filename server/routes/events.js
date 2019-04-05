@@ -93,6 +93,7 @@ router.get('/search', function(req, res, next) {
     }
     res.send(result.rows);
   });
+});
 
 // // GET all columns from test table given :id.
 // router.get('/filter', function(req, res, next) {
