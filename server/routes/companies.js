@@ -71,6 +71,54 @@ router.get('/:company_id/events', function(req, res, next) {
   });
 });
 
+//Get all positions a given company is hiring
+router.get('/:company_id/positions', function(req, res, next) {
+    // TODO
+    const id = req.params.company_id;
+    db.query('SELECT * FROM company_position WHERE company_id = $1;', [id], (err, result) => {
+    if (err) {
+        return next(err);
+    }
+    res.send(result.rows);
+  });
+});
+
+//Get all majors a given company is hiring
+router.get('/:company_id/majors', function(req, res, next) {
+    // TODO
+    const id = req.params.company_id;
+    db.query('SELECT * FROM company_major WHERE company_id = $1;', [id], (err, result) => {
+    if (err) {
+        return next(err);
+    }
+    res.send(result.rows);
+  });
+});
+
+//Get all contacts for a given company
+router.get('/:company_id/contacts', function(req, res, next) {
+    // TODO
+    const id = req.params.company_id;
+    db.query('SELECT * FROM company_contact WHERE company_id = $1;', [id], (err, result) => {
+    if (err) {
+        return next(err);
+    }
+    res.send(result.rows);
+  });
+});
+
+//Get all users interested in a certain company
+router.get('/:company_id/users', function(req, res, next) {
+    // TODO
+    const id = req.params.company_id;
+    db.query('SELECT user_id FROM user_company_rank WHERE company_id = $1;', [id], (err, result) => {
+    if (err) {
+        return next(err);
+    }
+    res.send(result.rows);
+  });
+});
+
 //Get all companies hiring a specific major
 router.get('/filter', function(req, res, next) {
 	res.send('hello');
