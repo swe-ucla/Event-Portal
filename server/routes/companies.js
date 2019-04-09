@@ -153,5 +153,21 @@ router.get('/:company_id/users', function(req, res, next) {
   });
 });
 
+//Get all companies containing term substring in their name
+router.get('/search', function(req,res,next) {
+  const search = req.query.term;
+  if(search == undefined){
+    res.send('Not Found');
+  }
+
+  db.query('SELECT id FROM company WHERE name ILIKE $1', ['%' + search +'%'], (err, result) => {
+    if(err){
+      return next(err);
+    }
+    res.send(result.rows);
+  });
+
+});
+
 
 module.exports = router;
