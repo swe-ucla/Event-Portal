@@ -9,6 +9,40 @@ router.get('/ping', function(req, res, next) {
   res.send('pong - Companies API');
 });
 
+//Get all companies hiring a specific major
+//written before /: endpoints since those can have various names
+//Need to check query that sends data for both
+router.get('/filter', function(req, res, next) {
+  const pid = req.query.pid;
+  const mid = req.query.mid;
+
+  if(pid == undefined && mid == undefined){
+    res.send('neither!');//not sure how to handle this case
+  }
+  else if(pid == undefined && mid != undefined){
+    db.query('SELECT company_id FROM company_major WHERE major_id = $1;', [mid], (err, result) => {
+    if (err) {
+        return next(err);
+    }
+    res.send(result.rows);
+  });
+  } else if(pid != undefined && mid == undefined){
+    db.query('SELECT company_id FROM company_position WHERE position_id = $1;', [pid], (err, result) => {
+    if (err) {
+        return next(err);
+    }
+    res.send(result.rows);
+  });
+  } else{ //both
+      db.query('SELECT DISTINCT company_major.company_id FROM company_major LEFT OUTER JOIN company_position ON (position_id = $1 AND major_id = $2);', [pid, mid], (err, result) => {
+    if (err) {
+        return next(err);
+    }
+    res.send(result.rows);
+  });
+    }
+});
+
 //Get all companies' info
 router.get('/', function(req, res, next) {
   db.query('SELECT id FROM company;', [], (err, result) => {
@@ -117,20 +151,6 @@ router.get('/:company_id/users', function(req, res, next) {
     }
     res.send(result.rows);
   });
-});
-
-//Get all companies hiring a specific major
-router.get('/filter', function(req, res, next) {
-	res.send('hello');
-	/*
-  const mid = req.params.mid;
-  db.query('SELECT company_id FROM company_major WHERE major_id = <mid>;', [id], (err, result) => {
-    if (err) {
-        return next(err);
-    }
-    res.send(result.rows);
-  });
-  */
 });
 
 
