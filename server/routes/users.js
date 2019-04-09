@@ -61,7 +61,7 @@ router.get('/ids', function(req, res, next) {
 
 
 //Get user info by user_id
-router.get('/:user_id', function(req, res, next) {
+router.get('/<user_id>', function(req, res, next) {
   const id = req.params.user_id;
   db.query('SELECT * FROM swe_user WHERE id = $1', [id], (err, result) => {
     if (err) {
@@ -93,7 +93,7 @@ router.get('/:user_id/past', function(req, res, next) {
   });
 });
 
-//Get all companies a user is interested in
+//Get all companies a user is interested in 
 router.get('/:user_id/companies', function(req, res, next) {
   const id = req.params.user_id;
   db.query('SELECT company_id, rank FROM user_company_rank WHERE user_id = $1', [id], (err, result) => {
@@ -183,15 +183,90 @@ router.get('/:user_id/favorite', function(req, res, next) {
   });
 });
 
+//Get a user's favorite events
+//HELP NEEDED
+/*
+router.get('/search', function(req, res, next) {
+  const name = req.query.name;
+  db.query('SELECT id FROM swe_user WHERE CONCAT(first_name, ' ', last_name) ILIKE '%$1%'', [name], (err, result) => {
+    if (err) {
+        return next(err);
+    }
+    res.send(result.rows);
+  });
+});
+*/
+
+//Get all users whose emails contain the substring email
+//HELP NEEDED
+router.get('/search', function(req, res, next) {
+  const email = req.query.email;
+  db.query('SELECT id FROM swe_user WHERE email ILIKE '%$1%'', [email], (err, result) => {
+    if (err) {
+        return next(err);
+    }
+    res.send(result.rows);
+  });
+});
 
 
+router.get('/filter', function(req, res, next) {
+  const cid = req.query.cid;
+  const oid = req.query.oid;
+  const mid = req.query.mid;
+  const pid = req.query.pid;
+  const admin = req.query.admin;
+
+  //Get all users interested in a given company.
+  if (cid){
+  	db.query('SELECT user_id FROM user_company_rank WHERE company_id = $1', [cid], (err, result) => {
+    	if (err) {
+        	return next(err);
+    	}
+    res.send(result.rows);
+  });
+ }
+ //Get all users of the given occupation
+ if (oid){
+  	 db.query('SELECT user_id FROM user_occupation WHERE occupation_id = $1', [oid], (err, result) => {
+    	if (err) {
+        	return next(err);
+    	}
+    res.send(result.rows);
+  });
+ }
+ //Get all users of the given major
+ if (mid){
+  	 db.query('SELECT user_id FROM user_major WHERE major_id = $1', [mid], (err, result) => {
+    	if (err) {
+        	return next(err);
+    	}
+    res.send(result.rows);
+  });
+ }
+
+ //Get all users seeking the given position
+ if (pid){
+  	 db.query('SELECT user_id FROM user_position WHERE position_id = $1', [pid], (err, result) => {
+    	if (err) {
+        	return next(err);
+    	}
+    res.send(result.rows);
+  });
+ }
+
+//Get all admin users
+ if (admin){
+  	 db.query('SELECT id FROM swe_user WHERE is_admin = $1', [admin], (err, result) => {
+    	if (err) {
+        	return next(err);
+    	}
+    res.send(result.rows);
+  });
+ }
+});
 
 
-
-
-
-
-//GET all the events a user is hosting.
 
 
 
