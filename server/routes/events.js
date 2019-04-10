@@ -53,63 +53,63 @@ router.get('/filter', function(req, res, next) {
         });
     } else if (year != undefined) {
     	db.query('SELECT * FROM event WHERE EXTRACT(YEAR FROM starts_at) = \'' + year + '\' OR EXTRACT(YEAR FROM ends_at) = \'' + year + '\'', [], (err, result) => {
-    	  if (err) {
-    		return next(err);
-    	  }
-    	  res.send(result.rows);
-    	});
-  } else if (quarter != undefined) {
-  	db.query('SELECT fb_id FROM event WHERE quarter = \'' + quarter + '\'', [], (err, result) => {
-  	  if (err) {
-  		return next(err);
-  	  }
-  	  res.send(result.rows);
-  	});
-  } else if (start_date != undefined) {
-  	db.query('SELECT fb_id FROM event WHERE date(starts_at) = \'' + start_date + '\'', [], (err, result) => {
-  	  if (err) {
-  		return next(err);
-  	  }
-  	  res.send(result.rows);
-  	});
-  } else if (end_date != undefined) {
-  	db.query('SELECT fb_id FROM event WHERE date(starts_at) = \'' + end_date + '\'', [], (err, result) => {
-  	  if (err) {
-  		return next(err);
-  	  }
-  	  res.send(result.rows);
-  	});
-  } else if (category != undefined) {
-  	db.query('SELECT event_id FROM event_category WHERE category_id = \'' + category_id + '\'', [], (err, result) => {
-  	  if (err) {
-  		return next(err);
-  	  }
-  	  res.send(result.rows);
-  	});
-  } else if (company != undefined) {
-  	db.query('SELECT event_id FROM event_company WHERE company_id = \'' + company + '\'', [], (err, result) => {
-  	  if (err) {
-  		return next(err);
-  	  }
-  	  res.send(result.rows);
-  	});
-  } else if (featured != undefined) {
-  	db.query('SELECT * FROM event WHERE is_featured = \'' + featured + '\'', [], (err, result) => {
-  	  if (err) {
-  		return next(err);
-  	  }
-      res.send(result.rows);
-  	});
-  } else if (past != undefined) {
-  	db.query('SELECT fb_id FROM event WHERE ends_at < now()', [], (err, result) => {
-  	  if (err) {
-  		return next(err);
-  	  }
-  	  res.send(result.rows);
-  	});
-  } else {
-  	res.json({result: false}); // error message
-  }
+            if (err) {
+                return next(err);
+            }
+        res.send(result.rows);
+        });
+    } else if (quarter != undefined) {
+        db.query('SELECT fb_id FROM event WHERE quarter = \'' + quarter + '\'', [], (err, result) => {
+            if (err) {
+  		        return next(err);
+            }
+            res.send(result.rows);
+        });
+    } else if (start_date != undefined) {
+        db.query('SELECT fb_id FROM event WHERE date(starts_at) = \'' + start_date + '\'', [], (err, result) => {
+            if (err) {
+  		        return next(err);
+            }
+            res.send(result.rows);
+        });
+    } else if (end_date != undefined) {
+        db.query('SELECT fb_id FROM event WHERE date(starts_at) = \'' + end_date + '\'', [], (err, result) => {
+            if (err) {
+                return next(err);
+            }
+            res.send(result.rows);
+        });
+    } else if (category != undefined) {
+        db.query('SELECT event_id FROM event_category WHERE category_id = \'' + category_id + '\'', [], (err, result) => {
+            if (err) {
+                return next(err);
+            }
+            res.send(result.rows);
+        });
+    } else if (company != undefined) {
+        db.query('SELECT event_id FROM event_company WHERE company_id = \'' + company + '\'', [], (err, result) => {
+            if (err) {
+                return next(err);
+            }
+            res.send(result.rows);
+        });
+    } else if (featured != undefined) {
+        db.query('SELECT * FROM event WHERE is_featured = \'' + featured + '\'', [], (err, result) => {
+            if (err) {
+                return next(err);
+            }
+            res.send(result.rows);
+        });
+    } else if (past != undefined) {
+        db.query('SELECT fb_id FROM event WHERE ends_at < now()', [], (err, result) => {
+            if (err) {
+                return next(err);
+            }
+            res.send(result.rows);
+        });
+    } else {
+        res.json({result: false}); // error message
+    }
 });
 
 // GET all events
