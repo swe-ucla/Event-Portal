@@ -18,46 +18,46 @@ generally filters of the similar type/category form an OR relationship while fil
 
 // Returns test string to verify that Events server is running. 
 router.get('/ping', function(req, res, next) {
-	res.send('pong - Events API');
+    res.send('pong - Events API');
 });
 
 // GET all columns from test table given :id.
 router.get('/filter', function(req, res, next) {
-	const date = req.query.date;
-	const month = req.query.month;
-	const year = req.query.year;
-	const quarter = req.query.quarter;
-	const start_date = req.query.start_date;
-	const end_date = req.query.end_date;
-	const category = req.query.category;
-	const company = req.query.company;
-	const featured = req.query.featured;
-	const past = req.query.past;
+    const date = req.query.date;
+    const month = req.query.month;
+    const year = req.query.year;
+    const quarter = req.query.quarter;
+    const start_date = req.query.start_date;
+    const end_date = req.query.end_date;
+    const category = req.query.category;
+    const company = req.query.company;
+    const featured = req.query.featured;
+    const past = req.query.past;
 
-	// example: 2018-10-19
-	if (date != undefined)
-	{
-		let query = 'SELECT fb_id FROM event WHERE';
-		db.query('SELECT fb_id FROM event WHERE date(starts_at) <= \'' + date + '\' AND \'' + date + '\' <= date(ends_at)',[], (err, result) => {
-			if (err) {
-				return next(err);
-		  	}
-			res.send(result.rows);
-		});
-	} else if (month != undefined) {
-		db.query('SELECT * FROM event WHERE EXTRACT(MONTH FROM starts_at) = \'' + month +'\' OR EXTRACT(MONTH FROM ends_at) = \'' + month + '\'', [], (err, result) => {
-			if (err) {
-				return next(err);
-		  	}
-			res.send(result.rows);
-		});
-  	} else if (year != undefined) {
-  	db.query('SELECT * FROM event WHERE EXTRACT(YEAR FROM starts_at) = \'' + year + '\' OR EXTRACT(YEAR FROM ends_at) = \'' + year + '\'', [], (err, result) => {
-  	  if (err) {
-  		return next(err);
-  	  }
-  	  res.send(result.rows);
-  	});
+    // example: 2018-10-19
+    if (date != undefined)
+    {
+        let query = 'SELECT fb_id FROM event WHERE';
+        db.query('SELECT fb_id FROM event WHERE date(starts_at) <= \'' + date + '\' AND \'' + date + '\' <= date(ends_at)',[], (err, result) => {
+            if (err) {
+                return next(err);
+            }
+            res.send(result.rows);
+        });
+    } else if (month != undefined) {
+        db.query('SELECT * FROM event WHERE EXTRACT(MONTH FROM starts_at) = \'' + month +'\' OR EXTRACT(MONTH FROM ends_at) = \'' + month + '\'', [], (err, result) => {
+            if (err) {
+                return next(err);
+            }
+            res.send(result.rows);
+        });
+    } else if (year != undefined) {
+    	db.query('SELECT * FROM event WHERE EXTRACT(YEAR FROM starts_at) = \'' + year + '\' OR EXTRACT(YEAR FROM ends_at) = \'' + year + '\'', [], (err, result) => {
+    	  if (err) {
+    		return next(err);
+    	  }
+    	  res.send(result.rows);
+    	});
   } else if (quarter != undefined) {
   	db.query('SELECT fb_id FROM event WHERE quarter = \'' + quarter + '\'', [], (err, result) => {
   	  if (err) {
