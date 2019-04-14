@@ -1,3 +1,5 @@
+import parallel from 'async/parallel';
+
 //* Route Prefix: /events */
 var express = require('express');
 var router = express.Router();
@@ -29,7 +31,25 @@ router.get('/filter', function(req, res, next) {
   const featured = req.query.featured;
   const past = req.query.past;
 
+  // only end_date; current day is default
+  // past specifier - (month, year, quarter)
+  // quarter - default year is current year
+
+  // separate into blocks (each block is an AND should be a category type)
+  // category/company gets its own block, etc. etc.
+  // look up how to build queries (AND RELATIONSHIP)
+
+  // date > month > year > quarter
+
   // example: 2018-10-19
+
+  /* alternative syntax for queries using async/await: 
+  	(https://node-postgres.com)
+	
+	const res = await db.query('SELECT fb_id FROM event WHERE + date + '\' AND \'' + date + '\' <= date(ends_at)',[]);
+	res.send(result.rows); 
+  */
+
   if (date != undefined)
   {
   	db.query('SELECT fb_id FROM event WHERE date(starts_at) <= \'' + date + '\' AND \'' + date + '\' <= date(ends_at)',[], (err, result) => {
