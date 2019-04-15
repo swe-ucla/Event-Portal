@@ -40,9 +40,7 @@ router.get('/', function(req, res, next) {
 router.get('/emails', function(req, res, next) {
 
     db.query('SELECT email FROM swe_user', [], (err, result) => {
-    if (err) {
-        return next(err);
-    }
+    if (err) return next(err);
     res.send(result.rows);
 });
 });
@@ -52,9 +50,7 @@ router.get('/emails', function(req, res, next) {
 router.get('/ids', function(req, res, next) {
 
     db.query('SELECT university_id FROM swe_user;', [], (err, result) => {
-    if (err) {
-        return next(err);
-    }
+    if (err) return next(err);
     res.send(result.rows);
 });
 });
@@ -64,9 +60,7 @@ router.get('/ids', function(req, res, next) {
 router.get('/:user_id/id', function(req, res, next) {
   const id = req.params.user_id;
   db.query('SELECT * FROM swe_user WHERE id = $1', [id], (err, result) => {
-    if (err) {
-        return next(err);
-    }
+    if (err) return next(err);
     res.send(result.rows);
 });
 });
@@ -75,9 +69,7 @@ router.get('/:user_id/id', function(req, res, next) {
 router.get('/:user_id/admin', function(req, res, next) {
   const id = req.params.user_id;
   db.query('SELECT is_admin FROM swe_user WHERE id = $1', [id], (err, result) => {
-    if (err) {
-        return next(err);
-    }
+    if (err) return next(err);
     res.send(result.rows);
 });
 });
@@ -89,9 +81,7 @@ router.get('/:user_id/past', function(req, res, next) {
   	WHERE event_checkin.user_id = 3 AND event.ends_at < now() UNION SELECT event_id FROM event_registration \
   	INNER JOIN event ON event_registration.event_id = event.fb_id WHERE event_registration.user_id = 3 AND event.ends_at < now()',
   	[], (err, result) => {
-    if (err) {
-        return next(err);
-    }
+    if (err) return next(err);
     res.send(result.rows);
 });
 });
@@ -100,9 +90,7 @@ router.get('/:user_id/past', function(req, res, next) {
 router.get('/:user_id/companies', function(req, res, next) {
   const id = req.params.user_id;
   db.query('SELECT company_id, rank FROM user_company_rank WHERE user_id = $1', [id], (err, result) => {
-    if (err) {
-        return next(err);
-    }
+    if (err) return next(err);
     res.send(result.rows);
 });
 });
@@ -111,10 +99,9 @@ router.get('/:user_id/companies', function(req, res, next) {
 // GET all events a user is attending
 router.get('/:user_id/events', function(req, res, next) {
   const id = req.params.user_id;
-  db.query('SELECT event_id FROM event_checkin WHERE user_id = $1 UNION SELECT event_id FROM event_registration WHERE user_id = $1', [id], (err, result) => {
-    if (err) {
-        return next(err);
-    }
+  db.query('SELECT event_id FROM event_checkin WHERE user_id = $1 UNION SELECT event_id FROM event_registration \
+  	WHERE user_id = $1', [id], (err, result) => {
+    if (err) return next(err);
     res.send(result.rows);
 });
 });
@@ -123,9 +110,7 @@ router.get('/:user_id/events', function(req, res, next) {
 router.get('/:user_id/host', function(req, res, next) {
   const id = req.params.user_id;
   db.query('SELECT event_id FROM event_host WHERE host_id = $1', [id], (err, result) => {
-    if (err) {
-        return next(err);
-    }
+    if (err) return next(err);
     res.send(result.rows);
 });
 });
@@ -134,9 +119,7 @@ router.get('/:user_id/host', function(req, res, next) {
 router.get('/:user_id/majors', function(req, res, next) {
   const id = req.params.user_id;
   db.query('SELECT major_id FROM user_major WHERE user_id = $1', [id], (err, result) => {
-    if (err) {
-        return next(err);
-    }
+    if (err) return next(err);
     res.send(result.rows);
 });
 });
@@ -145,9 +128,7 @@ router.get('/:user_id/majors', function(req, res, next) {
 router.get('/:user_id/positions', function(req, res, next) {
   const id = req.params.user_id;
   db.query('SELECT position_id FROM user_position WHERE user_id = $1', [id], (err, result) => {
-    if (err) {
-        return next(err);
-    }
+    if (err) return next(err);
     res.send(result.rows);
 });
 });
@@ -156,9 +137,7 @@ router.get('/:user_id/positions', function(req, res, next) {
 router.get('/:user_id/occupations', function(req, res, next) {
   const id = req.params.user_id;
   db.query('SELECT occupation_id FROM user_occupation WHERE user_id = $1', [id], (err, result) => {
-    if (err) {
-        return next(err);
-    }
+    if (err) return next(err);
     res.send(result.rows);
 });
 });
@@ -168,10 +147,8 @@ router.get('/:user_id/occupations', function(req, res, next) {
 router.get('/:user_id/diet', function(req, res, next) {
   const id = req.params.user_id;
   db.query('SELECT diet_id FROM user_diet WHERE user_id = $1', [id], (err, result) => {
-    if (err) {
-        return next(err);
-    }
-	res.send(result.rows);
+    if (err) return next(err);
+    res.send(result.rows);
 });
 });
 
@@ -179,9 +156,7 @@ router.get('/:user_id/diet', function(req, res, next) {
 router.get('/:user_id/favorite', function(req, res, next) {
   const id = req.params.user_id;
   db.query('SELECT event_id FROM favorite_events WHERE user_id = $1', [id], (err, result) => {
-    if (err) {
-        return next(err);
-    }
+    if (err) return next(err);
     res.send(result.rows);
  });
 });
@@ -233,40 +208,32 @@ router.get('/filter', function(req, res, next) {
  // GET all users of the given occupation
  if (oid){
   	 db.query('SELECT user_id FROM user_occupation WHERE occupation_id = $1', [oid], (err, result) => {
-    	if (err) {
-        	return next(err);
-    	}
-    res.send(result.rows);
+    	if (err) return next(err);
+    	res.send(result.rows);
  });
  }
 
  //GET all users of the given major
  if (mid){
   	 db.query('SELECT user_id FROM user_major WHERE major_id = $1', [mid], (err, result) => {
-    	if (err) {
-        	return next(err);
-    	}
-    res.send(result.rows);
+    	if (err) return next(err);
+    	res.send(result.rows);
  });
  }
 
  // GET all users seeking the given position
  if (pid){
   	 db.query('SELECT user_id FROM user_position WHERE position_id = $1', [pid], (err, result) => {
-    	if (err) {
-        	return next(err);
-    	}
-    res.send(result.rows);
+    	if (err) return next(err);
+    	res.send(result.rows);
  });
  }
 
 // GET all admin users
  if (admin){
   	 db.query('SELECT id FROM swe_user WHERE is_admin = $1', [admin], (err, result) => {
-    	if (err) {
-        	return next(err);
-    	}
-    res.send(result.rows);
+    	if (err) return next(err);
+    	res.send(result.rows);
   });
  }
 });
