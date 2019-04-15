@@ -128,4 +128,6 @@
   - https://stackoverflow.com/questions/6133107/extract-date-yyyy-mm-dd-from-a-timestamp-in-postgresql
   - https://learning.getpostman.com/docs/postman/api_documentation/intro_to_api_documentation/
   - [https://learning.getpostman.com/docs/postman/collections/examples/#___gatsby](https://learning.getpostman.com/docs/postman/collections/examples/#___gatsby)
-
+  - https://stackoverflow.com/questions/1493262/list-all-sequences-in-a-postgres-db-8-1-with-sql
+  - https://stackoverflow.com/questions/16362930/change-the-starting-value-of-a-serial-postgresql
+  - https://stackoverflow.com/questions/244243/how-to-reset-postgres-primary-key-sequence-when-it-falls-out-of-sync
