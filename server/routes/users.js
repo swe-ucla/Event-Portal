@@ -61,7 +61,7 @@ router.get('/ids', function(req, res, next) {
 
 
 //Get user info by user_id
-router.get('/<user_id>', function(req, res, next) {
+router.get('/:user_id/id', function(req, res, next) {
   const id = req.params.user_id;
   db.query('SELECT * FROM swe_user WHERE id = $1', [id], (err, result) => {
     if (err) {
@@ -185,23 +185,23 @@ router.get('/:user_id/favorite', function(req, res, next) {
 
 //Get a user's favorite events
 //HELP NEEDED
-/*
+
+//TODO: ADD POSTMAN REQUEST
 router.get('/search', function(req, res, next) {
   const name = req.query.name;
-  db.query('SELECT id FROM swe_user WHERE CONCAT(first_name, ' ', last_name) ILIKE '%$1%'', [name], (err, result) => {
+  db.query('SELECT id FROM swe_user WHERE CONCAT(first_name, \' \', last_name) ILIKE $1', ['%' + name + '%'], (err, result) => {
     if (err) {
         return next(err);
     }
     res.send(result.rows);
   });
 });
-*/
 
-//Get all users whose emails contain the substring email
-//HELP NEEDED
+
+//TODO: ADD POSTMAN REQUEST
 router.get('/search', function(req, res, next) {
   const email = req.query.email;
-  db.query('SELECT id FROM swe_user WHERE email ILIKE '%$1%'', [email], (err, result) => {
+  db.query('SELECT id FROM swe_user WHERE email ILIKE $1', ['%' + email + '%'], (err, result) => {
     if (err) {
         return next(err);
     }
