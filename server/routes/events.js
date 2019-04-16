@@ -91,7 +91,7 @@ router.get('/:event_id/favorites', function(req, res, next) {
   });
 });
 
-// GET all users registered to a given event
+// GET all users registered and have paid or not paid for a given event
 router.get('/:event_id/register', function(req, res, next) {
   const event_id = req.params.event_id;
   const paid = req.query.paid;
@@ -117,22 +117,6 @@ router.get('/:event_id/register', function(req, res, next) {
     });
   }
 });
-
-// Get all users that registered and have paid or not paid for a given event
-/*
-router.get('/:event_id/register', function(req, res, next) {
-	const event_id = req.params.event_id;
-	const paid = req.query.paid;
-	db.query('SELECT user_id FROM event_registration WHERE event_id = $1 AND has_paid = $2', [event_id, paid], (err, result) => {
-		if (err) {
-        	return next(err);
-    	}
-    	res.send(result.rows);
-  	});
-  	res.send(paid);
-});
-
-*/
 
 // GET all users checked in to a given event
 router.get('/:event_id/checkin', function(req, res, next) {
@@ -180,14 +164,20 @@ router.get('/:event_id/categories', function(req, res, next) {
 
 // GET all events containing term substring
 router.get('/search', function(req, res, next) {
-  const term = req.query.term;
-    
-  db.query('SELECT * FROM event WHERE name ILIKE \'%' + term + '%\'', [], (err, result) => {
-    if (err) {
-      return next(err);
+    const term = req.query.term;
+    if (term == undefined){
+        return res.status(400).send({
+            message: '\'term\' is undefined'
+        });
     }
-    res.send(result.rows);
-  });
+    else{
+        db.query('SELECT * FROM event WHERE name ~* $1', [term], (err, result) => {
+            if (err) {
+                return next(err);
+            }
+            res.send(result.rows);
+        });
+    }
 });
 
 // GET all columns from test table given :id.
