@@ -51,7 +51,7 @@ router.get('/', function(req, res, next) {
 
 // GET all event names
 router.get('/names', function(req, res, next) {
-  db.query('SELECT name FROM event', [], (err, result) => {
+  db.query('SELECT fb_id, name FROM event', [], (err, result) => {
     if (err) {
       return next(err);
     }
@@ -174,8 +174,6 @@ router.get('/:event_id/categories', function(req, res, next) {
 });
 
 // GET all events containing term substring
-// I think this needs to go before all of the /:event_id, or else it interprets search as an event id :/
-// also I can't figure out how to use the [] for this one :(
 router.get('/search', function(req, res, next) {
   const term = req.query.term;
     
@@ -188,6 +186,7 @@ router.get('/search', function(req, res, next) {
 });
 
 // GET all columns from test table given :id.
+// TODO: fix filtering logic
 router.get('/filter', function(req, res, next) {
     const date = req.query.date;
     const month = req.query.month;
