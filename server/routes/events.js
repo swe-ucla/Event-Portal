@@ -5,35 +5,6 @@ var router = express.Router();
 // Require database adapter file (not node-postgres directly)
 const db = require('../db')
 
-/* from katrina:
-
-One thing to note when implementing the API is all queries under the same route (/events/filter) will be under the same function. You'll need to check whether or not a query parameter exists and filter by it. It's a bit complex, but there's an AND OR relationship between some of these filters.
-
-e.g. if date= is set, and so is month=, then its date OR month because it wouldn't make sense to answer both queries. Here date is more specific, so do date
-
-e.g. month= and year= are set. They work together, so it's month AND year
-
-generally filters of the similar type/category form an OR relationship while filters of different types/topics form AND relationships. aka "when" filters (date/time related) form OR relationships between each other, but "when" filters have an AND relationship with category, company, and featured
-*/
-
-/* alternative syntax for queries using async/await: 
-    (https://node-postgres.com)
-  
-  try {
-    const res = await db.query(...,[]);
-    res.send(result.rows);
-  } catch(err) {
-    return next(err);
-  }
-
-  using promises:
-  db.query(...,[])
-    .then(res => {
-      res.send(result.rows);
-    })
-    .catch(return next(err));
-  */
-
 // Returns test string to verify that Events server is running. 
 router.get('/ping', function(req, res, next) {
     res.send('pong - Events API');
@@ -155,6 +126,35 @@ router.get('/search', function(req, res, next) {
     });
   }
 });
+
+/* from katrina:
+
+One thing to note when implementing the API is all queries under the same route (/events/filter) will be under the same function. You'll need to check whether or not a query parameter exists and filter by it. It's a bit complex, but there's an AND OR relationship between some of these filters.
+
+e.g. if date= is set, and so is month=, then its date OR month because it wouldn't make sense to answer both queries. Here date is more specific, so do date
+
+e.g. month= and year= are set. They work together, so it's month AND year
+
+generally filters of the similar type/category form an OR relationship while filters of different types/topics form AND relationships. aka "when" filters (date/time related) form OR relationships between each other, but "when" filters have an AND relationship with category, company, and featured
+*/
+
+/* alternative syntax for queries using async/await: 
+    (https://node-postgres.com)
+  
+  try {
+    const res = await db.query(...,[]);
+    res.send(result.rows);
+  } catch(err) {
+    return next(err);
+  }
+
+  using promises:
+  db.query(...,[])
+    .then(res => {
+      res.send(result.rows);
+    })
+    .catch(return next(err));
+  */
 
 // GET all columns from test table given :id.
 // TODO: fix filtering logic
