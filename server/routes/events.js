@@ -96,20 +96,25 @@ router.get('/:event_id/register', function(req, res, next) {
   const event_id = req.params.event_id;
   const paid = req.query.paid;
   if (paid == undefined){
-	db.query('SELECT user_id FROM event_registration WHERE event_id = $1', [event_id], (err, result) => {
+	 db.query('SELECT user_id FROM event_registration WHERE event_id = $1', [event_id], (err, result) => {
 	  if (err) {
         return next(err);
       }
       res.send(result.rows);
   	});
   }
-  else{
-	db.query('SELECT user_id FROM event_registration WHERE event_id = $1 AND has_paid = $2', [event_id, paid], (err, result) => {
+  else if (paid == "true" || paid == "false"){
+	 db.query('SELECT user_id FROM event_registration WHERE event_id = $1 AND has_paid = $2', [event_id, paid], (err, result) => {
 	  if (err) {
         return next(err);
       }
     	res.send(result.rows);
   	});
+  }
+  else{
+    return res.status(400).send({
+      message: '\'paid\' is not a boolean'
+    });
   }
 });
 
