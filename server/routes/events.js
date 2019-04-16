@@ -39,97 +39,6 @@ router.get('/ping', function(req, res, next) {
     res.send('pong - Events API');
 });
 
-// GET all columns from test table given :id.
-router.get('/filter', function(req, res, next) {
-    const date = req.query.date;
-    const month = req.query.month;
-    const year = req.query.year;
-    const quarter = req.query.quarter;
-    const start_date = req.query.start_date;
-    const end_date = req.query.end_date;
-    const category = req.query.category;
-    const company = req.query.company;
-    const featured = req.query.featured;
-    const past = req.query.past;
-
-    // example: 2018-10-19
-    if (date != undefined)
-    {
-        let query = 'SELECT fb_id FROM event WHERE';
-        db.query('SELECT fb_id FROM event WHERE date(starts_at) <= \'' + date + '\' AND \'' + date + '\' <= date(ends_at)',[], (err, result) => {
-            if (err) {
-                return next(err);
-            }
-            res.send(result.rows);
-        });
-    } else if (month != undefined) {
-        db.query('SELECT * FROM event WHERE EXTRACT(MONTH FROM starts_at) = \'' + month +'\' OR EXTRACT(MONTH FROM ends_at) = \'' + month + '\'', [], (err, result) => {
-            if (err) {
-                return next(err);
-            }
-            res.send(result.rows);
-        });
-    } else if (year != undefined) {
-    	db.query('SELECT * FROM event WHERE EXTRACT(YEAR FROM starts_at) = \'' + year + '\' OR EXTRACT(YEAR FROM ends_at) = \'' + year + '\'', [], (err, result) => {
-            if (err) {
-                return next(err);
-            }
-        res.send(result.rows);
-        });
-    } else if (quarter != undefined) {
-        db.query('SELECT fb_id FROM event WHERE quarter = \'' + quarter + '\'', [], (err, result) => {
-            if (err) {
-  		        return next(err);
-            }
-            res.send(result.rows);
-        });
-    } else if (start_date != undefined) {
-        db.query('SELECT fb_id FROM event WHERE date(starts_at) = \'' + start_date + '\'', [], (err, result) => {
-            if (err) {
-  		        return next(err);
-            }
-            res.send(result.rows);
-        });
-    } else if (end_date != undefined) {
-        db.query('SELECT fb_id FROM event WHERE date(starts_at) = \'' + end_date + '\'', [], (err, result) => {
-            if (err) {
-                return next(err);
-            }
-            res.send(result.rows);
-        });
-    } else if (category != undefined) {
-        db.query('SELECT event_id FROM event_category WHERE category_id = \'' + category_id + '\'', [], (err, result) => {
-            if (err) {
-                return next(err);
-            }
-            res.send(result.rows);
-        });
-    } else if (company != undefined) {
-        db.query('SELECT event_id FROM event_company WHERE company_id = \'' + company + '\'', [], (err, result) => {
-            if (err) {
-                return next(err);
-            }
-            res.send(result.rows);
-        });
-    } else if (featured != undefined) {
-        db.query('SELECT * FROM event WHERE is_featured = \'' + featured + '\'', [], (err, result) => {
-            if (err) {
-                return next(err);
-            }
-            res.send(result.rows);
-        });
-    } else if (past != undefined) {
-        db.query('SELECT fb_id FROM event WHERE ends_at < now()', [], (err, result) => {
-            if (err) {
-                return next(err);
-            }
-            res.send(result.rows);
-        });
-    } else {
-        res.json({result: false}); // error message
-    }
-});
-
 // GET all events
 router.get('/', function(req, res, next) {
   db.query('SELECT * FROM event', [], (err, result) => {
@@ -150,20 +59,6 @@ router.get('/names', function(req, res, next) {
   });
 });
 
-// GET all events containing term substring
-// I think this needs to go before all of the /:event_id, or else it interprets search as an event id :/
-// also I can't figure out how to use the [] for this one :(
-router.get('/search', function(req, res, next) {
-  const term = req.query.term;
-	
-  db.query('SELECT * FROM event WHERE name ILIKE \'%' + term + '%\'', [], (err, result) => {
-    if (err) {
-      return next(err);
-    }
-    res.send(result.rows);
-  });
-});
-
 // GET all unique event locations
 router.get('/locations', function(req, res, next) {
   db.query('SELECT DISTINCT location_id FROM event', [], (err, result) => {
@@ -175,7 +70,7 @@ router.get('/locations', function(req, res, next) {
 });
 
 // GET event by event_id
-router.get('/:event_id', function(req, res, next) {
+router.get('/:event_id/id', function(req, res, next) {
   const event_id = req.params.event_id;
   db.query('SELECT * FROM event WHERE fb_id = $1', [event_id], (err, result) => {
 	if (err) {
@@ -277,5 +172,111 @@ router.get('/:event_id/categories', function(req, res, next) {
     res.send(result.rows);
   });
 });
+
+// GET all events containing term substring
+// I think this needs to go before all of the /:event_id, or else it interprets search as an event id :/
+// also I can't figure out how to use the [] for this one :(
+router.get('/search', function(req, res, next) {
+  const term = req.query.term;
+    
+  db.query('SELECT * FROM event WHERE name ILIKE \'%' + term + '%\'', [], (err, result) => {
+    if (err) {
+      return next(err);
+    }
+    res.send(result.rows);
+  });
+});
+
+// GET all columns from test table given :id.
+router.get('/filter', function(req, res, next) {
+    const date = req.query.date;
+    const month = req.query.month;
+    const year = req.query.year;
+    const quarter = req.query.quarter;
+    const start_date = req.query.start_date;
+    const end_date = req.query.end_date;
+    const category = req.query.category;
+    const company = req.query.company;
+    const featured = req.query.featured;
+    const past = req.query.past;
+
+    // example: 2018-10-19
+    if (date != undefined)
+    {
+        let query = 'SELECT fb_id FROM event WHERE';
+        db.query('SELECT fb_id FROM event WHERE date(starts_at) <= \'' + date + '\' AND \'' + date + '\' <= date(ends_at)',[], (err, result) => {
+            if (err) {
+                return next(err);
+            }
+            res.send(result.rows);
+        });
+    } else if (month != undefined) {
+        db.query('SELECT * FROM event WHERE EXTRACT(MONTH FROM starts_at) = \'' + month +'\' OR EXTRACT(MONTH FROM ends_at) = \'' + month + '\'', [], (err, result) => {
+            if (err) {
+                return next(err);
+            }
+            res.send(result.rows);
+        });
+    } else if (year != undefined) {
+        db.query('SELECT * FROM event WHERE EXTRACT(YEAR FROM starts_at) = \'' + year + '\' OR EXTRACT(YEAR FROM ends_at) = \'' + year + '\'', [], (err, result) => {
+            if (err) {
+                return next(err);
+            }
+        res.send(result.rows);
+        });
+    } else if (quarter != undefined) {
+        db.query('SELECT fb_id FROM event WHERE quarter = \'' + quarter + '\'', [], (err, result) => {
+            if (err) {
+                return next(err);
+            }
+            res.send(result.rows);
+        });
+    } else if (start_date != undefined) {
+        db.query('SELECT fb_id FROM event WHERE date(starts_at) = \'' + start_date + '\'', [], (err, result) => {
+            if (err) {
+                return next(err);
+            }
+            res.send(result.rows);
+        });
+    } else if (end_date != undefined) {
+        db.query('SELECT fb_id FROM event WHERE date(starts_at) = \'' + end_date + '\'', [], (err, result) => {
+            if (err) {
+                return next(err);
+            }
+            res.send(result.rows);
+        });
+    } else if (category != undefined) {
+        db.query('SELECT event_id FROM event_category WHERE category_id = \'' + category_id + '\'', [], (err, result) => {
+            if (err) {
+                return next(err);
+            }
+            res.send(result.rows);
+        });
+    } else if (company != undefined) {
+        db.query('SELECT event_id FROM event_company WHERE company_id = \'' + company + '\'', [], (err, result) => {
+            if (err) {
+                return next(err);
+            }
+            res.send(result.rows);
+        });
+    } else if (featured != undefined) {
+        db.query('SELECT * FROM event WHERE is_featured = \'' + featured + '\'', [], (err, result) => {
+            if (err) {
+                return next(err);
+            }
+            res.send(result.rows);
+        });
+    } else if (past != undefined) {
+        db.query('SELECT fb_id FROM event WHERE ends_at < now()', [], (err, result) => {
+            if (err) {
+                return next(err);
+            }
+            res.send(result.rows);
+        });
+    } else {
+        res.json({result: false}); // error message
+    }
+});
+
 
 module.exports = router;
