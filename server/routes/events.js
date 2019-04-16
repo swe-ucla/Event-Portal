@@ -7,7 +7,7 @@ const db = require('../db')
 
 // Returns test string to verify that Events server is running. 
 router.get('/ping', function(req, res, next) {
-    res.send('pong - Events API');
+  res.send('pong - Events API');
 });
 
 // GET all events
@@ -56,19 +56,17 @@ router.get('/:event_id/favorites', function(req, res, next) {
 router.get('/:event_id/register', function(req, res, next) {
   const event_id = req.params.event_id;
   const paid = req.query.paid;
-  if (paid == undefined){
+  if (paid == undefined) {
 		db.query('SELECT user_id FROM event_registration WHERE event_id = $1', [event_id], (err, result) => {
 	  	if (err) return next(err);
     	res.send(result.rows);
   	});
-  }
-  else if (paid == "true" || paid == "false"){
+  } else if (paid == "true" || paid == "false") {
 		db.query('SELECT user_id FROM event_registration WHERE event_id = $1 AND has_paid = $2', [event_id, paid], (err, result) => {
 			if (err) return next(err);
       res.send(result.rows);
   	});
-  }
-  else{
+  } else {
     return res.status(400).send({
       message: '\'paid\' is not a boolean'
     });
@@ -153,8 +151,8 @@ generally filters of the similar type/category form an OR relationship while fil
     .then(res => {
       res.send(result.rows);
     })
-    .catch(return next(err));
-  */
+  .catch(return next(err));
+*/
 
 // GET all columns from test table given :id.
 // TODO: fix filtering logic
