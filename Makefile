@@ -28,7 +28,7 @@ CONTAINER_ID := $(shell docker ps -qf "name=$(POSTGRES_IMAGE)")
 # Dependency of `pg` target that requires CONTAINER_ID to be set.
 check-id:
 ifndef CONTAINER_ID
-	$(error CONTAINER_ID is undefined)
+	$(error CONTAINER_ID is undefined. Try `make ps` and modify POSTGRES_IMAGE in .env file.)
 endif
 
 # Connects to psql shell of Postgres container when running `dev` target.
