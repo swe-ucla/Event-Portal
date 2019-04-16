@@ -165,6 +165,8 @@ router.get('/search', function(req, res, next) {
   }
 });
 
+
+//TODO: Fix Filter Logic
 router.get('/filter', function(req, res, next) {
   const cid = req.query.cid;
   const oid = req.query.oid;
@@ -179,6 +181,7 @@ router.get('/filter', function(req, res, next) {
       res.send(result.rows);
     });
  }
+
  // GET all users of the given occupation
  if (oid){
     db.query('SELECT user_id FROM user_occupation WHERE occupation_id = $1', [oid], (err, result) => {
@@ -186,6 +189,7 @@ router.get('/filter', function(req, res, next) {
       res.send(result.rows);
     });
  }
+
  // GET all users of the given major
  if (mid){
     db.query('SELECT user_id FROM user_major WHERE major_id = $1', [mid], (err, result) => {
