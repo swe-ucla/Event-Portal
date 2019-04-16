@@ -226,5 +226,4 @@ router.get('/filter', function(req, res, next) {
   }
 });
 
-
 module.exports = router;
