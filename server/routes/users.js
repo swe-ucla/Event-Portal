@@ -2,7 +2,6 @@
 var express = require('express');
 var router = express.Router();
 
-
 // Require database adapter file (not node-postgres directly)
 const db = require('../db')
 
@@ -211,9 +210,5 @@ router.get('/filter', function(req, res, next) {
    });
  }
 });
-
-
-
-
 
 module.exports = router;
