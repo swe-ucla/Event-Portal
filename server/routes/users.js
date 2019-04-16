@@ -20,8 +20,7 @@ router.get('/', function(req, res, next) {
 });
 
 // GET all user names.
-router.get('/', function(req, res, next) {
-  const name = req.query.name;
+router.get('/names', function(req, res, next) {
     db.query('SELECT CONCAT(first_name, \' \', last_name) FROM swe_user', [], (err, result) => {
       if (err) return next(err);
       res.send(result.rows);
