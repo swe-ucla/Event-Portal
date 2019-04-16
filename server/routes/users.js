@@ -146,24 +146,24 @@ router.get('/:user_id/favorite', function(req, res, next) {
   });
 });
 
-// GET a user's favorite events
+
 router.get('/search', function(req, res, next) {
   const name = req.query.name;
-  db.query('SELECT id FROM swe_user WHERE CONCAT(first_name, \' \', last_name) ILIKE $1', ['%' + name + '%'], (err, result) => {
-    if (err) return next(err);
-    res.send(result.rows);
-  });
-});
-
-// TODO: Add Postman Request
-router.get('/search', function(req, res, next) {
   const email = req.query.email;
-  db.query('SELECT id FROM swe_user WHERE email ILIKE $1', ['%' + email + '%'], (err, result) => {
-    if (err) return next(err);
-    res.send(result.rows);
-  });
+  // GET a user's favorite events
+  if (email){
+	  db.query('SELECT id FROM swe_user WHERE email ILIKE $1', ['%' + email + '%'], (err, result) => {
+	    if (err) return next(err);
+	    res.send(result.rows);
+	  });
+  }
+  if (name){
+	  db.query('SELECT id FROM swe_user WHERE CONCAT(first_name, \' \', last_name) ILIKE $1', ['%' + name + '%'], (err, result) => {
+	    if (err) return next(err);
+	    res.send(result.rows);
+	  });
+  }
 });
-
 
 router.get('/filter', function(req, res, next) {
   const cid = req.query.cid;
