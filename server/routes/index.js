@@ -5,25 +5,10 @@ var users = require('./users');
 var misc = require('./misc');
 
 module.exports = (app) => {
-  /**
-  * @swagger
-  *
-  * /test:
-  *   get:
-  *     summary: Returns test string to verify that server is running.
-  *     tags:
-  *       - TEST
-  *     responses:
-  *       200:
-  *         description: OK
-  *         content:
-  *           text/plain:
-  *             schema:
-  *               type: string
-  *               example: Hello, World!
-  *       404:
-  *         $ref: '#/components/responses/NotFound' 
-  */
+  app.get('/', function(req, res, next) {
+    res.send('The Event Portal server is running!');
+  });
+
   app.get('/test', function(req, res, next) {
     res.send('Hello, World!');
   });
