@@ -5,6 +5,8 @@ var router = express.Router();
 // Require database adapter file (not node-postgres directly)
 const db = require('../db')
 
+////////////////////////////         MAJORS         ////////////////////////////
+
 // GET all majors
 router.get('/majors', function(req, res, next) {
   db.query('SELECT * FROM major', [], (err, result) => {
@@ -21,6 +23,8 @@ router.get('/majors/names', function(req, res, next) {
   });
 });
 
+////////////////////////////       UCLA MAJORS      ////////////////////////////
+
 // GET all UCLA majors
 router.get('/uclamajors', function(req, res, next) {
   db.query('SELECT * FROM ucla_major', [], (err, result) => {
@@ -29,6 +33,8 @@ router.get('/uclamajors', function(req, res, next) {
   });
 });
 
+////////////////////////////        POSITIONS       ////////////////////////////
+
 // GET all positions
 router.get('/positions', function(req, res, next) {
   db.query('SELECT * FROM position', [], (err, result) => {
@@ -36,6 +42,8 @@ router.get('/positions', function(req, res, next) {
     res.send(result.rows);
   });
 });
+  
+////////////////////////////       OCCUPATIONS      ////////////////////////////
 
 // GET all occupations
 router.get('/occupations', function(req, res, next) {
@@ -44,6 +52,8 @@ router.get('/occupations', function(req, res, next) {
     res.send(result.rows);
   });
 });
+  
+////////////////////////////          DIET          ////////////////////////////
 
 // GET all diet types
 router.get('/diet', function(req, res, next) {
@@ -52,6 +62,8 @@ router.get('/diet', function(req, res, next) {
     res.send(result.rows);
   });
 });
+  
+////////////////////////////        CONTACTS         ////////////////////////////
 
 // GET all contacts
 router.get('/contacts', function(req, res, next) {
@@ -60,6 +72,8 @@ router.get('/contacts', function(req, res, next) {
     res.send(result.rows);
   });
 });
+  
+////////////////////////////        LOCATIONS       ////////////////////////////
 
 // GET all locations
 router.get('/locations', function(req, res, next) {
@@ -68,7 +82,7 @@ router.get('/locations', function(req, res, next) {
     res.send(result.rows);
   });
 });
-
+  
 // GET all location names
 router.get('/locations/names', function(req, res, next) {
   db.query('SELECT name FROM location', [], (err, result) => {
@@ -76,6 +90,8 @@ router.get('/locations/names', function(req, res, next) {
     res.send(result.rows);
   });
 });
+  
+////////////////////////////        ADDRESSES       ////////////////////////////
 
 // GET all addresses
 router.get('/addresses', function(req, res, next) {
@@ -84,7 +100,7 @@ router.get('/addresses', function(req, res, next) {
     res.send(result.rows);
   });
 });
-
+  
 // GET all address names
 router.get('/addresses/names', function(req, res, next) {
   db.query('SELECT name FROM address', [], (err, result) => {
@@ -92,6 +108,8 @@ router.get('/addresses/names', function(req, res, next) {
     res.send(result.rows);
   });
 });
+  
+////////////////////////////       CATEGORIES       ////////////////////////////
 
 // GET all categories
 router.get('/categories', function(req, res, next) {
