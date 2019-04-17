@@ -22,6 +22,7 @@ router.get('/names', function(req, res, next) {
 });
 
 // Add a single major
+// TODO: https://knexjs.org/
 router.post('/', function(req, res, next) {
   values = [ req.query.name, req.query.ucla_id ];
   db.query('INSERT INTO major (name, ucla_id) VALUES ($1, $2)', values, (err, result) => {
