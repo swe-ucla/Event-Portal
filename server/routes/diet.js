@@ -1,4 +1,4 @@
-/* Route Prefix: / */
+/* Route Prefix: /diet */
 var express = require('express');
 var router = express.Router();
 
@@ -6,7 +6,7 @@ var router = express.Router();
 const db = require('../db')
 
 // GET all diet types
-router.get('/diet', function(req, res, next) {
+router.get('/', function(req, res, next) {
   db.query('SELECT * FROM diet', [], (err, result) => {
     if (err) return next(err);
     res.send(result.rows);

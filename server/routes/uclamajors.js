@@ -1,4 +1,4 @@
-/* Route Prefix: / */
+/* Route Prefix: /uclamajors */
 var express = require('express');
 var router = express.Router();
 
@@ -6,7 +6,7 @@ var router = express.Router();
 const db = require('../db')
 
 // GET all UCLA majors
-router.get('/uclamajors', function(req, res, next) {
+router.get('/', function(req, res, next) {
   db.query('SELECT * FROM ucla_major', [], (err, result) => {
     if (err) return next(err);
     res.send(result.rows);

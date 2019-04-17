@@ -1,4 +1,4 @@
-/* Route Prefix: / */
+/* Route Prefix: /addresses */
 var express = require('express');
 var router = express.Router();
 
@@ -6,7 +6,7 @@ var router = express.Router();
 const db = require('../db')
 
 // GET all addresses
-router.get('/addresses', function(req, res, next) {
+router.get('/', function(req, res, next) {
   db.query('SELECT * FROM address', [], (err, result) => {
     if (err) return next(err);
     res.send(result.rows);
@@ -14,7 +14,7 @@ router.get('/addresses', function(req, res, next) {
 });
   
 // GET all address names
-router.get('/addresses/names', function(req, res, next) {
+router.get('/names', function(req, res, next) {
   db.query('SELECT name FROM address', [], (err, result) => {
     if (err) return next(err);
     res.send(result.rows);

@@ -1,4 +1,4 @@
-/* Route Prefix: / */
+/* Route Prefix: /contacts */
 var express = require('express');
 var router = express.Router();
 
@@ -6,7 +6,7 @@ var router = express.Router();
 const db = require('../db')
 
 // GET all contacts
-router.get('/contacts', function(req, res, next) {
+router.get('/', function(req, res, next) {
   db.query('SELECT * FROM contact', [], (err, result) => {
     if (err) return next(err);
     res.send(result.rows);

@@ -1,4 +1,4 @@
-/* Route Prefix: / */
+/* Route Prefix: /positions */
 var express = require('express');
 var router = express.Router();
 
@@ -6,7 +6,7 @@ var router = express.Router();
 const db = require('../db')
 
 // GET all positions
-router.get('/positions', function(req, res, next) {
+router.get('/', function(req, res, next) {
   db.query('SELECT * FROM position', [], (err, result) => {
     if (err) return next(err);
     res.send(result.rows);
