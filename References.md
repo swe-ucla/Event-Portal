@@ -133,3 +133,4 @@
   - https://stackoverflow.com/questions/244243/how-to-reset-postgres-primary-key-sequence-when-it-falls-out-of-sync
   - http://www.postgresqltutorial.com/postgresql-foreign-key/
   - https://stackoverflow.com/questions/14182079/delete-rows-with-foreign-key-in-postgresql
+  - https://superuser.com/questions/465312/avoid-unwanted-path-in-zip-file-in-makefile
