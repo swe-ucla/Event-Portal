@@ -35,6 +35,18 @@ endif
 pg: check-id
 	docker exec -ti $(CONTAINER_ID) psql -U $(POSTGRES_USER)
 
+# Zips database/postgres/pgdata for updating sample data
+zip-data:
+	cd ./database/postgres/; \
+	zip -ru ../pgdata.zip ./pgdata/ -x *.DS_Store; \
+	echo "To unzip run: make db-data"
+
+
+# Unzips database/pgdata.zip and moves to postgres/pgdata
+db-data:
+	cd ./database/; \
+	unzip -o ./pgdata.zip -d ./postgres/
+
 ##################       AWS Elastic Beanstalk Deployment     ##################
 
 # Dependency of `zip` target that requires VERSION to be set.

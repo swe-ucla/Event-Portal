@@ -15,26 +15,8 @@ UCLA SWE's event portal. Coming Soon!
 - [Node.js](https://nodejs.org/en/): JS run-time environment
 - [Express](https://expressjs.com/): Web application framework for Node.js
 - [Postgres](https://www.postgresql.org/)/[Docker Postgres](https://docs.docker.com/samples/library/postgres/)/[Amazon RDS for PostgreSQL](https://aws.amazon.com/rds/postgresql/): Open source relational database
-- [Swagger](https://swagger.io/)/[swagger-jsdoc](https://github.com/Surnet/swagger-jsdoc): Generates API documentation from code comments
+- [Postman](https://www.getpostman.com/): API development and testing, used to generate API documentation
 - [AWS EB](https://aws.amazon.com/elasticbeanstalk/): Service for deploying and scaling web applications
-
-
-
-## Global Dependencies
-
- - **NOTE**: In order to run app, developers need the `.env` file 
-     - Should be kept in the same directory as the `Makefile`/this `README`/etc.
- - General Dev Dependencies
-    - Homebrew [install](https://brew.sh/)
-    - Xcode Developer Tools (Mac)
-       - `xcode-select --install`
-    - Yarn [install](https://yarnpkg.com/en/docs/install)
- - Stack Dependencies
-    - Docker [install](https://docs.docker.com/engine/installation/) and run daemon
-      - Should include [Docker-Compose](https://docs.docker.com/compose/install/) in install
-    - Node [install](https://nodejs.org/en/)
-      - Create React App [docs](https://github.com/facebookincubator/create-react-app)
-    - Postgres [install](https://postgresapp.com/downloads.html)
 
 
 
@@ -59,10 +41,31 @@ UCLA SWE's event portal. Coming Soon!
   - Amazon RDS for PostgreSQL used for production
   - Main configuration with connection information in `server/db/index.js` 
   - Diagrams for the database schema as of `3/7/19` is found in `./database/pg_db_diagram.pdf`
-  - **NOTE**: for test data, unzip `./database/pgdata.zip` and move the resulting `pgdata/` folder to `./database/postgres/pgdata/`
-    - Run sql files as necessary to populate running Postgres container with sample data
+
+  
+
+## Environment Setup
+
+- **NOTE**: In order to run the app, developers need the `.env` file 
+  - Should be kept in the same directory as the `Makefile`/this `README`/etc.
+  - `.env.example` is an example `.env` file
+- Stack Dependencies
+  - Docker [install](https://docs.docker.com/engine/installation/) and run daemon
+    - Should include [Docker-Compose](https://docs.docker.com/compose/install/) in install
+  - Node [install](https://nodejs.org/en/)
+    - Create React App [docs](https://github.com/facebookincubator/create-react-app)
+  - Postgres [install](https://postgresapp.com/downloads.html)
+- Get sample test data and run sql files to populate running Postgres container with sample data
+  - **NOTE**: dev stack must be running with `make dev` before database can be populated
+  - **NOTE**: if there is some bug with the database, try resetting it by deleting the folder `database/postgres/` then running `make dev` again
+    - Following the below commands will be necessary to repopulate with sample data
 
 ```bash
+# Unzip sample data and move to proper folder within postgres data. 
+# Only needs to be run once and then will persist unless database/postgres/ or database/postgres/pgdata/ are deleted.
+$ make db-data
+
+# Connect to postgres shell to interact with database
 $ make pg
 
 # Drops tables, creates tables, creates triggers, and populates from CSVs

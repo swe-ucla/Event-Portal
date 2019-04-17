@@ -12,10 +12,6 @@ var app = express();
 var routes = require('./routes');
 routes(app)
 
-// Swagger-jsdoc API Documentation
-var docs = require('./docs');
-app.use('/docs', docs);
-
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
