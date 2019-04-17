@@ -8,9 +8,7 @@ const db = require('../db')
 // GET all majors
 router.get('/majors', function(req, res, next) {
   db.query('SELECT * FROM major', [], (err, result) => {
-    if (err) {
-        return next(err);
-    }
+    if (err) return next(err);
     res.send(result.rows);
   });
 });
@@ -18,9 +16,7 @@ router.get('/majors', function(req, res, next) {
 // GET all major names
 router.get('/majors/names', function(req, res, next) {
   db.query('SELECT name FROM major ORDER BY name ASC', [], (err, result) => {
-    if (err) {
-        return next(err);
-    }
+    if (err) return next(err);
     res.send(result.rows);
   });
 });
@@ -28,9 +24,7 @@ router.get('/majors/names', function(req, res, next) {
 // GET all UCLA majors
 router.get('/uclamajors', function(req, res, next) {
   db.query('SELECT * FROM ucla_major', [], (err, result) => {
-    if (err) {
-        return next(err);
-    }
+    if (err) return next(err);
     res.send(result.rows);
   });
 });
@@ -38,9 +32,7 @@ router.get('/uclamajors', function(req, res, next) {
 // GET all positions
 router.get('/positions', function(req, res, next) {
   db.query('SELECT * FROM position', [], (err, result) => {
-    if (err) {
-        return next(err);
-    }
+    if (err) return next(err);
     res.send(result.rows);
   });
 });
@@ -48,9 +40,7 @@ router.get('/positions', function(req, res, next) {
 // GET all occupations
 router.get('/occupations', function(req, res, next) {
   db.query('SELECT * FROM occupation', [], (err, result) => {
-    if (err) {
-        return next(err);
-    }
+    if (err) return next(err);
     res.send(result.rows);
   });
 });
@@ -58,9 +48,7 @@ router.get('/occupations', function(req, res, next) {
 // GET all diet types
 router.get('/diet', function(req, res, next) {
   db.query('SELECT * FROM diet', [], (err, result) => {
-    if (err) {
-        return next(err);
-    }
+    if (err) return next(err);
     res.send(result.rows);
   });
 });
@@ -68,9 +56,7 @@ router.get('/diet', function(req, res, next) {
 // GET all contacts
 router.get('/contacts', function(req, res, next) {
   db.query('SELECT * FROM contact', [], (err, result) => {
-    if (err) {
-        return next(err);
-    }
+    if (err) return next(err);
     res.send(result.rows);
   });
 });
@@ -78,9 +64,7 @@ router.get('/contacts', function(req, res, next) {
 // GET all locations
 router.get('/locations', function(req, res, next) {
   db.query('SELECT * FROM location', [], (err, result) => {
-    if (err) {
-        return next(err);
-    }
+    if (err) return next(err);
     res.send(result.rows);
   });
 });
@@ -88,9 +72,7 @@ router.get('/locations', function(req, res, next) {
 // GET all location names
 router.get('/locations/names', function(req, res, next) {
   db.query('SELECT name FROM location', [], (err, result) => {
-    if (err) {
-        return next(err);
-    }
+    if (err) return next(err);
     res.send(result.rows);
   });
 });
@@ -98,9 +80,7 @@ router.get('/locations/names', function(req, res, next) {
 // GET all addresses
 router.get('/addresses', function(req, res, next) {
   db.query('SELECT * FROM address', [], (err, result) => {
-    if (err) {
-        return next(err);
-    }
+    if (err) return next(err);
     res.send(result.rows);
   });
 });
@@ -108,9 +88,7 @@ router.get('/addresses', function(req, res, next) {
 // GET all address names
 router.get('/addresses/names', function(req, res, next) {
   db.query('SELECT name FROM address', [], (err, result) => {
-    if (err) {
-        return next(err);
-    }
+    if (err) return next(err);
     res.send(result.rows);
   });
 });
@@ -118,9 +96,7 @@ router.get('/addresses/names', function(req, res, next) {
 // GET all categories
 router.get('/categories', function(req, res, next) {
   db.query('SELECT * FROM category', [], (err, result) => {
-    if (err) {
-        return next(err);
-    }
+    if (err) return next(err);
     res.send(result.rows);
   });
 });
