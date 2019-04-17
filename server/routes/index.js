@@ -3,8 +3,6 @@ var companies = require('./companies');
 var events = require('./events');
 var users = require('./users');
 var misc = require('./misc');
-var swe = require('./swe');
-var db = require('./db');
 
 module.exports = (app) => {
   /**
@@ -35,6 +33,4 @@ module.exports = (app) => {
   app.use('/events', events);
   app.use('/users', users);
   app.use('/misc', misc);
-  app.use('/swe', swe);
-  app.use('/db', db);
 }
