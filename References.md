@@ -131,3 +131,5 @@
   - https://stackoverflow.com/questions/1493262/list-all-sequences-in-a-postgres-db-8-1-with-sql
   - https://stackoverflow.com/questions/16362930/change-the-starting-value-of-a-serial-postgresql
   - https://stackoverflow.com/questions/244243/how-to-reset-postgres-primary-key-sequence-when-it-falls-out-of-sync
+  - http://www.postgresqltutorial.com/postgresql-foreign-key/
+  - https://stackoverflow.com/questions/14182079/delete-rows-with-foreign-key-in-postgresql
