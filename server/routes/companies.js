@@ -61,8 +61,8 @@ router.get('/:company_id/events', function(req, res, next) {
 
 // GET all positions a given company is hiring
 router.get('/:company_id/positions', function(req, res, next) {
-    const company_id = req.params.company_id;
-    db.query('SELECT * FROM company_position WHERE company_id = $1;', [company_id], (err, result) => {
+  const company_id = req.params.company_id;
+  db.query('SELECT * FROM company_position WHERE company_id = $1;', [company_id], (err, result) => {
     if (err) return next(err);
     res.send(result.rows);
   });
@@ -70,8 +70,8 @@ router.get('/:company_id/positions', function(req, res, next) {
 
 // GET all majors a given company is hiring
 router.get('/:company_id/majors', function(req, res, next) {
-    const company_id = req.params.company_id;
-    db.query('SELECT * FROM company_major WHERE company_id = $1;', [company_id], (err, result) => {
+  const company_id = req.params.company_id;
+  db.query('SELECT * FROM company_major WHERE company_id = $1;', [company_id], (err, result) => {
     if (err) return next(err);
     res.send(result.rows);
   });
@@ -79,8 +79,8 @@ router.get('/:company_id/majors', function(req, res, next) {
 
 // GET all contacts for a given company
 router.get('/:company_id/contacts', function(req, res, next) {
-    const company_id = req.params.company_id;
-    db.query('SELECT * FROM company_contact WHERE company_id = $1;', [company_id], (err, result) => {
+  const company_id = req.params.company_id;
+  db.query('SELECT * FROM company_contact WHERE company_id = $1;', [company_id], (err, result) => {
     if (err) return next(err);
     res.send(result.rows);
   });
@@ -88,8 +88,8 @@ router.get('/:company_id/contacts', function(req, res, next) {
 
 // GET all users interested in a certain company
 router.get('/:company_id/users', function(req, res, next) {
-    const company_id = req.params.company_id;
-    db.query('SELECT user_id FROM user_company_rank WHERE company_id = $1;', [company_id], (err, result) => {
+  const company_id = req.params.company_id;
+  db.query('SELECT user_id FROM user_company_rank WHERE company_id = $1;', [company_id], (err, result) => {
     if (err) return next(err);
     res.send(result.rows);
   });
@@ -98,7 +98,7 @@ router.get('/:company_id/users', function(req, res, next) {
 // GET all companies containing term substring in their name
 router.get('/search', function(req,res,next) {
   const search = req.query.term;
-  if(search == undefined){
+  if (search == undefined) {
     return res.status(400).send({
       message: '\'term\' is undefined'
     });
@@ -115,17 +115,17 @@ router.get('/filter', function(req, res, next) {
   const pid = req.query.pid;
   const mid = req.query.mid;
 
-  if (pid && mid){
+  if (pid && mid) {
     db.query('SELECT DISTINCT company_major.company_id FROM company_major LEFT OUTER JOIN company_position ON (company_major.company_id = company_position.company_id) WHERE (position_id = $1 AND major_id = $2);', [pid, mid], (err, result) => {
       if (err) return next(err);
       res.send(result.rows);
     });
-  } else if (mid){
+  } else if (mid) {
     db.query('SELECT company_id FROM company_major WHERE major_id = $1;', [mid], (err, result) => {
       if (err) return next(err);
       res.send(result.rows);
     });
-  } else if (pid){
+  } else if (pid) {
     db.query('SELECT company_id FROM company_position WHERE position_id = $1;', [pid], (err, result) => {
       if (err) return next(err);
       res.send(result.rows);
