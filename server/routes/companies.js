@@ -99,7 +99,9 @@ router.get('/:company_id/users', function(req, res, next) {
 router.get('/search', function(req,res,next) {
   const search = req.query.term;
   if(search == undefined){
-    return next(new Error('No search terms specified'))
+    return res.status(400).send({
+      message: '\'term\' is undefined'
+    });
   }
 
   db.query('SELECT id FROM company WHERE name ~~* $1', ['%' + search +'%'], (err, result) => {
@@ -129,7 +131,9 @@ router.get('/filter', function(req, res, next) {
       res.send(result.rows);
     });
   } else { 
-    return next(new Error('No major or position specified'))
+    return res.status(400).send({
+      message: '\'mid\' and \'pid\' are undefined'
+    });
   }
 });
 
