@@ -42,7 +42,7 @@ router.get('/websites', function(req, res, next) {
 });
 
 // GET company info by company_id
-router.get('/:company_id', function(req, res, next) {
+router.get('/:company_id/id', function(req, res, next) {
   const company_id = req.params.company_id;
   db.query('SELECT * FROM company WHERE id = $1;', [company_id], (err, result) => {
     if (err) return next(err);
@@ -99,14 +99,13 @@ router.get('/:company_id/users', function(req, res, next) {
 router.get('/search', function(req,res,next) {
   const search = req.query.term;
   if(search == undefined){
-    return next(err);
+    return next(new Error('No search terms specified'))
   }
 
   db.query('SELECT id FROM company WHERE name ~~* $1', ['%' + search +'%'], (err, result) => {
     if (err) return next(err);
     res.send(result.rows);
   });
-
 });
 
 // GET all companies hiring a specific major
@@ -116,30 +115,21 @@ router.get('/filter', function(req, res, next) {
 
   if (pid && mid){
     db.query('SELECT DISTINCT company_major.company_id FROM company_major LEFT OUTER JOIN company_position ON (company_major.company_id = company_position.company_id) WHERE (position_id = $1 AND major_id = $2);', [pid, mid], (err, result) => {
-      if (err) {
-          return next(err);
-      }
+      if (err) return next(err);
       res.send(result.rows);
     });
-  }
-  else if (mid){
+  } else if (mid){
     db.query('SELECT company_id FROM company_major WHERE major_id = $1;', [mid], (err, result) => {
-    if (err) {
-        return next(err);
-    }
-    res.send(result.rows);
-  });
-  } 
-  else if (pid){
+      if (err) return next(err);
+      res.send(result.rows);
+    });
+  } else if (pid){
     db.query('SELECT company_id FROM company_position WHERE position_id = $1;', [pid], (err, result) => {
-    if (err) {
-        return next(err);
-    }
-    res.send(result.rows);
-  });
-  } 
-  else { 
-    return next(err);
+      if (err) return next(err);
+      res.send(result.rows);
+    });
+  } else { 
+    return next(new Error('No major or position specified'))
   }
 });
 
