@@ -2,15 +2,20 @@
 var express = require('express');
 var router = express.Router();
 
-// Require database adapter file (not node-postgres directly)
-const db = require('../db')
+// Require database connection
+var knex = require('../db/knex');
 
 // GET all majors
 router.get('/', function(req, res, next) {
-  db.query('SELECT * FROM major', [], (err, result) => {
-    if (err) return next(err);
-    res.send(result.rows);
-  });
+  knex.select().from('major')
+    .then(result => {
+      if (result.length) {
+        res.json(result)
+      } else {
+        res.status(400).json('Not found')
+      }
+    })
+    .catch(err => { return next(err) })
 });
 
 // GET all major names
