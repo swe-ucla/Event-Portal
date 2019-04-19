@@ -5,12 +5,20 @@ var router = express.Router();
 // Require database adapter file (not node-postgres directly)
 const db = require('../db')
 
+// Require database connection
+var knex = require('../db/knex');
+
 // GET all UCLA majors
 router.get('/', function(req, res, next) {
-  db.query('SELECT * FROM ucla_major', [], (err, result) => {
-    if (err) return next(err);
-    res.send(result.rows);
-  });
+  knex('ucla_major').select()
+    .then(result => {
+      if (result.length) {
+        res.json(result)
+      } else {
+        res.status(400).json('Not found')
+      }
+    })
+    .catch(err => { return next(err) })
 });
 
 // TODO: Add a single UCLA major
