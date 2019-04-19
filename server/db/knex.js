@@ -30,9 +30,9 @@ const knex = require('knex')(options);
 
 // https://knexjs.org/#Interfaces-Events
 module.exports = knex
-  .on('query-error', function(err, data) {
+  .on('query-error', (err, data) => {
     console.log('ERROR: Failed query:', { text: data.sql });
   })
-  .on('query-response', function(err, data) {
+  .on('query-response', (err, data) => {
     console.log('Executed query:', { text: data.sql, rows: data.response.rowCount });
   });

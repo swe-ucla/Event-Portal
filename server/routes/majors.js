@@ -7,7 +7,7 @@ var knex = require('../db/knex');
 
 // GET all majors
 router.get('/', function(req, res, next) {
-  knex.select().from('major')
+  knex('major').select()
     .then(result => {
       if (result.length) {
         res.json(result)
@@ -20,39 +20,44 @@ router.get('/', function(req, res, next) {
 
 // GET all major names
 router.get('/names', function(req, res, next) {
-  db.query('SELECT name FROM major ORDER BY name ASC', [], (err, result) => {
-    if (err) return next(err);
-    res.send(result.rows);
-  });
+  knex('major').select('name').orderBy('name', 'asc')
+    .then(result => {
+      if (result.length) {
+        res.json(result)
+      } else {
+        res.status(400).json('Not found')
+      }
+    })
+    .catch(err => { return next(err) })
 });
 
 // Add a single major
-// TODO: https://knexjs.org/
 router.post('/', function(req, res, next) {
-  values = [ req.query.name, req.query.ucla_id ];
-  db.query('INSERT INTO major (name, ucla_id) VALUES ($1, $2)', values, (err, result) => {
-    if (err) return next(err);
-    res.send("Successfully inserted new major: " + req.query.name);
-  });
+  values = { name: req.query.name, ucla_id: req.query.ucla_id };
+  knex('major').insert(values)
+    .then(result => {
+      res.send("Successfully inserted new major: " + req.query.name);
+    })
+    .catch(err => { return next(err) });
 });
 
 // Update a single major
-// TODO: https://knexjs.org/
 router.put('/:major_id', function(req, res, next) {
-  values = [ req.params.major_id, req.query.name, req.query.ucla_id ];
-  db.query('UPDATE major SET name = $2, ucla_id = $3 WHERE id = $1', values, (err, result) => {
-    if (err) return next(err);
-    res.send("Successfully updated major: " + req.query.name);
-  });
+  values = { name: req.query.name, ucla_id: req.query.ucla_id };
+  knex('major').update(values).where({ id: req.params.major_id })
+    .then(result => {
+      res.send("Successfully updated major: " + req.params.major_id);
+    })
+    .catch(err => { return next(err) });
 });
 
-// TODO: Delete a single major
+// Delete a single major
 router.delete('/:major_id', function(req, res, next) {
-  const major_id = req.params.major_id;
-  db.query('DELETE FROM major WHERE id = $1', [major_id], (err, result) => {
-    if (err) return next(err);
-    res.send("Successfully deleted major: " + req.params.major_id);
-  });
+  knex('major').del().where({ id: req.params.major_id })
+    .then(result => {
+      res.send("Successfully deleted major: " + req.params.major_id);
+    })
+    .catch(err => { return next(err) });
 });
 
 module.exports = router;
