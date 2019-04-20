@@ -9,6 +9,7 @@
     "cookie-parser": "~1.4.3",
     "debug": "~2.6.9",
     "express": "^4.16.4",
+    "knex": "^0.16.5",
     "morgan": "^1.9.1",
     "pg": "^7.4.0",
     "pg-hstore": "^2.3.2",

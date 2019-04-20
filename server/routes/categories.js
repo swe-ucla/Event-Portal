@@ -2,15 +2,21 @@
 var express = require('express');
 var router = express.Router();
 
-// Require database adapter file (not node-postgres directly)
-const db = require('../db')
+// Require database connection
+var knex = require('../db/knex');
+var util = require('../util');
 
 // GET all categories
 router.get('/', function(req, res, next) {
-  db.query('SELECT * FROM category', [], (err, result) => {
-    if (err) return next(err);
-    res.send(result.rows);
-  });
+  knex('category').select()
+    .then(result => {
+      if (result.length) {
+        res.json(result);
+      } else {
+        util.throwError(404, 'No categories found');
+      }
+    })
+    .catch(err => { return next(err) });
 });
 
 module.exports = router;
