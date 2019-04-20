@@ -2,28 +2,29 @@
 var express = require('express');
 var router = express.Router();
 
-// Require database adapter file (not node-postgres directly)
-const db = require('../db')
-
 // Require database connection
 var knex = require('../db/knex');
-var throwError = require('../util');
+var util = require('../util');
 
 // GET all UCLA majors
 router.get('/', function(req, res, next) {
   knex('ucla_major').select()
     .then(result => {
       if (result.length) {
-        res.json(result)
+        res.json(result);
       } else {
-        res.status(400).json('Not found')
+        res.status(404).json('No UCLA majors found');
       }
     })
-    .catch(err => { return next(err) })
+    .catch(err => { return next(err) });
 });
 
-// Add a single UCLA major
-router.get('/', function(req, res, next) {
+// Add a single UCLA major. Can add duplicates due to unstrict checks.
+router.post('/', function(req, res, next) {
+  if (!req.query.major) {
+    util.throwError(400, 'UCLA major name must not be null');
+  }
+
   values = { 
     code: req.query.code,
     major: req.query.major,
@@ -35,13 +36,13 @@ router.get('/', function(req, res, next) {
   };
   knex('ucla_major').insert(values)
     .then(result => {
-      res.send("Successfully inserted new UCLA major: " + req.query.major);
+      res.send(util.message('Successfully inserted new UCLA major: ' + req.query.major));
     })
     .catch(err => { return next(err) });
 });
 
 // Update a single UCLA major
-router.get('/:major_id', function(req, res, next) {
+router.put('/:major_id', function(req, res, next) {
   values = { 
     code: req.query.code,
     major: req.query.major,
@@ -53,16 +54,24 @@ router.get('/:major_id', function(req, res, next) {
   };
   knex('ucla_major').update(values).where({ id: req.params.major_id })
     .then(result => {
-      res.send("Successfully updated UCLA major: " + req.params.major_id);
+      if (result) {
+        res.send(util.message('Successfully updated UCLA major: ' + req.params.major));
+      } else {
+        util.throwError(404, 'No UCLA major found to update');
+      }
     })
     .catch(err => { return next(err) });
 });
 
 // Delete a single UCLA major
-router.get('/:major_id', function(req, res, next) {
+router.delete('/:major_id', function(req, res, next) {
   knex('ucla_major').del().where({ id: req.params.major_id })
     .then(result => {
-      res.send("Successfully deleted UCLA major: " + req.params.major_id);
+      if (result) {
+        res.send(util.message('Successfully deleted UCLA major: ' + req.params.major_id));
+      } else {
+        util.throwError(404, 'No UCLA major found to delete');
+      }
     })
     .catch(err => { return next(err) });
 });
