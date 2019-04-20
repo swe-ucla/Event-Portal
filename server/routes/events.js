@@ -3,7 +3,8 @@ var express = require('express');
 var router = express.Router();
 
 // Require database adapter file (not node-postgres directly)
-const db = require('../db')
+var knex = require('../db/knex');
+var util = require('../util');
 
 // Returns test string to verify that Events server is running. 
 router.get('/ping', function(req, res, next) {
@@ -12,7 +13,7 @@ router.get('/ping', function(req, res, next) {
 
 // GET all events
 router.get('/', function(req, res, next) {
-  db.query('SELECT * FROM event', [], (err, result) => {
+  db'SELECT * FROM event'.query(, [], (err, result) => {
     if (err) return next(err);
     res.send(result.rows);
   });
