@@ -1,3 +1,4 @@
+
 /* Route Prefix: /majors */
 var express = require('express');
 var router = express.Router();

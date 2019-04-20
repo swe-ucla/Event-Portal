@@ -13,18 +13,28 @@ router.get('/ping', function(req, res, next) {
 
 // GET all events
 router.get('/', function(req, res, next) {
-  db'SELECT * FROM event'.query(, [], (err, result) => {
-    if (err) return next(err);
-    res.send(result.rows);
-  });
+  knex('event').select()
+  .then(result => {
+    if (result.length) {
+      res.json(result);
+    } else {
+      res.status(404).json('No events found.');
+    }
+  })
+  .catch(err => { return next(err) });
 });
 
 // GET all event names
 router.get('/names', function(req, res, next) {
-  db.query('SELECT fb_id, name FROM event', [], (err, result) => {
-    if (err) return next(err);
-    res.send(result.rows);
-  });
+  knex('event').select('fb_id, name')
+  .then(result => {
+    if(result.length) {
+      res.json(result);
+    } else {
+      res.status(404.json('No event names found.'));
+    }
+  })
+  .catch(err => { return next(err) });
 });
 
 // GET all unique event locations
