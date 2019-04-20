@@ -2,23 +2,34 @@
 var express = require('express');
 var router = express.Router();
 
-// Require database adapter file (not node-postgres directly)
-const db = require('../db')
+// Require database connection
+var knex = require('../db/knex');
+var util = require('../util');
 
 // GET all addresses
 router.get('/', function(req, res, next) {
-  db.query('SELECT * FROM address', [], (err, result) => {
-    if (err) return next(err);
-    res.send(result.rows);
-  });
+  knex('address').select()
+    .then(result => {
+      if (result.length) {
+        res.json(result);
+      } else {
+        util.throwError(404, 'No addresses found');
+      }
+    })
+    .catch(err => { return next(err) });
 });
   
 // GET all address names
 router.get('/names', function(req, res, next) {
-  db.query('SELECT name FROM address', [], (err, result) => {
-    if (err) return next(err);
-    res.send(result.rows);
-  });
+  knex('address').select('name')
+    .then(result => {
+      if (result.length) {
+        res.json(result);
+      } else {
+        util.throwError(404, 'No address names found');
+      }
+    })
+    .catch(err => { return next(err) });
 });
 
 module.exports = router;
