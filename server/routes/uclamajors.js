@@ -7,6 +7,7 @@ const db = require('../db')
 
 // Require database connection
 var knex = require('../db/knex');
+var throwError = require('../util');
 
 // GET all UCLA majors
 router.get('/', function(req, res, next) {
@@ -21,41 +22,49 @@ router.get('/', function(req, res, next) {
     .catch(err => { return next(err) })
 });
 
-// TODO: Add a single UCLA major
-router.get('/uclamajors', function(req, res, next) {
-  db.query('', [], (err, result) => {
-    if (err) return next(err);
-    res.send(result.rows);
-  });
+// Add a single UCLA major
+router.get('/', function(req, res, next) {
+  values = { 
+    code: req.query.code,
+    major: req.query.major,
+    abbreviation: req.query.abbreviation,
+    department: req.query.department,
+    department_abbreviation: req.query.department_abbreviation,
+    school: req.query.school,
+    division: req.query.division
+  };
+  knex('ucla_major').insert(values)
+    .then(result => {
+      res.send("Successfully inserted new UCLA major: " + req.query.major);
+    })
+    .catch(err => { return next(err) });
 });
 
-// INSERT INTO ucla_major (code, major, abbreviation, department, department_abbreviation, school, division) 
-// VALUES (<code>, <major>, <abbreviation>, <department>, <department_abbreviation>, <school>, <division>)
-
-// TODO: Update a single UCLA major
-router.get('/uclamajors/:major_id', function(req, res, next) {
-  db.query('', [], (err, result) => {
-    if (err) return next(err);
-    res.send(result.rows);
-  });
+// Update a single UCLA major
+router.get('/:major_id', function(req, res, next) {
+  values = { 
+    code: req.query.code,
+    major: req.query.major,
+    abbreviation: req.query.abbreviation,
+    department: req.query.department,
+    department_abbreviation: req.query.department_abbreviation,
+    school: req.query.school,
+    division: req.query.division
+  };
+  knex('ucla_major').update(values).where({ id: req.params.major_id })
+    .then(result => {
+      res.send("Successfully updated UCLA major: " + req.params.major_id);
+    })
+    .catch(err => { return next(err) });
 });
 
-// UPDATE ucla_major
-// SET code = <code>,
-// major = <major>,
-// …
-// division = <division>
-// WHERE id = <major_id>
-
-// TODO: Delete a single UCLA major
-router.get('/uclamajors/:major_id', function(req, res, next) {
-  db.query('', [], (err, result) => {
-    if (err) return next(err);
-    res.send(result.rows);
-  });
+// Delete a single UCLA major
+router.get('/:major_id', function(req, res, next) {
+  knex('ucla_major').del().where({ id: req.params.major_id })
+    .then(result => {
+      res.send("Successfully deleted UCLA major: " + req.params.major_id);
+    })
+    .catch(err => { return next(err) });
 });
-
-// DELETE FROM ucla_major
-// WHERE id = <major_id>
 
 module.exports = router;
