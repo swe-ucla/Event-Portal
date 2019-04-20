@@ -34,10 +34,14 @@ router.get('/names', function(req, res, next) {
 
 // Add a single major
 router.post('/', function(req, res, next) {
+  if (!req.query.name) {
+    util.throwError(400, 'Major name must not be null');
+  }
+  
   values = { name: req.query.name, ucla_id: req.query.ucla_id };
   knex('major').insert(values)
     .then(result => {
-      res.send(util.message('Successfully inserted new major: ' + req.query.name))
+      res.send(util.message('Successfully inserted new major: ' + req.query.name));
     })
     .catch(err => { return next(err) });
 });
@@ -50,7 +54,7 @@ router.put('/:major_id', function(req, res, next) {
       if (result) {
         res.send(util.message('Successfully updated major: ' + req.params.major_id));
       } else {
-        util.throwError(404, 'No major found to update')
+        util.throwError(404, 'No major found to update');
       }
     })
     .catch(err => { return next(err) });
@@ -61,9 +65,9 @@ router.delete('/:major_id', function(req, res, next) {
   knex('major').del().where({ id: req.params.major_id })
     .then(result => {
       if (result) {
-        res.send(util.message('Successfully deleted major: ' + req.params.major_id))
+        res.send(util.message('Successfully deleted major: ' + req.params.major_id));
       } else {
-        util.throwError(404, 'No major found to delete')
+        util.throwError(404, 'No major found to delete');
       }
     })
     .catch(err => { return next(err) });
