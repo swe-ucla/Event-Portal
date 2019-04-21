@@ -150,15 +150,25 @@ router.post('/', function(req, res, next) {
     website: req.query.website,
     logo: req.query.logo,
     citizenship_requirement: req.query.citizenship_requirement,
-    description: req.query.description,
-    updated_at: knex.fn.now(),
-    created_at: knex.fn.now()
+    description: req.query.description
   };
   
   knex('company').insert(values)
-  .then(result => {
-    res.send(util.message('Successfully inserted new company: ' + req.query.id));
-  })
+    .then(result => {
+      res.send(util.message('Successfully inserted new company: ' + req.query.id));
+    })
+    .catch(err => { return next(err) });
+});
+
+router.delete('/:company_id', function(req,res,next){
+  knex('company').del().where({id: req.params.company_id})
+    .then(result => {
+      if (result) {
+        res.send(util.message('Successfully deleted company: ' + req.params.company_id));
+      } else {
+        util.throwError(404, 'No company found to delete');
+      }
+    })
     .catch(err => { return next(err) });
 });
 
