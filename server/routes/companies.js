@@ -2,7 +2,9 @@
 var express = require('express');
 var router = express.Router();
 
-const db = require('../db')
+const db = require('../db');
+var knex = require('../db/knex');
+var util = require('../util');
 
 // Returns test string to verify that Companies server is running.
 router.get('/ping', function(req, res, next) {
@@ -135,6 +137,29 @@ router.get('/filter', function(req, res, next) {
       message: '\'mid\' and \'pid\' are undefined'
     });
   }
+});
+
+router.post('/', function(req, res, next) {
+  if (!req.query.id) {
+    util.throwError(400, 'Company id must not be null');
+  }
+
+  values = {
+    id: req.query.id,
+    name: req.query.name,
+    website: req.query.website,
+    logo: req.query.logo,
+    citizenship_requirement: req.query.citizenship_requirement,
+    description: req.query.description,
+    updated_at: knex.fn.now(),
+    created_at: knex.fn.now()
+  };
+  
+  knex('company').insert(values)
+  .then(result => {
+    res.send(util.message('Successfully inserted new company: ' + req.query.id));
+  })
+    .catch(err => { return next(err) });
 });
 
 module.exports = router;
