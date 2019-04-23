@@ -39,10 +39,14 @@ router.get('/names', function(req, res, next) {
 
 // GET all unique event locations
 router.get('/locations', function(req, res, next) {
-  db.query('SELECT DISTINCT location_id FROM event', [], (err, result) => {
-  	if (err) return next(err);
-    res.send(result.rows);
-  });
+  knex('event').select('location_id')
+  .then(result => {
+    if(result.length) {
+      res.json(result);
+    } else {
+      res.status(404).json('No event locations found.')
+    }
+  })
 });
 
 // GET event by event_id
