@@ -109,19 +109,29 @@ router.get('/:event_id/host', function(req, res, next) {
 // GET all companies for a given event
 router.get('/:event_id/companies', function(req, res, next) {
   const event_id = req.params.event_id;
-  db.query('SELECT company_id FROM event_company WHERE event_id = $1', [event_id], (err, result) => {
-    if (err) return next(err);
-    res.send(result.rows);
-  });
+  knex('event_company').where('event_id', 'event_id').select('company_id')
+  .then(result => {
+  	if (result.length) {
+  		res.json(result);
+  	} else {
+  		res.status(404).json('No companies found for event_id = ' + event_id + '.');
+  	}
+  })
+  .catch(err => { return next(err) });
 });
 
 // GET all categories for a given event
 router.get('/:event_id/categories', function(req, res, next) {
   const event_id = req.params.event_id;
-  db.query('SELECT category_id FROM event_category WHERE event_id = $1', [event_id], (err, result) => {
-    if (err) return next(err);
-    res.send(result.rows);
-  });
+  knex('event_category').where('event_id', 'event_id').select('category_id')
+  .then(result => {
+  	if (result.length) {
+  		res.json(result);
+  	} else {
+  		res.status(404).json('No cateogires found for event_id = ' + event_id + '.');
+  	}
+  })
+  .catch(err => { return next(err) });
 });
 
 // GET all events containing term substring
@@ -132,13 +142,17 @@ router.get('/search', function(req, res, next) {
       message: '\'term\' is undefined'
     });
   }
-  else{
-    db.query('SELECT * FROM event WHERE name ~* $1', [term], (err, result) => {
-      if (err) return next(err);
-    	res.send(result.rows);
-    });
-  }
-});
+  else {
+    knex('event').where('name', 'ilike', `%${term}%`).select()
+    .then(result => {
+    	if (result.length) {
+    		res.json(result);
+    	} else {
+    		res.status(404).json('No events found for substring for event_id = ' + event_id + '.');
+    	}
+    })
+    .catch(err => { return next(err) });
+}});
 
 /* from katrina:
 
