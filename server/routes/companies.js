@@ -13,35 +13,58 @@ router.get('/ping', function(req, res, next) {
 
 // GET all companies' info
 router.get('/', function(req, res, next) {
-  db.query('SELECT * FROM company;', [], (err, result) => {
-    if (err) return next(err);
-    res.send(result.rows);
-  });
+  knex('company').select()
+  .then(result => {
+      if (result.length) {
+        res.json(result);
+      } else {
+        util.throwError(404, 'No companies found');
+      }
+    })
+    .catch(err => { return next(err) });
 });
+
+
 
 // GET all company names
 router.get('/names', function(req, res, next) {
-  db.query('SELECT id, name FROM company ORDER BY name;', [], (err, result) => {
-    if (err) return next(err);
-    res.send(result.rows);
-  });
+  knex('company').select('name').orderBy('name', 'asc')
+    .then(result => {
+      if (result.length) {
+        res.json(result);
+      } else {
+        util.throwError(404, 'No company names found');
+      }
+    })
+    .catch(err => { return next(err) });
 });
 
 // GET all company names and logos
 router.get('/logos', function(req, res, next) {
-  db.query('SELECT id, name, logo FROM company ORDER BY name;', [], (err, result) => {
-    if (err) return next(err);
-    res.send(result.rows);
-  });
+  knex('company').select('logo','name').orderBy('name', 'asc')
+    .then(result => {
+      if (result.length) {
+        res.json(result);
+      } else {
+        util.throwError(404, 'No company logos found');
+      }
+    })
+    .catch(err => { return next(err) });
 });
 
 // GET all company names, logos, and websites
 router.get('/websites', function(req, res, next) {
-  db.query('SELECT id, name, logo, website FROM company ORDER BY name;', [], (err, result) => {
-    if (err) return next(err);
-    res.send(result.rows);
-  });
+  knex('company').select('logo','name','website').orderBy('name', 'asc')
+    .then(result => {
+      if (result.length) {
+        res.json(result);
+      } else {
+        util.throwError(404, 'No company websites found');
+      }
+    })
+    .catch(err => { return next(err) });
 });
+
 
 // GET company info by company_id
 router.get('/:company_id/id', function(req, res, next) {
