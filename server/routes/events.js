@@ -91,27 +91,39 @@ router.get('/:event_id/register', function(req, res, next) {
 // GET all users checked in to a given event
 router.get('/:event_id/checkin', function(req, res, next) {
   const event_id = req.params.event_id;
-  db.query('SELECT user_id FROM event_checkin WHERE event_id = $1', [event_id], (err, result) => {
-    if (err) return next(err);
-    res.send(result.rows);
+  knex('event_checkin').select('user_id').where({event_id: event_id})
+  .then(result => {
+  	if(result.length) {
+      res.json(result);
+    } else {
+      res.status(404).json('No checked in users found for event_id = ' + event_id + '.');
+    }
   });
 });
 
 // GET all hosts for a given event
 router.get('/:event_id/host', function(req, res, next) {
   const event_id = req.params.event_id;
-  db.query('SELECT host_id FROM event_host WHERE event_id = $1', [event_id], (err, result) => {
-    if (err) return next(err);
-    res.send(result.rows);
+  knex('event_host').select('host_id').where({event_id: event_id})
+  .then(result => {
+  	if(result.length) {
+      res.json(result);
+    } else {
+      res.status(404).json('No event hosts for event_id = ' + event_id + '.');
+    }
   });
 });
 
 // GET all companies for a given event
 router.get('/:event_id/companies', function(req, res, next) {
   const event_id = req.params.event_id;
-  db.query('SELECT company_id FROM event_company WHERE event_id = $1', [event_id], (err, result) => {
-    if (err) return next(err);
-    res.send(result.rows);
+  knex('event_company').select('company_id').where({event_id: event_id})
+  .then(result => {
+  	if(result.length) {
+      res.json(result);
+    } else {
+      res.status(404).json('No companies for event_id = ' + event_id + '.');
+    }
   });
 });
 
