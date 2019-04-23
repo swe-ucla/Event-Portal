@@ -139,13 +139,13 @@ router.get('/filter', function(req, res, next) {
   }
 });
 
+// Add a single company
 router.post('/', function(req, res, next) {
-  if (!req.query.id) {
-    util.throwError(400, 'Company id must not be null');
+  if (!req.query.name) {
+    util.throwError(400, 'Company name must not be null');
   }
 
   values = {
-    id: req.query.id,
     name: req.query.name,
     website: req.query.website,
     logo: req.query.logo,
@@ -155,11 +155,12 @@ router.post('/', function(req, res, next) {
   
   knex('company').insert(values)
     .then(result => {
-      res.send(util.message('Successfully inserted new company: ' + req.query.id));
+      res.send(util.message('Successfully inserted new company: ' + req.query.name));
     })
     .catch(err => { return next(err) });
 });
 
+// Delete a single company
 router.delete('/:company_id', function(req,res,next){
   knex('company').del().where({id: req.params.company_id})
     .then(result => {
