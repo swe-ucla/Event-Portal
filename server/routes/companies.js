@@ -24,8 +24,6 @@ router.get('/', function(req, res, next) {
     .catch(err => { return next(err) });
 });
 
-
-
 // GET all company names
 router.get('/names', function(req, res, next) {
   knex('company').select('name').orderBy('name', 'asc')
