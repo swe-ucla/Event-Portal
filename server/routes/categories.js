@@ -22,7 +22,7 @@ router.get('/', function(req, res, next) {
 // Add a single category
 router.post('/', function(req, res, next) {
   if (!req.query.name) {
-    util.throwError(400, 'Major name must not be null');
+    util.throwError(400, 'Category name must not be null');
   }
   
   values = { name: req.query.name };
