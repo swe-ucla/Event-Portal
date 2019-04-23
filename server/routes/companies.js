@@ -160,6 +160,25 @@ router.post('/', function(req, res, next) {
     .catch(err => { return next(err) });
 });
 
+//Update a single company
+router.put('/:company_id', function(req, res, next) {
+  values = { 
+    name: req.query.name,
+    website: req.query.website,
+    logo: req.query.logo,
+    citizenship_requirement: req.query.citizenship_requirement,
+    description: req.query.description,
+  };
+knex('company').update(values).where({ id: req.params.company_id })
+.then(result => {
+      if (result) {
+        res.send(util.message('Successfully updated company: ' + req.params.company));
+      } else {
+        util.throwError(404, 'No company found to update');
+      }
+    })
+    .catch(err => { return next(err) });
+});
 // Delete a single company
 router.delete('/:company_id', function(req,res,next){
   knex('company').del().where({id: req.params.company_id})
