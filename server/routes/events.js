@@ -52,35 +52,59 @@ router.get('/locations', function(req, res, next) {
 // GET event by event_id
 router.get('/:event_id/id', function(req, res, next) {
   const event_id = req.params.event_id;
-  db.query('SELECT * FROM event WHERE fb_id = $1', [event_id], (err, result) => {
-		if (err) return next(err);
-  	res.send(result.rows);
-  });
+  knex('event').select()
+  .where({ fb_id: event_id })
+  .then(result => {
+    if(result.length) {
+      res.json(result);
+    } else {
+      res.status(404).json('No events matching event_id = ' + event_id + ' found.');
+    }
+  })
+  .catch(err => { return next(err) });
 });
 
 // GET all users that have favorited the given event
 router.get('/:event_id/favorites', function(req, res, next) {
   const event_id = req.params.event_id;
-  db.query('SELECT user_id FROM favorite_events WHERE event_id = $1', [event_id], (err, result) => {
-		if (err) return next(err);
-  	res.send(result.rows);
-  });
+  knex('favorite_events').select('user_id')
+  .where({ event_id: event_id })
+  .then(result => {
+    if(result.length) {
+      res.json(result);
+    } else {
+      res.status(404).json('No events where fb_id = ' + event_id + ' found.');
+    }
+  })
 });
 
-// GET all users registered and have paid or not paid for a given event
+// // GET all users registered and have paid or not paid for a given event
 router.get('/:event_id/register', function(req, res, next) {
   const event_id = req.params.event_id;
   const paid = req.query.paid;
   if (paid == undefined) {
-		db.query('SELECT user_id FROM event_registration WHERE event_id = $1', [event_id], (err, result) => {
-	  	if (err) return next(err);
-    	res.send(result.rows);
-  	});
+    knex('event_registration').select('user_id')
+    .where({ event_id: event_id })
+    .then(result => {
+    if(result.length) {
+      res.json(result);
+    } else {
+      res.status(404).json('No events where fb_id = ' + event_id + ' found.');
+    }
+  })
   } else if (paid == "true" || paid == "false") {
-		db.query('SELECT user_id FROM event_registration WHERE event_id = $1 AND has_paid = $2', [event_id, paid], (err, result) => {
-			if (err) return next(err);
-      res.send(result.rows);
-  	});
+    knex('event_registration').select('user_id')
+    .where({ 
+      event_id: event_id,
+      has_paid: paid
+    })
+    .then(result => {
+    if(result.length) {
+      res.json(result);
+    } else {
+      res.status(404).json('No events where fb_id = ' + event_id + ' found.');
+    }
+  })
   } else {
     return res.status(400).send({
       message: '\'paid\' is not a boolean'
@@ -140,7 +164,7 @@ router.get('/search', function(req, res, next) {
   }
 });
 
-/* from katrina:
+ from katrina:
 
 One thing to note when implementing the API is all queries under the same route (/events/filter) will be under the same function. You'll need to check whether or not a query parameter exists and filter by it. It's a bit complex, but there's an AND OR relationship between some of these filters.
 
@@ -149,7 +173,7 @@ e.g. if date= is set, and so is month=, then its date OR month because it wouldn
 e.g. month= and year= are set. They work together, so it's month AND year
 
 generally filters of the similar type/category form an OR relationship while filters of different types/topics form AND relationships. aka "when" filters (date/time related) form OR relationships between each other, but "when" filters have an AND relationship with category, company, and featured
-*/
+
 
 /* alternative syntax for queries using async/await: 
     (https://node-postgres.com)
