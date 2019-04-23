@@ -66,4 +66,17 @@ knex('address').update(values).where({ id: req.params.address_id })
     .catch(err => { return next(err) });
 });
 
+// Delete a single address
+router.delete('/:address_id', function(req, res, next) {
+  knex('address').del().where({ id: req.params.address_id })
+    .then(result => {
+      if (result) {
+        res.send(util.message('Successfully deleted address: ' + req.params.address_id));
+      } else {
+        util.throwError(404, 'No address found to delete');
+      }
+    })
+    .catch(err => { return next(err) });
+});
+
 module.exports = router;

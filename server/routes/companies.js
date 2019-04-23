@@ -169,16 +169,18 @@ router.put('/:company_id', function(req, res, next) {
     citizenship_requirement: req.query.citizenship_requirement,
     description: req.query.description,
   };
-knex('company').update(values).where({ id: req.params.company_id })
-.then(result => {
+
+  knex('company').update(values).where({ id: req.params.company_id })
+    .then(result => {
       if (result) {
-        res.send(util.message('Successfully updated company: ' + req.params.company));
+        res.send(util.message('Successfully updated company: ' + req.params.company_id));
       } else {
         util.throwError(404, 'No company found to update');
       }
     })
     .catch(err => { return next(err) });
 });
+
 // Delete a single company
 router.delete('/:company_id', function(req,res,next){
   knex('company').del().where({id: req.params.company_id})
