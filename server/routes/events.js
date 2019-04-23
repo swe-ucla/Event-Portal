@@ -31,7 +31,7 @@ router.get('/names', function(req, res, next) {
     if(result.length) {
       res.json(result);
     } else {
-      res.status(404.json('No event names found.'));
+      res.status(404).json('No event names found.');
     }
   })
   .catch(err => { return next(err) });
