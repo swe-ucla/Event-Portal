@@ -135,3 +135,29 @@
   - https://stackoverflow.com/questions/14182079/delete-rows-with-foreign-key-in-postgresql
   - https://superuser.com/questions/465312/avoid-unwanted-path-in-zip-file-in-makefile
   - https://softwareengineering.stackexchange.com/questions/279188/what-is-the-purpose-of-separating-routes-into-individual-modules-with-node-js-an
+  - https://blog.logrocket.com/why-you-should-avoid-orms-with-examples-in-node-js-e0baab73fa5
+  - https://stackoverflow.com/questions/21292677/knex-js-debug-only-sql
+  - https://knexjs.org/#Builder-update
+- React
+  - https://wesbos.com/react-jsx-comments/
+  - https://stackoverflow.com/questions/39809943/react-preventing-form-submission
+  - https://stackoverflow.com/questions/33749497/why-and-when-to-use-componentdidmount-in-react-js
+  - https://stackoverflow.com/questions/242813/when-to-use-double-or-single-quotes-in-javascript
+  - https://github.com/babel/babel-sublime
+  - https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax
+  - https://stackoverflow.com/questions/28452358/what-is-the-meaning-of-this-props-in-reactjs
+  - https://stackoverflow.com/questions/52312919/axios-conditional-parameters
+  - https://stackoverflow.com/questions/40947650/axios-get-in-url-works-but-with-second-parameter-as-object-it-doesnt
+  - https://github.com/github/fetch/issues/256
+  - https://medium.com/@jeffrey.allen.lewis/http-requests-compared-why-axios-is-better-than-node-fetch-more-secure-can-handle-errors-better-39fde869a4a6
+  - https://alligator.io/js/fetch-api/
+  - https://stackoverflow.com/questions/32157286/rendering-react-components-from-array-of-objects
+  - https://github.com/Widen/spring-react-demo/blob/589c35599d4b96689a32c312764efc67ccf34c14/src/main/webapp/names-list.jsx
+  - https://github.com/axios/axios
+  - https://appdividend.com/2018/05/30/react-axios-tutorial-example-from-scratch/
+  - https://fonts.google.com/specimen/Roboto
+  - https://material-ui.com/
+  - https://www.quora.com/Which-UI-library-should-I-use-with-ReactJS-Semantic-UI-or-Material-UI
+  - https://hackernoon.com/the-coolest-react-ui-frameworks-for-your-new-react-app-ad699fffd651
+  - https://facebook.github.io/create-react-app/docs/adding-bootstrap
+  - https://www.reddit.com/r/reactjs/comments/6uq6e9/reactjs_semantic_ui_react_or_materialui/
