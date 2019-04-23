@@ -4,6 +4,10 @@ var router = express.Router();
 
 const db = require('../db')
 
+// Require database connection
+var knex = require('../db/knex');
+var util = require('../util');
+
 // Returns test string to verify that Companies server is running.
 router.get('/ping', function(req, res, next) {
   res.send('pong - Companies API');
@@ -137,4 +141,43 @@ router.get('/filter', function(req, res, next) {
   }
 });
 
+//POST
+router.post('/', function(req, res, next) {
+  if (!req.query.id) {
+    util.throwError(400, 'Company name must not be null');
+  }
+  values = {
+    id: req.query.id,
+    name: req.query.name,
+    website: req.query.website,
+    logo: req.query.logo,
+    citizenship_requirement: req.query.citizenship_requirement,
+    description: req.query.description,
+  };
+knex('company').insert(values)
+  .then(result => {
+      res.send(util.message('Successfully inserted new company: ' + req.query.company));
+    })
+    .catch(err => { return next(err) });
+});
+
+//PUT
+router.put('/:company_id', function(req, res, next) {
+  values = { 
+    name: req.query.name,
+    website: req.query.website,
+    logo: req.query.logo,
+    citizenship_requirement: req.query.citizenship_requirement,
+    description: req.query.description,
+  };
+knex('company').update(values).where({ id: req.params.company_id })
+.then(result => {
+      if (result) {
+        res.send(util.message('Successfully updated company: ' + req.params.company));
+      } else {
+        util.throwError(404, 'No company found to update');
+      }
+    })
+    .catch(err => { return next(err) });
+});
 module.exports = router;

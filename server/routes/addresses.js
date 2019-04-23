@@ -31,5 +31,39 @@ router.get('/names', function(req, res, next) {
     })
     .catch(err => { return next(err) });
 });
+//POST - Add a single address
+router.post('/address', function(req, res, next) {
+  if (!req.query.id) {
+    util.throwError(400, 'Address ID must not be null');
+  }
+  values = {
+    id: req.query.id,
+    name: req.query.name,
+    street: req.query.street
+  };
+knex('address').insert(values)
+  .then(result => {
+      res.send(util.message('Successfully inserted new address: ' + req.query.id));
+    })
+    .catch(err => { return next(err) });
+});
+
+//PUT - Update a single address
+router.put('/:address_id', function(req, res, next) {
+  values = { 
+    id: req.query.id,
+    name: req.query.name,
+    street: req.query.street
+  };
+knex('address').update(values).where({ id: req.params.address_id })
+.then(result => {
+      if (result) {
+        res.send(util.message('Successfully updated address: ' + req.params.location));
+      } else {
+        util.throwError(404, 'No address found to update');
+      }
+    })
+    .catch(err => { return next(err) });
+});
 
 module.exports = router;
