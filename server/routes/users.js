@@ -4,21 +4,40 @@ var router = express.Router();
 
 // Require database adapter file (not node-postgres directly)
 const db = require('../db')
+var knex = require('../db/knex');
+var util = require('../util');
 
 // GET test string to verify that Users server is running.
 router.get('/ping', function(req, res, next) {
   res.send('pong - Users API');
 });
 
-// GET users listing.
+//GET all users.
 router.get('/', function(req, res, next) {
-  db.query('SELECT id FROM swe_user', [], (err, result) => {
-    if (err) return next(err);
-    res.send(result.rows);
-  });
+  knex('swe_user').select('id')
+    .then(result => {
+      if (result.length) {
+        res.json(result);
+      } else {
+        util.throwError(404, 'No users found');
+      }
+    })
+    .catch(err => { return next(err) });
 });
 
-// GET all user names.
+// GET all user names. - TODO: fix concat
+router.get('/names', function(req, res, next) {
+  knex('swe_user').select('first_name', 'last_name')
+    .then(result => {
+      if (result.length) {
+        res.json(result);
+      } else {
+        util.throwError(404, 'No names found');
+      }
+    })
+    .catch(err => { return next(err) });
+});
+/*
 router.get('/names', function(req, res, next) {
   db.query('SELECT CONCAT(first_name, \' \', last_name) FROM swe_user', [], (err, result) => {
     if (err) return next(err);
@@ -26,13 +45,28 @@ router.get('/names', function(req, res, next) {
   });
 });
 
+*/
 // GET all user emails.
+router.get('/emails', function(req, res, next) {
+  knex('swe_user').select('email')
+    .then(result => {
+      if (result.length) {
+        res.json(result);
+      } else {
+        util.throwError(404, 'No names found');
+      }
+    })
+    .catch(err => { return next(err) });
+});
+/*
+
 router.get('/emails', function(req, res, next) {
   db.query('SELECT email FROM swe_user', [], (err, result) => {
     if (err) return next(err);
     res.send(result.rows);
   });
 });
+*/
  
 // GET all user university IDs.
 router.get('/ids', function(req, res, next) {
