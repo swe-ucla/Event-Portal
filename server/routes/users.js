@@ -64,6 +64,47 @@ router.get('/ids', function(req, res, next) {
     .catch(err => { return next(err) });
 });
 
+//Add a user
+router.get('/:user_id/id', function(req, res, next) {
+  const user_id = req.params.user_id;
+  knex('swe_user').select()
+  .where( {id: user_id} )
+  .then(result => {
+      if (result.length) {
+        res.json(result);
+      } else {
+        util.throwError(404, 'No users matching user_id = ' + user_id + ' found');
+      }
+    })
+    .catch(err => { return next(err) 
+  });
+});
+  
+/*
+//Login a user
+router.post('/register', function(req, res, next) {
+  values =
+  {
+    id: req.query.id,
+    first_name: req.query.first_name,
+    last_name: req.query.last_name,
+    password: req.query.password,
+    email: req.query.email,
+    phone: req.query.phone,
+    university_id: req.query.university_id,
+    is_admin: req.query.is_admin,
+    update_at: now(),
+    created_at: now()
+  }
+  knex('swe_user').insert(values)
+    .then(result => {
+      res.send(util.message('Successfully inserted new user: ' + req.query.name));
+    })
+    .catch(err => { return next(err) });
+});
+*/
+
+
 // GET user info by user_id
 router.get('/:user_id/id', function(req, res, next) {
   const user_id = req.params.user_id;
@@ -95,6 +136,8 @@ router.get('/:user_id/admin', function(req, res, next) {
     .catch(err => { return next(err) 
   });
 });
+
+//Update user info
 
 // GET a user's past events
 //TO DO: convert to knex (Nikhita)
@@ -188,6 +231,10 @@ router.get('/:user_id/favorite', function(req, res, next) {
     res.send(result.rows);
   });
 });
+
+//Add a favorite event to a user
+
+//Delete a favorite event from a user
 
 // GET a user's favorite events
 router.get('/search', function(req, res, next) {
