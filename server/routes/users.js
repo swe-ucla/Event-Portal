@@ -37,15 +37,7 @@ router.get('/names', function(req, res, next) {
     })
     .catch(err => { return next(err) });
 });
-/*
-router.get('/names', function(req, res, next) {
-  db.query('SELECT CONCAT(first_name, \' \', last_name) FROM swe_user', [], (err, result) => {
-    if (err) return next(err);
-    res.send(result.rows);
-  });
-});
 
-*/
 // GET all user emails.
 router.get('/emails', function(req, res, next) {
   knex('swe_user').select('email')
@@ -58,43 +50,54 @@ router.get('/emails', function(req, res, next) {
     })
     .catch(err => { return next(err) });
 });
-/*
-
-router.get('/emails', function(req, res, next) {
-  db.query('SELECT email FROM swe_user', [], (err, result) => {
-    if (err) return next(err);
-    res.send(result.rows);
-  });
-});
-*/
  
 // GET all user university IDs.
 router.get('/ids', function(req, res, next) {
-  db.query('SELECT university_id FROM swe_user;', [], (err, result) => {
-    if (err) return next(err);
-    res.send(result.rows);
-  });
+  knex('swe_user').select('university_id')
+    .then(result => {
+      if (result.length) {
+        res.json(result);
+      } else {
+        util.throwError(404, 'No names found');
+      }
+    })
+    .catch(err => { return next(err) });
 });
 
 // GET user info by user_id
 router.get('/:user_id/id', function(req, res, next) {
   const user_id = req.params.user_id;
-  db.query('SELECT * FROM swe_user WHERE id = $1', [user_id], (err, result) => {
-    if (err) return next(err);
-    res.send(result.rows);
+  knex('swe_user').select()
+  .where( {id: user_id} )
+  .then(result => {
+      if (result.length) {
+        res.json(result);
+      } else {
+        util.throwError(404, 'No users matching user_id = ' + user_id + ' found');
+      }
+    })
+    .catch(err => { return next(err) 
   });
 });
 
 // GET whether user is admin or not
 router.get('/:user_id/admin', function(req, res, next) {
   const user_id = req.params.user_id;
-  db.query('SELECT is_admin FROM swe_user WHERE id = $1', [user_id], (err, result) => {
-    if (err) return next(err);
-    res.send(result.rows);
+  knex('swe_user').select('is_admin')
+  .where({id: user_id})
+  .then(result => {
+      if (result.length) {
+        res.json(result);
+      } else {
+        util.throwError(404, 'No users matching user_id = ' + user_id + ' found');
+      }
+    })
+    .catch(err => { return next(err) 
   });
 });
 
-// GET a user's past events-HELP NEEDED
+// GET a user's past events
+//TO DO: convert to knex (Nikhita)
 router.get('/:user_id/past', function(req, res, next) {
   const user_id = req.params.user_id;
   db.query('SELECT event_id FROM event_checkin INNER JOIN event ON event_checkin.event_id = event.fb_id \
@@ -109,9 +112,16 @@ router.get('/:user_id/past', function(req, res, next) {
 // GET all companies a user is interested in 
 router.get('/:user_id/companies', function(req, res, next) {
   const user_id = req.params.user_id;
-  db.query('SELECT company_id, rank FROM user_company_rank WHERE user_id = $1', [user_id], (err, result) => {
-    if (err) return next(err);
-    res.send(result.rows);
+  knex('user_company_rank').select('company_id', 'rank')
+  .where({user_id: user_id})
+  .then(result => {
+      if (result.length) {
+        res.json(result);
+      } else {
+        util.throwError(404, 'No users matching user_id = ' + user_id + ' found');
+      }
+    })
+    .catch(err => { return next(err) 
   });
 });
 
