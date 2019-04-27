@@ -160,25 +160,94 @@ router.get('/filter', function(req, res, next) {
   }
 });
 
-// Add a single company
+// Add a single company or related data
 router.post('/', function(req, res, next) {
-  if (!req.query.name) {
-    util.throwError(400, 'Company name must not be null');
+  // add new company
+  if(req.query.name){
+    values = {
+      name: req.query.name,
+      website: req.query.website,
+      logo: req.query.logo,
+      citizenship_requirement: req.query.citizenship_requirement,
+      description: req.query.description
+    };
+    
+    knex('company').insert(values)
+      .then(result => {
+        res.send(util.message('Successfully inserted new company: ' + req.query.name));
+      })
+      .catch(err => { return next(err) });
   }
 
-  values = {
-    name: req.query.name,
-    website: req.query.website,
-    logo: req.query.logo,
-    citizenship_requirement: req.query.citizenship_requirement,
-    description: req.query.description
-  };
-  
-  knex('company').insert(values)
-    .then(result => {
-      res.send(util.message('Successfully inserted new company: ' + req.query.name));
-    })
-    .catch(err => { return next(err) });
+  if (req.query.company_id) {
+    //company rank
+    if (req.query.rank && req.query.user_id) {
+
+      rankValues = {
+        user_id: req.query.user_id,
+        company_id: req.query.company_id,
+        rank: req.query.rank
+      };
+
+      knex('user_company_rank').insert(rankValues)
+        .then(result => {
+          res.send(util.message('Successfully inserted new company rank: ' + req.query.company_id));
+        })  
+        .catch(err => { return next(err) });
+    }
+    //company position
+    if (req.query.position_id) {
+      companyPositions = {
+        company_id: req.query.company_id,
+        position_id: req.query.position_id
+      };
+
+      knex('company_position').insert(companyPositions)
+        .then(result => {
+          res.send(util.message('Successfully inserted new company position: ' + req.query.position_id));
+        })  
+        .catch(err => { return next(err) });
+    }
+    //company major
+    if (req.query.major_id) {
+      companyMajors = {
+        company_id: req.query.company_id,
+        major_id: req.query.major_id
+      };
+
+      knex('company_major').insert(companyMajors)
+        .then(result => {
+          res.send(util.message('Successfully inserted new company major: ' + req.query.company_major));
+        })  
+        .catch(err => { return next(err) });
+    }
+    //company contact
+    if (req.query.contact_id) {
+      companyContacts = {
+        company_id: req.query.company_id,
+        contact_id: req.query.contact_id
+      };
+
+      knex('company_contact').insert(companyContacts)
+        .then(result => {
+          res.send(util.message('Successfully inserted new company contact: ' + req.query.contact_id));
+        })  
+        .catch(err => { return next(err) });
+    }
+    //event company
+    if (req.query.event_id) {
+      companyEvents = {
+        company_id: req.query.company_id,
+        event_id: req.query.event_id
+      };
+
+      knex('event_company').insert(companyEvents)
+        .then(result => {
+          res.send(util.message('Successfully inserted new company event: ' + req.query.event_id));
+        })  
+        .catch(err => { return next(err) });
+    }
+  }
 });
 
 //Update a single company
