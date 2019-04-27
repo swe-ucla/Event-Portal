@@ -25,7 +25,7 @@ const styles = theme => ({
   }
 });
 
-class Example extends Component {
+class App extends Component {
   constructor() {
     super();
 
@@ -132,4 +132,4 @@ class Example extends Component {
   }
 }
 
-export default withStyles(styles)(Example);
+export default withStyles(styles)(App);
