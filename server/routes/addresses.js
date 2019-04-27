@@ -31,6 +31,7 @@ router.get('/names', function(req, res, next) {
     })
     .catch(err => { return next(err) });
 });
+
 //POST - Add a single address
 router.post('/address', function(req, res, next) {
   if (!req.query.name || !req.query.street) {
@@ -40,7 +41,7 @@ router.post('/address', function(req, res, next) {
     name: req.query.name,
     street: req.query.street
   };
-knex('address').insert(values)
+  knex('address').insert(values)
   .then(result => {
       res.send(util.message('Successfully inserted new address: ' + req.query.id));
     })
@@ -53,12 +54,25 @@ router.put('/:address_id', function(req, res, next) {
     name: req.query.name,
     street: req.query.street
   };
-knex('address').update(values).where({ id: req.params.address_id })
-.then(result => {
+  knex('address').update(values).where({ id: req.params.address_id })
+  .then(result => {
       if (result) {
         res.send(util.message('Successfully updated address: ' + req.params.location));
       } else {
         util.throwError(404, 'No address found to update');
+      }
+    })
+    .catch(err => { return next(err) });
+});
+
+// Delete a single address
+router.delete('/:address_id', function(req, res, next) {
+  knex('address').del().where({ id: req.params.address_id })
+    .then(result => {
+      if (result) {
+        res.send(util.message('Successfully deleted address: ' + req.params.address_id));
+      } else {
+        util.throwError(404, 'No address found to delete');
       }
     })
     .catch(err => { return next(err) });
