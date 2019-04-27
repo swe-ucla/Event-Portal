@@ -42,7 +42,7 @@ router.post('/address', function(req, res, next) {
     street: req.query.street
   };
   knex('address').insert(values)
-  .then(result => {
+    .then(result => {
       res.send(util.message('Successfully inserted new address: ' + req.query.id));
     })
     .catch(err => { return next(err) });
@@ -55,7 +55,7 @@ router.put('/:address_id', function(req, res, next) {
     street: req.query.street
   };
   knex('address').update(values).where({ id: req.params.address_id })
-  .then(result => {
+    .then(result => {
       if (result) {
         res.send(util.message('Successfully updated address: ' + req.params.location));
       } else {
