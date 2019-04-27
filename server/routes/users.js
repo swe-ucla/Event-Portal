@@ -80,7 +80,7 @@ router.get('/:user_id/id', function(req, res, next) {
   });
 });
   
-/*
+
 //Login a user
 router.post('/register', function(req, res, next) {
   values =
@@ -93,16 +93,14 @@ router.post('/register', function(req, res, next) {
     phone: req.query.phone,
     university_id: req.query.university_id,
     is_admin: req.query.is_admin,
-    update_at: now(),
-    created_at: now()
   }
   knex('swe_user').insert(values)
     .then(result => {
-      res.send(util.message('Successfully inserted new user: ' + req.query.name));
+      res.send(util.message('Successfully inserted new user: ' + req.query.first_name));
     })
     .catch(err => { return next(err) });
 });
-*/
+
 
 
 // GET user info by user_id
@@ -138,6 +136,25 @@ router.get('/:user_id/admin', function(req, res, next) {
 });
 
 //Update user info
+router.put('/:event_id', function(req, res, next) {
+  values =
+  {
+    id: req.query.id,
+    first_name: req.query.first_name,
+    last_name: req.query.last_name,
+    password: req.query.password,
+    email: req.query.email,
+    phone: req.query.phone,
+    university_id: req.query.university_id,
+    is_admin: req.query.is_admin,
+  }
+  knex('swe_user').update(values).where({ id: req.params.id })
+    .then(result => {
+      res.send(util.message('Successfully updated user: ' + req.query.first_name));
+    })
+    .catch(err => { return next(err) });
+});
+
 
 // GET a user's past events
 //TO DO: convert to knex (Nikhita)
