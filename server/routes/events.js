@@ -112,6 +112,24 @@ router.get('/:event_id/register', function(req, res, next) {
   }
 });
 
+// DELETE user registration for an event
+router.delete('/:event_id/register/:user_id', function(req, res, next) {
+  const event_id = req.params.event_id;
+  const user_id = req.params.user_id;
+  knex('event_registration').del()
+    .where({ 
+      event_id: event_id,
+      user_id: user_id
+    })
+    .then(result => {
+      if (result) {
+        res.send(util.message('Successfully deleted user registration for event_id = ' + event_id));
+      } else {
+        util.throwError(404, 'No registered users found to delete with user_id = ' + user_id ' and event_id = ' + event_id);
+    }
+  });
+});
+
 // GET all users checked in to a given event
 router.get('/:event_id/checkin', function(req, res, next) {
   const event_id = req.params.event_id;
@@ -123,6 +141,38 @@ router.get('/:event_id/checkin', function(req, res, next) {
       res.status(404).json('No checked in users found for event_id = ' + event_id + '.');
     }
   });
+});
+
+// Check in a user for an event
+router.post('/:event_id/checkin/:user_id', function(req, res, next) {
+  const event_id = req.params.event_id;
+  const user_id = req.params.user_id;
+  knex('event_checkin').insert({
+      event_id: event_id,
+      user_id: user_id
+    })
+    .then(result => {
+      res.send(util.message('Successfully checked in user with user_id = ' + user_id + ' and event_id = ' + event_id + ' for event'));
+    })
+    .catch(err => { return next(err) });
+});
+
+// DELETE check in for a user for an event
+router.delete('/:event_id/checkin/:user_id', function(req, res, next) {
+  const event_id = req.params.event_id;
+  const user_id = req.params.user_id;
+  knex('event_checkin').del().where({
+      event_id: event_id,
+      user_id: user_id
+    })
+    .then(result => {
+      if (result) {
+        res.send(util.message('Successfully deleted user check in for user with user_id = ' + user_id + ' and event_id = ' + event_id));
+      } else {
+        util.throwError(404, 'No user check in found to delete');
+      }
+    })
+    .catch(err => { return next(err) });
 });
 
 // GET all hosts for a given event
