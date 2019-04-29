@@ -66,71 +66,94 @@ router.get('/websites', function(req, res, next) {
 
 // GET company info by company_id
 router.get('/:company_id/id', function(req, res, next) {
-  const company_id = req.params.company_id;
-  db.query('SELECT * FROM company WHERE id = $1;', [company_id], (err, result) => {
-    if (err) return next(err);
-    res.send(result.rows);
-  });
+  knex('company').select().where({id: req.params.company_id})
+    .then(result => {
+      if (result.length) {
+        res.json(result);
+      } else {
+        util.throwError(404, 'No company info found');
+      }
+    })
+    .catch(err => { return next(err) });
 });
 
 // GET all events associated with a given company
 router.get('/:company_id/events', function(req, res, next) {
-  const company_id = req.params.company_id;
-  db.query('SELECT event_id FROM event_company WHERE company_id = $1;', [company_id], (err, result) => {
-    if (err) return next(err);
-    res.send(result.rows);
-  });
+  knex('event_company').select('event_id').where({company_id: req.params.company_id})
+    .then(result => {
+      if (result.length) {
+        res.json(result);
+      } else {
+        util.throwError(404, 'No events found');
+      }
+    })
+    .catch(err => { return next(err) });
 });
 
 // GET all positions a given company is hiring
 router.get('/:company_id/positions', function(req, res, next) {
-  const company_id = req.params.company_id;
-  db.query('SELECT * FROM company_position WHERE company_id = $1;', [company_id], (err, result) => {
-    if (err) return next(err);
-    res.send(result.rows);
-  });
+  knex('company_position').select().where({company_id: req.params.company_id})
+    .then(result => {
+      if (result.length) {
+        res.json(result);
+      } else {
+        util.throwError(404, 'No positions found');
+      }
+    })
+    .catch(err => { return next(err) });
+    
 });
 
 // GET all majors a given company is hiring
 router.get('/:company_id/majors', function(req, res, next) {
-  const company_id = req.params.company_id;
-  db.query('SELECT * FROM company_major WHERE company_id = $1;', [company_id], (err, result) => {
-    if (err) return next(err);
-    res.send(result.rows);
-  });
+  knex('company_major').select().where({company_id: req.params.company_id})
+    .then(result => {
+      if (result.length) {
+        res.json(result);
+      } else {
+        util.throwError(404, 'No majors found');
+      }
+    })
+    .catch(err => { return next(err) });
 });
 
 // GET all contacts for a given company
 router.get('/:company_id/contacts', function(req, res, next) {
-  const company_id = req.params.company_id;
-  db.query('SELECT * FROM company_contact WHERE company_id = $1;', [company_id], (err, result) => {
-    if (err) return next(err);
-    res.send(result.rows);
-  });
+  knex('company_contact').select().where({company_id: req.params.company_id})
+    .then(result => {
+      if (result.length) {
+        res.json(result);
+      } else {
+        util.throwError(404, 'No contacts found');
+      }
+    })
+    .catch(err => { return next(err) });
 });
 
 // GET all users interested in a certain company
 router.get('/:company_id/users', function(req, res, next) {
-  const company_id = req.params.company_id;
-  db.query('SELECT user_id FROM user_company_rank WHERE company_id = $1;', [company_id], (err, result) => {
-    if (err) return next(err);
-    res.send(result.rows);
-  });
+  knex('user_company_rank').select('user_id').where({company_id: req.params.company_id})
+    .then(result => {
+      if (result.length) {
+        res.json(result);
+      } else {
+        util.throwError(404, 'No users found');
+      }
+    })
+    .catch(err => { return next(err) });
 });
 
 // GET all companies containing term substring in their name
 router.get('/search', function(req,res,next) {
-  const search = req.query.term;
-  if (search == undefined) {
-    return res.status(400).send({
-      message: '\'term\' is undefined'
-    });
-  }
-
-  db.query('SELECT id FROM company WHERE name ~~* $1', ['%' + search +'%'], (err, result) => {
-    if (err) return next(err);
-    res.send(result.rows);
-  });
+  knex('company').select().where('name', 'ilike', '%' + req.query.term +'%')
+    .then(result => {
+      if (result.length) {
+        res.json(result);
+      } else {
+        util.throwError(404, 'No companies found');
+      }
+    })
+    .catch(err => { return next(err) });
 });
 
 // GET all companies hiring a specific major
@@ -139,24 +162,39 @@ router.get('/filter', function(req, res, next) {
   const mid = req.query.mid;
 
   if (pid && mid) {
-    db.query('SELECT DISTINCT company_major.company_id FROM company_major LEFT OUTER JOIN company_position ON (company_major.company_id = company_position.company_id) WHERE (position_id = $1 AND major_id = $2);', [pid, mid], (err, result) => {
-      if (err) return next(err);
-      res.send(result.rows);
-    });
+    knex.distinct('company_major.company_id').from('company_major')
+    .leftOuterJoin('company_position', 'company_major.company_id', 'company_position.company_id')
+    .where({position_id: req.query.pid, major_id: req.query.mid})
+      .then(result => {
+        if (result.length) {
+          res.json(result);
+        } else {
+          util.throwError(404, 'No companies found');
+        }
+      })
+      .catch(err => { return next(err) });
   } else if (mid) {
-    db.query('SELECT company_id FROM company_major WHERE major_id = $1;', [mid], (err, result) => {
-      if (err) return next(err);
-      res.send(result.rows);
-    });
+    knex('company_major').select('company_id').where({major_id: req.query.mid})
+      .then(result => {
+        if (result.length) {
+          res.json(result);
+        } else {
+          util.throwError(404, 'No companies found');
+        }
+      })
+      .catch(err => { return next(err) });
   } else if (pid) {
-    db.query('SELECT company_id FROM company_position WHERE position_id = $1;', [pid], (err, result) => {
-      if (err) return next(err);
-      res.send(result.rows);
-    });
+    knex('company_position').select('company_id').where({position_id: req.query.pid})
+      .then(result => {
+        if (result.length) {
+          res.json(result);
+        } else {
+          util.throwError(404, 'No companies found');
+        }
+      })
+      .catch(err => { return next(err) });
   } else { 
-    return res.status(400).send({
-      message: '\'mid\' and \'pid\' are undefined'
-    });
+    util.throwError(400, '\'mid\' and \'pid\' are undefined');
   }
 });
 
