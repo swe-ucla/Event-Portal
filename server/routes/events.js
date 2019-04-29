@@ -64,6 +64,19 @@ router.get('/:event_id/id', function(req, res, next) {
   .catch(err => { return next(err) });
 });
 
+// Delete an event by event_id
+router.delete('/:event_id', function(req, res, next) {
+  const event_id = req.params.event_id;
+  knex('event').del().where({ fb_id: event_id, }).then(result => {
+    if (result) {
+      res.send(util.message('Successfully deleted event with event_id ' + event_id));
+    } else {
+      util.throwError(404, 'No event found to delete');
+    }
+  })
+  .catch(err => { return next(err) });
+});
+
 // GET all users that have favorited the given event
 router.get('/:event_id/favorites', function(req, res, next) {
   const event_id = req.params.event_id;
@@ -76,6 +89,52 @@ router.get('/:event_id/favorites', function(req, res, next) {
       res.status(404).json('No events where fb_id = ' + event_id + ' found.');
     }
   })
+});
+
+// Update a single UCLA major
+router.put('/:major_id', function(req, res, next) {
+  values = { 
+    code: req.query.code,
+    major: req.query.major,
+    abbreviation: req.query.abbreviation,
+    department: req.query.department,
+    department_abbreviation: req.query.department_abbreviation,
+    school: req.query.school,
+    division: req.query.division
+  };
+  knex('ucla_major').update(values).where({ id: req.params.major_id })
+    .then(result => {
+      if (result) {
+        res.send(util.message('Successfully updated UCLA major: ' + req.params.major));
+      } else {
+        util.throwError(404, 'No UCLA major found to update');
+      }
+    })
+    .catch(err => { return next(err) });
+});
+
+// Update user registration for a given event
+router.put('/:event_id/register/:user_id', function(req, res, next) {
+  const event_id = req.params.event_id;
+  const user_id = req.params.user_id;
+  const paid = req.query.paid;
+  knex('event_checkin')
+  .update({ 
+    has_paid: paid, 
+    updated_at: now() 
+  })
+  .where({ 
+    fb_id: event_id, 
+    user_id: user_id
+  })
+  .then(result => {
+    if (result) {
+      res.send(util.message('Successfully updated user registration for event with event_id ' + event_id));
+    } else {
+      util.throwError(404, 'No user found with user_id ' + user_id + ' for event with event_id ' + event_id);
+    }
+  })
+  .catch(err => { return next(err) });
 });
 
 // // GET all users registered and have paid or not paid for a given event
@@ -112,23 +171,57 @@ router.get('/:event_id/register', function(req, res, next) {
   }
 });
 
-// DELETE user registration for an event
-router.delete('/:event_id/register/:user_id', function(req, res, next) {
+// Add a single major
+router.post('/', function(req, res, next) {
+  if (!req.query.name) {
+    util.throwError(400, 'Major name must not be null');
+  }
+  
+  values = { name: req.query.name, ucla_id: req.query.ucla_id };
+  knex('major').insert(values)
+    .then(result => {
+      res.send(util.message('Successfully inserted new major: ' + req.query.name));
+    })
+    .catch(err => { return next(err) });
+});
+
+// Register a user for a given event
+router.post('/:event_id/register/:user_id', function(req, res, next) {
   const event_id = req.params.event_id;
   const user_id = req.params.user_id;
-  knex('event_registration').del()
-    .where({ 
-      event_id: event_id,
-      user_id: user_id
-    })
-    .then(result => {
-      if (result) {
-        res.send(util.message('Successfully deleted user registration for event_id = ' + event_id));
-      } else {
-        util.throwError(404, 'No registered users found to delete with user_id = ' + user_id ' and event_id = ' + event_id);
-    }
-  });
+  const paid = req.query.paid;
+  if (!req.query.paid) {
+    util.throwError(400, 'Paid query must not be null');
+  }
+  knex('event_checkin')
+  .insert({
+    event_id: event_id, 
+    user_id: user_id, 
+    has_paid: paid
+  })
+  .then(result => {
+    res.send(util.message('Successfully registered user with user_id ' + user_id + ' for event with event_id ' + event_id));
+  })
+  .catch(err => { return next(err) });
 });
+
+// // DELETE user registration for an event
+// router.delete('/:event_id/register/:user_id', function(req, res, next) {
+//   const event_id = req.params.event_id;
+//   const user_id = req.params.user_id;
+//   knex('event_registration').del()
+//     .where({ 
+//       event_id: event_id,
+//       user_id: user_id
+//     })
+//     .then(result => {
+//       if (result) {
+//         res.send(util.message('Successfully deleted user registration for event_id = ' + event_id));
+//       } else {
+//         util.throwError(404, 'No registered users found to delete with user_id = ' + user_id ' and event_id = ' + event_id);
+//       }
+//     });
+// });
 
 // GET all users checked in to a given event
 router.get('/:event_id/checkin', function(req, res, next) {
