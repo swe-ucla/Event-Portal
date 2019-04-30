@@ -19,6 +19,28 @@ router.get('/', function(req, res, next) {
     .catch(err => { return next(err) });
 });
 
+// Add a single occupation
+// Add a single UCLA major. Can add duplicates due to unstrict checks.
+router.post('/', function(req, res, next) {
+  if (!req.query.id) {
+    util.throwError(400, 'Occupation id cannot be null');
+  }
+
+  values = { 
+    id: req.query.id,
+    name: req.query.name,
+    updated_at: req.query.updated_at,
+    created_at: req.query.created_at
+  };
+
+  knex('occupation')
+  .insert(values)
+  .then(result => {
+    res.send(util.message('Successfully added a single occupation'));
+  })
+  .catch(err => { return next(err) });
+});
+
 // Update a single occupation
 router.put('/:occupation_id', function(req, res, next) {
   const occupation_id = req.params.occupation_id;
