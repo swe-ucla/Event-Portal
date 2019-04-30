@@ -169,28 +169,6 @@ router.get('/:event_id/favorites', function(req, res, next) {
   })
 });
 
-// Update a single UCLA major
-router.put('/:major_id', function(req, res, next) {
-  values = { 
-    code: req.query.code,
-    major: req.query.major,
-    abbreviation: req.query.abbreviation,
-    department: req.query.department,
-    department_abbreviation: req.query.department_abbreviation,
-    school: req.query.school,
-    division: req.query.division
-  };
-  knex('ucla_major').update(values).where({ id: req.params.major_id })
-    .then(result => {
-      if (result) {
-        res.send(util.message('Successfully updated UCLA major: ' + req.params.major));
-      } else {
-        util.throwError(404, 'No UCLA major found to update');
-      }
-    })
-    .catch(err => { return next(err) });
-});
-
 // Update user registration for a given event
 router.put('/:event_id/register/:user_id', function(req, res, next) {
   const event_id = req.params.event_id;
@@ -247,20 +225,6 @@ router.get('/:event_id/register', function(req, res, next) {
       message: '\'paid\' is not a boolean'
     });
   }
-});
-
-// Add a single major
-router.post('/', function(req, res, next) {
-  if (!req.query.name) {
-    util.throwError(400, 'Major name must not be null');
-  }
-  
-  values = { name: req.query.name, ucla_id: req.query.ucla_id };
-  knex('major').insert(values)
-    .then(result => {
-      res.send(util.message('Successfully inserted new major: ' + req.query.name));
-    })
-    .catch(err => { return next(err) });
 });
 
 // Register a user for a given event
