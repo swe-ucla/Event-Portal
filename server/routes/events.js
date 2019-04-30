@@ -272,7 +272,7 @@ router.put('/:event_id/register/:user_id', function(req, res, next) {
   const event_id = req.params.event_id;
   const user_id = req.params.user_id;
   const paid = req.query.paid;
-  knex('event_checkin')
+  knex('event_registration')
   .update({ 
     has_paid: paid, 
     updated_at: now() 
@@ -325,20 +325,6 @@ router.get('/:event_id/register', function(req, res, next) {
   }
 });
 
-// Add a single major
-router.post('/', function(req, res, next) {
-  if (!req.query.name) {
-    util.throwError(400, 'Major name must not be null');
-  }
-  
-  values = { name: req.query.name, ucla_id: req.query.ucla_id };
-  knex('major').insert(values)
-    .then(result => {
-      res.send(util.message('Successfully inserted new major: ' + req.query.name));
-    })
-    .catch(err => { return next(err) });
-});
-
 // Register a user for a given event
 router.post('/:event_id/register/:user_id', function(req, res, next) {
   const event_id = req.params.event_id;
@@ -347,7 +333,7 @@ router.post('/:event_id/register/:user_id', function(req, res, next) {
   if (!req.query.paid) {
     util.throwError(400, 'Paid query must not be null');
   }
-  knex('event_checkin')
+  knex('event_registration')
   .insert({
     event_id: event_id, 
     user_id: user_id, 
