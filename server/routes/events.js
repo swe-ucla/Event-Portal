@@ -205,23 +205,24 @@ router.post('/:event_id/register/:user_id', function(req, res, next) {
   .catch(err => { return next(err) });
 });
 
-// // DELETE user registration for an event
-// router.delete('/:event_id/register/:user_id', function(req, res, next) {
-//   const event_id = req.params.event_id;
-//   const user_id = req.params.user_id;
-//   knex('event_registration').del()
-//     .where({ 
-//       event_id: event_id,
-//       user_id: user_id
-//     })
-//     .then(result => {
-//       if (result) {
-//         res.send(util.message('Successfully deleted user registration for event_id = ' + event_id));
-//       } else {
-//         util.throwError(404, 'No registered users found to delete with user_id = ' + user_id ' and event_id = ' + event_id);
-//       }
-//     });
-// });
+// DELETE user registration for an event
+router.delete('/:event_id/register/:user_id', function(req, res, next) {
+  const event_id = req.params.event_id;
+  const user_id = req.params.user_id;
+  knex('event_registration').del()
+    .where({ 
+      event_id: event_id,
+      user_id: user_id
+    })
+    .then(result => {
+      if (result) {
+        res.send(util.message('Successfully deleted user registration for event_id = ' + event_id));
+      } else {
+        util.throwError(404, 'No registered users found to delete with user_id = ' + user_id + ' and event_id = ' + event_id);
+      }
+    })
+    .catch(err => { return next(err) });
+});
 
 // GET all users checked in to a given event
 router.get('/:event_id/checkin', function(req, res, next) {
