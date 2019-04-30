@@ -174,7 +174,7 @@ router.put('/:event_id/register/:user_id', function(req, res, next) {
   const event_id = req.params.event_id;
   const user_id = req.params.user_id;
   const paid = req.query.paid;
-  knex('event_checkin')
+  knex('event_registration')
   .update({ 
     has_paid: paid, 
     updated_at: now() 
@@ -235,7 +235,7 @@ router.post('/:event_id/register/:user_id', function(req, res, next) {
   if (!req.query.paid) {
     util.throwError(400, 'Paid query must not be null');
   }
-  knex('event_checkin')
+  knex('event_registration')
   .insert({
     event_id: event_id, 
     user_id: user_id, 
