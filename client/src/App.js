@@ -6,24 +6,10 @@ import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 
 import logo from './logo.svg';
+import appStyles from './styles/App.js';
 import './css/App.css';
 
 require('typeface-roboto');
-
-const styles = theme => ({
-  button: {
-    margin: theme.spacing.unit,
-  },
-  container: {
-    display: 'block',
-    flexWrap: 'wrap',
-  },
-  textField: {
-    marginLeft: theme.spacing.unit,
-    marginRight: theme.spacing.unit,
-    width: 200,
-  }
-});
 
 class App extends Component {
   constructor() {
@@ -132,4 +118,4 @@ class App extends Component {
   }
 }
 
-export default withStyles(styles)(App);
+export default withStyles(appStyles)(App);
