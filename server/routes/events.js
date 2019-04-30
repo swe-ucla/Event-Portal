@@ -24,6 +24,84 @@ router.get('/', function(req, res, next) {
   .catch(err => { return next(err) });
 });
 
+// Add a single event.
+router.post('/', function(req, res, next) {
+	let errormsg = 'The following fields must not be null: ';
+	let validReq = true;
+	
+  let values = { 
+  	fb_id: req.query.event_id, 
+  	name: req.query.name, 
+  	starts_at: req.query.starts_at, 
+  	ends_at: req.query.ends_at,
+  	quarter: req.query.quarter,
+  	location_id: req.query.location_id,
+  	description: req.query.description,
+  	fb_event: req.query.fb_event,
+  	picture: req.query.picture,
+  	is_featured: req.query.is_featured
+  };
+
+  let category_id = req.query.category_id;
+  let company_id = req.query.company_id;
+  let host_id = req.query.host_id;
+
+  Object.keys(values).forEach(function(key) {
+  	if (!values[key]) {
+  		validReq = false;
+  		errormsg += key + ', ';
+  	}
+	});
+
+	if (!category_id) {
+		validReq = false;
+		errormsg += 'category_id, ';
+	}
+	if (!company_id) {
+		validReq = false;
+		errormsg += 'company_id, ';
+	}
+	if (!host_id) {
+		validReq = false;
+		errormsg += 'host+id, ';
+	}
+
+	if (!validReq) {
+		util.throwError(400, errormsg.substring(0, errormsg.length - 2));
+	}
+	else {
+		knex('event').insert(values)
+	    .then(result => {
+	      res.send(util.message('Successfully inserted new event: ' + req.query.name));
+	    })
+	    .catch(err => { return next(err) });
+	  
+		knex('event_category').insert({
+			event_id: req.query.event_id,
+			category_id: category_id
+		})
+		.catch(err => { return next(err) });
+
+		knex('event_company').insert({
+			event_id: req.query.event_id,
+			company_id: company_id
+		})
+		.catch(err => { return next(err) });
+
+		knex('event_host').insert({
+			event_id: req.query.event_id,
+			host_id: host_id
+		})
+		.catch(err => { return next(err) });
+
+	  knex('event').insert(values)
+	    .then(result => {
+	      res.send(util.message('Successfully inserted new event: ' + req.query.name));
+	    })
+	    .catch(err => { return next(err) });
+  }
+});
+
 // GET all event names
 router.get('/names', function(req, res, next) {
   knex('event').select('fb_id, name')
