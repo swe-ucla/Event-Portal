@@ -225,6 +225,7 @@ router.post('/', function(req, res, next) {
   }
 
   values = {
+    id: req.query.id,
     name: req.query.name,
     website: req.query.website,
     logo: req.query.logo,
@@ -232,18 +233,25 @@ router.post('/', function(req, res, next) {
     description: req.query.description
   };
   
-  const company_id = knex('company').insert(values, 'id')
-    .then(result => {
-      res.send(util.message('Successfully inserted new company: ' + req.query.name));
-    })
-    .catch(err => { return next(err) });
+  const output = knex('company').insert(values)
+  .then(result => {
+    res.send(util.message('Successfully inserted new company: ' + req.query.name));
+  })
+  .catch(err => { return next(err) });
+
+  //const company_id = '';
+  /*
+  const company_id = knex('company').select('id').where({name: req.query.name}).then(result => {
+    res.render({id: result})
+  })
+  */
 
   //company rank
   if (req.query.rank && req.query.user_id) {
 
     rankValues = {
       user_id: req.query.user_id,
-      company_id: company_id,
+      company_id: req.query.id,
       rank: req.query.rank
     };
 
@@ -256,7 +264,7 @@ router.post('/', function(req, res, next) {
   //company position
   if (req.query.position_id) {
     companyPositions = {
-      //company_id: req.query.company_id,
+      company_id: req.query.id,
       position_id: req.query.position_id
     };
 
@@ -269,7 +277,7 @@ router.post('/', function(req, res, next) {
   //company major
   if (req.query.major_id) {
     companyMajors = {
-      company_id: req.query.company_id,
+      company_id: req.query.id,
       major_id: req.query.major_id
     };
 
@@ -282,7 +290,7 @@ router.post('/', function(req, res, next) {
   //company contact
   if (req.query.contact_id) {
     companyContacts = {
-      company_id: req.query.company_id,
+      company_id: req.query.id,
       contact_id: req.query.contact_id
     };
 
@@ -295,7 +303,7 @@ router.post('/', function(req, res, next) {
   //event company
   if (req.query.event_id) {
     companyEvents = {
-      company_id: req.query.company_id,
+      company_id: req.query.id,
       event_id: req.query.event_id
     };
 
