@@ -24,7 +24,6 @@ router.get('/', function(req, res, next) {
   .catch(err => { return next(err) });
 });
 
-// Add a single event.
 router.post('/', function(req, res, next) {
 	let errormsg = 'The following fields must not be null: ';
 	let validReq = true;
@@ -70,11 +69,51 @@ router.post('/', function(req, res, next) {
 		util.throwError(400, errormsg.substring(0, errormsg.length - 2));
 	}
 	else {
+		/*
+		knex.transaction(function(t) {
+   		return knex('event')
+   		.transacting(t)
+   		.insert(values)
+   		.then(function(t) {
+        return 
+        	knex('event_category')
+					.transacting(t)
+					.insert({
+						event_id: req.query.event_id,
+						category_id: category_id
+					})
+					.then(function(t) {
+						return 
+        			knex('event_company')
+							.transacting(t)
+							.insert({
+								event_id: req.query.event_id,
+								company_id: company_id
+							})
+							.then(function(t) {
+								return 
+        					knex('event_host')
+									.transacting(t)
+									.insert({
+										event_id: req.query.event_id,
+										host_id: host_id
+									})
+									.then(t.commit)
+									.catch(t.rollback)
+							})
+					})
+			})
+  })
+	.then(function() {
+ 		res.send(util.message('Successfully inserted new event: ' + req.query.name));
+	})
+	.catch(function(e) {
+ 		err => { return next(err) }
+	});
+	*/
+
 		knex('event').insert(values)
-	    .then(result => {
-	      res.send(util.message('Successfully inserted new event: ' + req.query.name));
-	    })
-	    .catch(err => { return next(err) });
+	  .catch(err => { return next(err) });
 	  
 		knex('event_category').insert({
 			event_id: req.query.event_id,
@@ -142,6 +181,65 @@ router.get('/:event_id/id', function(req, res, next) {
   .catch(err => { return next(err) });
 });
 
+// Updated a single event by event_id
+router.put('/:event_id', function(req, res, next) {
+	const event_id = req.params.event_id;
+
+	let values = {
+  	name: req.query.name, 
+  	starts_at: req.query.starts_at, 
+  	ends_at: req.query.ends_at,
+  	quarter: req.query.quarter,
+  	location_id: req.query.location_id,
+  	description: req.query.description,
+  	fb_event: req.query.fb_event,
+  	picture: req.query.picture,
+  	is_featured: req.query.is_featured,
+  	updated_at: knex.raw('now()')
+  };
+
+  let category_id = req.query.category_id;
+  let company_id = req.query.company_id;
+  let host_id = req.query.host_id;
+
+  knex('event')
+  	.where({ fb_id: event_id })
+  	.update(values)
+    .then(result => {
+      if (result) {
+        res.send(util.message('Successfully updated event_id: ' + event_id));
+      } else {
+        util.throwError(404, 'No event_id found to update');
+      }
+    })
+    .catch(err => { return next(err) });
+
+  knex('event_category')
+  	.where({ event_id: event_id })
+		.update({
+			category_id: category_id,
+			updated_at: knex.raw('now()')
+		})
+		.catch(err => { return next(err) });
+
+	knex('event_host')
+		.where({ event_id: event_id })
+		.update({
+			host_id: host_id,
+			updated_at: knex.raw('now()')
+		})
+		.catch(err => { return next(err) });
+		
+	knex('event_company')
+		.where({ event_id: event_id })
+		.update({
+			company_id: company_id,
+			updated_at: knex.raw('now()')
+		})
+		.catch(err => { return next(err) });
+});
+
+
 // Delete an event by event_id
 router.delete('/:event_id', function(req, res, next) {
   const event_id = req.params.event_id;
@@ -167,28 +265,6 @@ router.get('/:event_id/favorites', function(req, res, next) {
       res.status(404).json('No events where fb_id = ' + event_id + ' found.');
     }
   })
-});
-
-// Update a single UCLA major
-router.put('/:major_id', function(req, res, next) {
-  values = { 
-    code: req.query.code,
-    major: req.query.major,
-    abbreviation: req.query.abbreviation,
-    department: req.query.department,
-    department_abbreviation: req.query.department_abbreviation,
-    school: req.query.school,
-    division: req.query.division
-  };
-  knex('ucla_major').update(values).where({ id: req.params.major_id })
-    .then(result => {
-      if (result) {
-        res.send(util.message('Successfully updated UCLA major: ' + req.params.major));
-      } else {
-        util.throwError(404, 'No UCLA major found to update');
-      }
-    })
-    .catch(err => { return next(err) });
 });
 
 // Update user registration for a given event
