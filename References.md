@@ -143,3 +143,9 @@
   - https://github.com/HerrisGithub/dbisnis/blob/d1e238ab332b2a78d5622a48ede9b875a269fd5f/controller/db.js
   - https://stackoverflow.com/questions/47778088/how-to-use-transaction-using-knex-js
   - https://github.com/tgriesser/knex/issues/251
+  - https://softwareengineering.stackexchange.com/questions/255275/are-mutliple-database-calls-really-significant-with-a-network-call-for-a-web-api
+  - https://stackoverflow.com/questions/38834978/rest-api-design-add-remove-an-item-in-an-array-field-of-a-resource
+  - https://stackoverflow.com/questions/15370387/restful-api-endpoint-for-adding-removing-array-elements
+  - https://expressjs.com/en/api.html#req.query
+  - https://stackoverflow.com/questions/2602043/rest-api-best-practice-how-to-accept-list-of-parameter-values-as-input
+  - https://stackoverflow.com/questions/24059773/correct-way-to-pass-multiple-values-for-same-parameter-name-in-get-request
