@@ -135,3 +135,11 @@
   - https://stackoverflow.com/questions/14182079/delete-rows-with-foreign-key-in-postgresql
   - https://superuser.com/questions/465312/avoid-unwanted-path-in-zip-file-in-makefile
   - https://softwareengineering.stackexchange.com/questions/279188/what-is-the-purpose-of-separating-routes-into-individual-modules-with-node-js-an
+  - https://knexjs.org/##Builder-returning
+  - https://github.com/tgriesser/knex/issues/732
+  - https://stackoverflow.com/questions/2944297/postgresql-function-for-last-inserted-id
+  - https://stackoverflow.com/questions/43465266/knex-does-not-return-insert-id
+  - https://knexjs.org/#Transactions
+  - https://github.com/HerrisGithub/dbisnis/blob/d1e238ab332b2a78d5622a48ede9b875a269fd5f/controller/db.js
+  - https://stackoverflow.com/questions/47778088/how-to-use-transaction-using-knex-js
+  - https://github.com/tgriesser/knex/issues/251

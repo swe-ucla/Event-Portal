@@ -13,10 +13,6 @@ var uclamajors = require('./uclamajors');
 var users = require('./users');
 
 module.exports = (app) => {
-  app.get('/', function(req, res, next) {
-    res.send('The Event Portal server is running!');
-  });
-
   app.get('/test', function(req, res, next) {
     res.send('Hello, World!');
   });
