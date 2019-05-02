@@ -107,6 +107,8 @@ $ make dev
 $ make prod
 ```
 
+- Available at [http://localhost](http://localhost) (port 80)
+
 - Creates static build of the React Client app in `client/build/`
 
 - Runs Express Server which handles serving both the API and the static client files
