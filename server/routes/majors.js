@@ -34,21 +34,21 @@ router.get('/names', function(req, res, next) {
 
 // Add a single major
 router.post('/', function(req, res, next) {
-  if (!req.query.name) {
+  if (!req.body.name) {
     util.throwError(400, 'Major name must not be null');
   }
   
-  values = { name: req.query.name, ucla_id: req.query.ucla_id };
+  values = { name: req.body.name, ucla_id: req.body.ucla_id };
   knex('major').insert(values)
     .then(result => {
-      res.send(util.message('Successfully inserted new major: ' + req.query.name));
+      res.send(util.message('Successfully inserted new major: ' + req.body.name));
     })
     .catch(err => { return next(err) });
 });
 
 // Update a single major
 router.put('/:major_id', function(req, res, next) {
-  values = { name: req.query.name, ucla_id: req.query.ucla_id };
+  values = { name: req.body.name, ucla_id: req.body.ucla_id };
   knex('major').update(values).where({ id: req.params.major_id })
     .then(result => {
       if (result) {
