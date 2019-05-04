@@ -1,10 +1,12 @@
+@import "../common.scss";
+
 .App {
   text-align: center;
 }
 
 .App-logo {
   animation: App-logo-spin infinite 20s linear;
-  height: 80px;
+  height: $test_var;
   pointer-events: none;
 }
 
