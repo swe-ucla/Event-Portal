@@ -19,6 +19,32 @@ router.get('/', function(req, res, next) {
     .catch(err => { return next(err) });
 });
 
+// GET major by ID
+router.get('/:major_id/id', function(req, res, next) {
+  knex('major').select().where({ id: req.params.major_id })
+    .then(result => {
+      if (result.length) {
+        res.json(result[0]);
+      } else {
+        util.throwError(404, 'No major found');
+      }
+    })
+    .catch(err => { return next(err) });
+});
+
+// GET all major IDs
+router.get('/ids', function(req, res, next) {
+  knex('major').select('id').orderBy('id', 'asc')
+    .then(result => {
+      if (result.length) {
+        res.json(result);
+      } else {
+        util.throwError(404, 'No major IDs found');
+      }
+    })
+    .catch(err => { return next(err) });
+});
+
 // GET all major names
 router.get('/names', function(req, res, next) {
   knex('major').select('name').orderBy('name', 'asc')

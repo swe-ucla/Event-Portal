@@ -68,7 +68,7 @@ class ExamplePostForm extends Component {
       });
   }
 
-  handlePostSubmit = (event) => {
+  handleSubmit = (event) => {
     this.addMajor();
     // Prevent site refresh after submission
     event.preventDefault();
@@ -95,7 +95,7 @@ class ExamplePostForm extends Component {
           <Typography component="h1" variant="h5">
             Add Major
           </Typography>
-          <form className={classes.form} onSubmit={this.handlePostSubmit}>
+          <form className={classes.form} onSubmit={this.handleSubmit}>
             <TextField
               required fullWidth
               id='major_name'
