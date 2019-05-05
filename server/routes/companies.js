@@ -218,14 +218,12 @@ router.get('/filter', function(req, res, next) {
 
 // Add a single company or related data
 router.post('/', function(req, res, next) {
-  // add new company
-  //make a dict
+  //make a dict to store multiple values?
   if(!req.query.name){
     util.throwError(400, '\'name\' is undefined');
   }
 
   values = {
-    id: req.query.id,
     name: req.query.name,
     website: req.query.website,
     logo: req.query.logo,
@@ -233,9 +231,86 @@ router.post('/', function(req, res, next) {
     description: req.query.description
   };
   
-  const output = knex('company').insert(values)
-  .then(result => {
-    res.send(util.message('Successfully inserted new company: ' + req.query.name));
+  let result = knex('company').insert(values).returning('id')
+  //.then(ids => { util.throwError(400, 'Result: ' + ids[0]);})
+  .then((ids,result) => {
+    //res.send(util.message('Successfully inserted new company: ' + req.query.name));
+    //company rank
+    if (req.query.rank && req.query.user_id) {
+      rankValues = {
+        user_id: req.query.user_id,
+        company_id: ids[0],
+        rank: req.query.rank
+      };
+
+      knex('user_company_rank').insert(rankValues)
+        .then(result => {
+          res.send(util.message('Successfully inserted new company rank: ' + req.query.company_id));
+        })  
+        .catch(err => { return next(err) });
+    }
+
+    //company position
+    if (req.query.position_id) {
+      Object.keys(req.query).forEach(function(key){
+          companyPositions = {
+            company_id: ids[0],
+            position_id: req.query.position_id
+          };
+          knex('company_position').insert(companyPositions)
+            .then(result => {
+              res.send(util.message('Successfully inserted new company position: ' + req.query.position_id));
+            })  
+            .catch(err => { return next(err) });
+      })
+    }
+
+    //company major
+    if (req.query.major_id) {
+      Object.keys(req.query).forEach(function(key){
+        if(major_id){
+          companyMajors = {
+            company_id: ids[0],
+            major_id: req.query.major_id
+          };
+          knex('company_major').insert(companyMajors)
+            .then(result => {
+              res.send(util.message('Successfully inserted new company major: ' + req.query.company_major));
+          })  
+          .catch(err => { return next(err) });
+        }
+      })
+    }
+
+    //company contact
+    if (req.query.contact_id) {
+      companyContacts = {
+        company_id: ids[0],
+        contact_id: req.query.contact_id
+      };
+
+      knex('company_contact').insert(companyContacts)
+        .then(result => {
+          res.send(util.message('Successfully inserted new company contact: ' + req.query.contact_id));
+        })  
+        .catch(err => { return next(err) });
+    }
+
+    //event company
+    if (req.query.event_id) {
+      companyEvents = {
+        company_id: ids[0],
+        event_id: req.query.event_id
+      };
+
+      knex('event_company').insert(companyEvents)
+        .then(result => {
+          res.send(util.message('Successfully inserted new company event: ' + req.query.event_id));
+        })  
+        .catch(err => { return next(err) });
+
+      res.send(util.message('Successfully inserted new company: ' + req.query.name));
+    }
   })
   .catch(err => { return next(err) });
 
@@ -245,82 +320,6 @@ router.post('/', function(req, res, next) {
     res.render({id: result})
   })
   */
-
-  //company rank
-  if (req.query.rank && req.query.user_id) {
-    rankValues = {
-      user_id: req.query.user_id,
-      company_id: req.query.id,
-      rank: req.query.rank
-    };
-
-    knex('user_company_rank').insert(rankValues)
-      .then(result => {
-        res.send(util.message('Successfully inserted new company rank: ' + req.query.company_id));
-      })  
-      .catch(err => { return next(err) });
-  }
-  //company position
-  if (req.query.position_id) {
-    Object.keys(req.query).forEach(function(key){
-      if(company_id && position_id){
-        companyPositions = {
-          company_id: req.query.id,
-          position_id: req.query.position_id
-        };
-        knex('company_position').insert(companyPositions)
-          .then(result => {
-            res.send(util.message('Successfully inserted new company position: ' + req.query.position_id));
-          })  
-          .catch(err => { return next(err) });
-      }
-    })
-  }
-  //company major
-  if (req.query.major_id) {
-    Object.keys(req.query).forEach(function(key){
-      if(company_id && major_id){
-        companyMajors = {
-          company_id: req.query.id,
-          major_id: req.query.major_id
-        };
-        knex('company_major').insert(companyMajors)
-          .then(result => {
-            res.send(util.message('Successfully inserted new company major: ' + req.query.company_major));
-        })  
-        .catch(err => { return next(err) });
-      }
-    })
-    
-
-    
-  }
-  //company contact
-  if (req.query.contact_id) {
-    companyContacts = {
-      company_id: req.query.id,
-      contact_id: req.query.contact_id
-    };
-
-    knex('company_contact').insert(companyContacts)
-      .then(result => {
-        res.send(util.message('Successfully inserted new company contact: ' + req.query.contact_id));
-      })  
-      .catch(err => { return next(err) });
-  }
-  //event company
-  if (req.query.event_id) {
-    companyEvents = {
-      company_id: req.query.id,
-      event_id: req.query.event_id
-    };
-
-    knex('event_company').insert(companyEvents)
-      .then(result => {
-        res.send(util.message('Successfully inserted new company event: ' + req.query.event_id));
-      })  
-      .catch(err => { return next(err) });
-  }
 });
 
 //Update a single company
