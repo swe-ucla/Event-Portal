@@ -5,19 +5,16 @@ import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
-
 import FormLabel from '@material-ui/core/FormLabel';
 import FormControl from '@material-ui/core/FormControl';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import Checkbox from '@material-ui/core/Checkbox';
+import Paper from '@material-ui/core/Paper';
 
-import logo from '../logo.svg';
-import appStyles from '../styles/App.js';
-import '../css/App.css';
-
-require('typeface-roboto');
+import ExamplePostFormStyles from '../styles/ExamplePostForm.js';
+import ExampleGet from '../components/ExampleGet.js';
 
 class ExamplePostForm extends Component {
   constructor() {
@@ -25,60 +22,50 @@ class ExamplePostForm extends Component {
 
     // Initiate state
     this.state = { 
-      majors: [],
       name: '',
       ucla_id: null,
       check1: true,
       check2: false,
       check3: false,
+      errorMessage: ''
     };
   }
 
-  // Called when component has been initialized
-  componentDidMount() {
-    this.getMajors();
-  }
+  addMajor = () => {
+    if (!this.state.name) {
+      // Do not add major if no name specified
+      console.log('ERROR: fill out Major Name field.');
+      return;
+    }
 
-  // Call GET function for major names
-  getMajors = () => {
-    axios.get('/majors')
+    let body = {
+      name: this.state.name,
+      ucla_id: this.state.ucla_id ? this.state.ucla_id : null
+    };
+
+    // Make POST request to add major
+    axios.post('/majors', body)
       .then(result => {
-        // console.log(result.data);
-        let majors = result.data.map(function(major){ return { id: major.id, name: major.name, ucla_id: major.ucla_id}});
-        // console.log(majors);
-        this.setState({ 
-          majors: majors,
+        // Update displayed major names
+        this.majors.getMajors();
+
+        // Clear form values 
+        this.setState({
+          name: '',
+          ucla_id: null,
+          check1: true,
+          check2: false,
+          check3: false,
+          errorMessage: '',
         });
       })
-      .catch(err => console.log(err));
-  }
-
-  addMajor = () => {
-    if (this.state.name !== '') {
-      let body = {
-        name: this.state.name,
-        ucla_id: this.state.ucla_id
-      };
-      // Make POST request to update major
-      axios.post('/majors', body)
-        .then(result => {
-          // Update displayed major names
-          this.getMajors();
-          // TODO: Clear form values/body list
-          this.setState({
-            name: '',
-            ucla_id: null,
-            check1: true,
-            check2: false,
-            check3: false
-          });
+      .catch(err => {
+        // TODO: use user-friendly error message
+        console.log(err.response.data)
+        this.setState({
+          errorMessage: err.response.data.message,
         })
-        .catch(err => console.log(err));
-    } else {
-      // Do not update major if no field to update
-      // TODO: should print error on form view
-      console.log('NO MAJOR TO ADD');
-    }
+      });
   }
 
   handlePostSubmit = (event) => {
@@ -102,87 +89,85 @@ class ExamplePostForm extends Component {
     const { check1, check2, check3 } = this.state;
     const error = [check1, check2, check3].filter(v => v).length !== 2;
 
-    var names = this.state.majors.map(major => {
-      return <p key={major.id}>{major.id}, {major.name}, {major.ucla_id}</p>
-    });
-
     return (
-      <div className='App'>
-        <header className='App-header'>
-          <img src={logo} className='App-logo' alt='logo' />
-          <h1 className='App-title'>Welcome to React</h1>
-        </header>
-        <Typography variant="h6" gutterBottom>
-          Add Major
-        </Typography>
-        <form className={classes.container} onSubmit={this.handlePostSubmit}>
-          {/* TODO: required fields, form validation*/}
-          <TextField
-            required
-            id='major_name'
-            label='Major Name'
-            className={classes.textField}
-            placeholder='Add Major Name'
-            value={this.state.name || ''}
-            onChange={this.handleChange('name')}
-            margin='normal'
-          />
-          <TextField
-            id='ucla_id'
-            label='UCLA ID'
-            className={classes.textField}
-            placeholder='Add UCLA ID'
-            value={this.state.ucla_id || ''}
-            onChange={this.handleChange('ucla_id')}
-            margin='normal'
-          />
-          <br></br>
-          <FormControl required error={error} component="fieldset" className={classes.formControl}>
-            <FormLabel component="legend">Pick two</FormLabel>
-            <FormGroup>
-              <FormControlLabel
-                control={
-                  <Checkbox 
-                    checked={check1} 
-                    onChange={this.handleCheckChange('check1')} 
-                    value="check1" 
-                  />
-                }
-                label="Check 1"
-              />
-              <FormControlLabel
-                control={
-                  <Checkbox 
-                    checked={check2} 
-                    onChange={this.handleCheckChange('check2')} 
-                    value="check2" 
-                  />
-                }
-                label="Check 2"
-              />
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={check3}
-                    onChange={this.handleCheckChange('check3')}
-                    value="check3"
-                  />
-                }
-                label="Check 3"
-              />
-            </FormGroup>
-            <FormHelperText>You can display an error</FormHelperText>
-          </FormControl>
-          <br></br>
-          <Button type='submit' variant='contained' className={classes.button}>
-            POST CHEESE PLS
-          </Button>
-        </form>
-        <h3>List of Majors</h3>
-        {names}
-      </div>
+      <main className={classes.main}>
+        <Paper className={classes.paper}>
+          <Typography component="h1" variant="h5">
+            Add Major
+          </Typography>
+          <form className={classes.form} onSubmit={this.handlePostSubmit}>
+            <TextField
+              required fullWidth
+              id='major_name'
+              label='Major Name'
+              className={classes.textField}
+              placeholder='e.g. Computer Science'
+              value={this.state.name || ''}
+              onChange={this.handleChange('name')}
+              margin='normal'
+            />
+            <TextField fullWidth
+              id='ucla_id'
+              label='UCLA ID'
+              className={classes.textField}
+              placeholder='e.g. 42'
+              value={this.state.ucla_id || ''}
+              onChange={this.handleChange('ucla_id')}
+              margin='normal'
+            />
+            <FormControl required error={error} component="fieldset" className={classes.formControl}>
+              <FormLabel component="legend">Pick Two Options</FormLabel>
+              <FormGroup>
+                <FormControlLabel
+                  control={
+                    <Checkbox 
+                      checked={check1} 
+                      onChange={this.handleCheckChange('check1')} 
+                      value="check1" 
+                    />
+                  }
+                  label="Check 1"
+                />
+                <FormControlLabel
+                  control={
+                    <Checkbox 
+                      checked={check2} 
+                      onChange={this.handleCheckChange('check2')} 
+                      value="check2" 
+                    />
+                  }
+                  label="Check 2"
+                />
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={check3}
+                      onChange={this.handleCheckChange('check3')}
+                      value="check3"
+                    />
+                  }
+                  label="Check 3"
+                />
+              </FormGroup>
+            </FormControl>
+            <FormHelperText error className={classes.formHelperText}>
+              {this.state.errorMessage}
+            </FormHelperText>
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              color="primary"
+              className={classes.submit}
+            >
+              Add Major
+            </Button>
+          </form>
+        </Paper>
+        <ExampleGet onRef={ref => (this.majors = ref)}/>
+      </main>
     );
   }
 }
 
-export default withStyles(appStyles)(ExamplePostForm);
+export default withStyles(ExamplePostFormStyles)(ExamplePostForm);
