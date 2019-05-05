@@ -29,7 +29,12 @@ class ExampleGet extends Component {
 
   // Call GET function for major names
   getMajors = () => {
-    axios.get('/majors')
+    var options = {
+      params: {
+        sort: 'id'
+      }
+    }
+    axios.get('/majors', options)
       .then(result => {
         let majors = result.data.map(function(major) { 
           return { 

@@ -8,7 +8,13 @@ var util = require('../util');
 
 // GET all majors
 router.get('/', function(req, res, next) {
-  knex('major').select()
+  const sort = req.query.sort
+  var query = knex('major').select();
+  if (sort && (sort.toLowerCase() === 'id' || sort.toLowerCase() === 'name')) {
+    query = query.orderBy(sort, 'asc');
+  }
+  
+  query
     .then(result => {
       if (result.length) {
         res.json(result);
