@@ -7,21 +7,7 @@ import Toolbar from '@material-ui/core/Toolbar'
 import Typography from '@material-ui/core/Typography'
 import { withStyles } from '@material-ui/core/styles'
 
-require('typeface-roboto');
-
-const styles = theme => ({
-  '@global': {
-    body: {
-      backgroundColor: theme.palette.common.white,
-    },
-  },
-  appBar: {
-    position: 'relative',
-  },
-  toolbarTitle: {
-    flex: 1,
-  }
-});
+import NavBarStyles from '../styles/NavBar.js'
 
 const NavBar = (props) => {
   const { classes } = props;
@@ -46,7 +32,7 @@ const NavBar = (props) => {
     </div>
   )
 }
-export default withStyles(styles)(NavBar);
+export default withStyles(NavBarStyles)(NavBar);
 
 
 
