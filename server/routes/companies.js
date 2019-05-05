@@ -248,7 +248,6 @@ router.post('/', function(req, res, next) {
 
   //company rank
   if (req.query.rank && req.query.user_id) {
-
     rankValues = {
       user_id: req.query.user_id,
       company_id: req.query.id,
@@ -263,29 +262,38 @@ router.post('/', function(req, res, next) {
   }
   //company position
   if (req.query.position_id) {
-    companyPositions = {
-      company_id: req.query.id,
-      position_id: req.query.position_id
-    };
-
-    knex('company_position').insert(companyPositions)
-      .then(result => {
-        res.send(util.message('Successfully inserted new company position: ' + req.query.position_id));
-      })  
-      .catch(err => { return next(err) });
+    Object.keys(req.query).forEach(function(key){
+      if(company_id && position_id){
+        companyPositions = {
+          company_id: req.query.id,
+          position_id: req.query.position_id
+        };
+        knex('company_position').insert(companyPositions)
+          .then(result => {
+            res.send(util.message('Successfully inserted new company position: ' + req.query.position_id));
+          })  
+          .catch(err => { return next(err) });
+      }
+    })
   }
   //company major
   if (req.query.major_id) {
-    companyMajors = {
-      company_id: req.query.id,
-      major_id: req.query.major_id
-    };
+    Object.keys(req.query).forEach(function(key){
+      if(company_id && major_id){
+        companyMajors = {
+          company_id: req.query.id,
+          major_id: req.query.major_id
+        };
+        knex('company_major').insert(companyMajors)
+          .then(result => {
+            res.send(util.message('Successfully inserted new company major: ' + req.query.company_major));
+        })  
+        .catch(err => { return next(err) });
+      }
+    })
+    
 
-    knex('company_major').insert(companyMajors)
-      .then(result => {
-        res.send(util.message('Successfully inserted new company major: ' + req.query.company_major));
-      })  
-      .catch(err => { return next(err) });
+    
   }
   //company contact
   if (req.query.contact_id) {
