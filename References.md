@@ -149,3 +149,13 @@
   - https://expressjs.com/en/api.html#req.query
   - https://stackoverflow.com/questions/2602043/rest-api-best-practice-how-to-accept-list-of-parameter-values-as-input
   - https://stackoverflow.com/questions/24059773/correct-way-to-pass-multiple-values-for-same-parameter-name-in-get-request
+  - https://medium.com/codingthesmartway-com-blog/getting-started-with-material-ui-for-react-material-design-for-react-364b2688b555
+  - https://material-ui.com/getting-started/page-layout-examples/
+  - https://github.com/mui-org/material-ui/tree/master/docs/src/pages/getting-started/page-layout-examples/checkout
+  - https://material-ui.com/demos/buttons/#third-party-routing-library
+  - https://stackoverflow.com/questions/27232415/can-i-conditionally-add-a-where-clause-to-my-knex-query
+  - https://jsfiddle.net/frenzzy/z9c46qtv/
+  - https://github.com/kriasoft/react-starter-kit/issues/909
+  - https://stackoverflow.com/questions/154059/how-to-check-empty-undefined-null-string-in-javascript
+  - https://stackoverflow.com/questions/17781472/how-to-get-a-subset-of-a-javascript-objects-properties
+  - https://stackoverflow.com/questions/679915/how-do-i-test-for-an-empty-javascript-object
