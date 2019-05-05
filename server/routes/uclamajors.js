@@ -21,22 +21,22 @@ router.get('/', function(req, res, next) {
 
 // Add a single UCLA major. Can add duplicates due to unstrict checks.
 router.post('/', function(req, res, next) {
-  if (!req.query.major) {
+  if (!req.body.major) {
     util.throwError(400, 'UCLA major name must not be null');
   }
 
   values = { 
-    code: req.query.code,
-    major: req.query.major,
-    abbreviation: req.query.abbreviation,
-    department: req.query.department,
-    department_abbreviation: req.query.department_abbreviation,
-    school: req.query.school,
-    division: req.query.division
+    code: req.body.code,
+    major: req.body.major,
+    abbreviation: req.body.abbreviation,
+    department: req.body.department,
+    department_abbreviation: req.body.department_abbreviation,
+    school: req.body.school,
+    division: req.body.division
   };
   knex('ucla_major').insert(values)
     .then(result => {
-      res.send(util.message('Successfully inserted new UCLA major: ' + req.query.major));
+      res.send(util.message('Successfully inserted new UCLA major: ' + req.body.major));
     })
     .catch(err => { return next(err) });
 });
@@ -44,18 +44,18 @@ router.post('/', function(req, res, next) {
 // Update a single UCLA major
 router.put('/:major_id', function(req, res, next) {
   values = { 
-    code: req.query.code,
-    major: req.query.major,
-    abbreviation: req.query.abbreviation,
-    department: req.query.department,
-    department_abbreviation: req.query.department_abbreviation,
-    school: req.query.school,
-    division: req.query.division
+    code: req.body.code,
+    major: req.body.major,
+    abbreviation: req.body.abbreviation,
+    department: req.body.department,
+    department_abbreviation: req.body.department_abbreviation,
+    school: req.body.school,
+    division: req.body.division
   };
   knex('ucla_major').update(values).where({ id: req.params.major_id })
     .then(result => {
       if (result) {
-        res.send(util.message('Successfully updated UCLA major: ' + req.params.major));
+        res.send(util.message('Successfully updated UCLA major: ' + req.params.major_id));
       } else {
         util.throwError(404, 'No UCLA major found to update');
       }
