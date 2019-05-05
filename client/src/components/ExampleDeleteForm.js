@@ -3,14 +3,15 @@ import axios from 'axios';
 
 import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
-import TextField from '@material-ui/core/TextField';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import Select from '@material-ui/core/Select';
 import Button from '@material-ui/core/Button';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import Paper from '@material-ui/core/Paper';
 
-import logo from '../logo.svg';
-import appStyles from '../styles/App.js';
-import '../css/App.css';
-
-require('typeface-roboto');
+import ExampleDeleteFormStyles from '../styles/ExampleDeleteForm.js';
+import ExampleGet from '../components/ExampleGet.js';
 
 class ExampleDeleteForm extends Component {
   constructor() {
@@ -18,53 +19,55 @@ class ExampleDeleteForm extends Component {
 
     // Initiate state
     this.state = { 
-      majors: [],
-      delete_id: null
+      mids: [],
+      major_id: null,
+      errorMessage: ''
     };
   }
 
   // Called when component has been initialized
   componentDidMount() {
-    this.getMajors();
+    this.getMajorIDs();
   }
 
-  // Call GET function for major names
-  getMajors = () => {
-    axios.get('/majors')
+  getMajorIDs = () => {
+    axios.get('/majors/ids')
       .then(result => {
-        // console.log(result.data);
-        let majors = result.data.map(function(major){ return { id: major.id, name: major.name, ucla_id: major.ucla_id}});
-        // console.log(majors);
-        this.setState({ 
-          majors: majors,
-          major_id: majors[0].id,
-          put_name: majors[0].name,
-          put_ucla_id: majors[0].ucla_id,
-          initial_name: majors[0].name,
-          initial_ucla_id: majors[0].ucla_id
-        });
+        let mids = result.data.map(function(major) { return major.id });
+        this.setState({ mids: mids });
       })
       .catch(err => console.log(err));
   }
 
   deleteMajor = () => {
-    if (this.state.delete_id) {
-      // Make PUT request to update major
-      axios.delete('/majors/' + this.state.delete_id)
-        .then(result => {
-          // Update displayed major names
-          this.getMajors();
-          // Clear form values/body list
-          this.setState({ delete_id: null });
-        })
-        .catch(err => console.log(err));
-    } else {
-      // TODO: should print error on form view
-      console.log('NO MAJORS TO DELETE');
+    if (!this.state.major_id) {
+      console.log('ERROR: fill out Major ID field.');
+      this.setState({
+        errorMessage: 'ERROR: fill out Major ID field.',
+      })
+      return;
     }
+
+    // Make DELETE request to delete major
+    axios.delete('/majors/' + this.state.major_id)
+      .then(result => {
+        // Update displayed major names
+        this.majors.getMajors();
+        this.getMajorIDs();
+
+        // Clear form values/body list
+        this.setState({ major_id: null, errorMessage: '' });
+      })
+      .catch(err => {
+        // TODO: use user-friendly error message
+        console.log(err.response.data)
+        this.setState({
+          errorMessage: err.response.data.message,
+        })
+      });
   }
 
-  handleDeleteSubmit = (event) => {
+  handleSubmit = (event) => {
     this.deleteMajor();
     // Prevent site refresh after submission
     event.preventDefault();
@@ -78,40 +81,51 @@ class ExampleDeleteForm extends Component {
 
   render() {
     const { classes } = this.props;
-    
-    var names = this.state.majors.map(major => {
-      return <p key={major.id}>{major.id}, {major.name}, {major.ucla_id}</p>
-    });
+    var mids = this.state.mids.map(mid => {
+      return <MenuItem key={mid} value={mid}>{mid}</MenuItem>
+    })
 
     return (
-      <div className='App'>
-        <header className='App-header'>
-          <img src={logo} className='App-logo' alt='logo' />
-          <h1 className='App-title'>Welcome to React</h1>
-        </header>
-        <Typography variant="h6" gutterBottom>
-          Delete Major
-        </Typography>
-        <form className={classes.container} onSubmit={this.handleDeleteSubmit}>
-          <TextField
-            id='major_id'
-            label='Major ID'
-            className={classes.textField}
-            placeholder='ID of Major to Delete'
-            value={this.state.delete_id || ''}
-            onChange={this.handleChange('delete_id')}
-            margin='normal'
-          />
-          <br></br>
-          <Button type='submit' variant='contained' className={classes.button}>
-            DELETE CHEESE PLS
-          </Button>
-        </form>
-        <h3>List of Majors</h3>
-        {names}
-      </div>
+      <main className={classes.main}>
+        <Paper className={classes.paper}>
+          <Typography component="h1" variant="h5">
+            Delete Major
+          </Typography>
+          <form className={classes.form} onSubmit={this.handleSubmit}>
+            <InputLabel required error={!this.state.major_id} htmlFor="major_id">Major ID</InputLabel>
+            <Select
+              fullWidth
+              className={classes.select}
+              value={this.state.major_id || ''}
+              onChange={this.handleChange('major_id')}
+              inputProps={{
+                name: 'Major ID',
+                id: 'major_id',
+              }}
+            >
+              <MenuItem value="">
+                <em>None</em>
+              </MenuItem>
+              {mids}
+            </Select>
+            <FormHelperText error className={classes.formHelperText}>
+              {this.state.errorMessage}
+            </FormHelperText>
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              color="primary"
+              className={classes.submit}
+            >
+              Delete Major
+            </Button>
+          </form>
+        </Paper>
+        <ExampleGet onRef={ref => (this.majors = ref)}/>
+      </main>
     );
   }
 }
 
-export default withStyles(appStyles)(ExampleDeleteForm);
+export default withStyles(ExampleDeleteFormStyles)(ExampleDeleteForm);
