@@ -275,10 +275,10 @@ router.put('/:event_id/register/:user_id', function(req, res, next) {
   knex('event_registration')
   .update({ 
     has_paid: paid, 
-    updated_at: now() 
+    updated_at: knex.raw('now()')
   })
   .where({ 
-    fb_id: event_id, 
+    event_id: event_id, 
     user_id: user_id
   })
   .then(result => {
