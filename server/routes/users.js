@@ -89,10 +89,82 @@ router.post('/register', function(req, res, next) {
     })
     .catch(err => { return next(err) });
 });
+
+  /*
+  var user_id = knex('swe_user')
+    .('id')
+    .insert(values)
+    .then(result => {
+      res.send(util.message('Successfully inserted new user: ' + req.query.first_name));
+    })
+    .catch(err => { return next(err) });
+
+  values = {
+    user_id:  user_id[0],
+    diet_id: req.query.diet_id 
+  }
+  */
+
+  /*
+  
+  knex('user_diet').insert(values)
+    .then(result => {
+      res.send(util.message('Successfully inserted diet for user: ' + req.query.id));
+    })
+    .catch(err => { return next(err) });
+  /*
+  values = {
+    user_id: user_id, //req.query.id,
+    occupation_id: req.query.occupation_id
+  }
+  */
+  /*
+  knex('user_occupation').insert(values)
+    .then(result => {
+      res.send(util.message('Successfully inserted occupation for user: ' + req.query.id));
+    })
+    .catch(err => { return next(err) });
+
+  values = {
+    user_id: req.query.id,
+    position_id: req.query.position_id
+  }
+
+  knex('user_position').insert(values)
+    .then(result => {
+      res.send(util.message('Successfully inserted position for user: ' + req.query.id));
+    })
+    .catch(err => { return next(err) });
+  
+  values = {
+    user_id:  req.query.id,
+    major_id: req.query.major_id,
+  } 
+
+  knex('user_major').insert(values)
+    .then(result => {
+      res.send(util.message('Successfully inserted major for user: ' + req.query.id));
+    })
+    .catch(err => { return next(err) });
+  
+  values = {
+    user_id:  req.query.id,
+    company_id: req.query.company_id,
+    rank: req.query.rank
+
+  }
+  
+  knex('user_company_rank').insert(values)
+    .then(result => {
+      res.send(util.message('Successfully inserted company rank for user: ' + req.query.id));
+    })
+    .catch(err => { return next(err) }
+    */
   
 
 //Login a user
-//Unsuccessful on postman, error updated_at does not exist
+//Unsuccessful on postman
+//TODO: add updated at to the database
 router.put('/login', function(req, res, next) {
   knex('swe_user')
     .update ({
