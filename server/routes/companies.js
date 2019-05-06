@@ -219,6 +219,92 @@ router.get('/filter', function(req, res, next) {
 // Add a single company or related data
 router.post('/', function(req, res, next) {
   //make a dict to store multiple values?
+  
+  values = {
+    name: req.query.name,
+    website: req.query.website,
+    logo: req.query.logo,
+    citizenship_requirement: req.query.citizenship_requirement,
+    description: req.query.description
+  }
+  if (req.query.rank && req.query.user_id) {
+    rankValues = {
+      user_id: req.query.user_id,
+      company_id: ids[0],
+      rank: req.query.rank
+    };
+  }
+  if (req.query.position_id) {
+    Object.keys(req.query).forEach(function(key){
+      companyPositions = {
+        company_id: ids[0],
+        position_id: req.query.position_id
+      }
+    };
+  }
+  if (req.query.major_id) {
+    Object.keys(req.query).forEach(function(key){
+      companyMajors = {
+        company_id: ids[0],
+        major_id: req.query.major_id
+      };
+    }
+  }
+  if (req.query.contact_id) {
+    companyContacts = {
+      company_id: ids[0],
+      contact_id: req.query.contact_id
+    };
+  }
+  if (req.query.event_id) {
+    companyEvents = {
+      company_id: ids[0],
+      event_id: req.query.event_id
+    };
+  }
+
+  knex.transaction(function(trx) {
+    return knex('company')
+      .transacting(trx)
+      .insert(values)
+      .then(function(){
+        return knex('user_company_rank')
+          .transacting(trx)
+          .insert(rankValues)
+          .then(function() {
+            return knex('company_position')
+              .transacting(trx)
+              .insert(companyPositions)
+              .then(function() {
+                return knex('company_major')
+                  .transacting(trx)
+                  .insert(companyMajors)
+                  .then(function() {
+                    return knex('company_contact')
+                      .transacting(trx)
+                      .insert(companyContacts)
+                      .then(function() {
+                        return knex('event_company')
+                          .transacting(trx)
+                          .insert(companyEvents)
+                          .then(trx.commit)
+                      })
+                  })
+                //  .catch(trx.rollback);
+              })
+              //.catch(trx.rollback);
+          })
+          //.catch(trx.rollback);
+      })
+      .catch(trx.rollback);
+  })
+  .then(function(){
+    res.send(util.message('Successfully inserted company'));
+  })
+  .catch(errr => {return next(err) });
+
+  /*
+  
   if(!req.query.name){
     util.throwError(400, '\'name\' is undefined');
   }
