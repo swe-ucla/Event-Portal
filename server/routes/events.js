@@ -24,26 +24,44 @@ router.get('/', function(req, res, next) {
   .catch(err => { return next(err) });
 });
 
+// Add a single event
 router.post('/', function(req, res, next) {
 	let errormsg = 'The following fields must not be null: ';
 	let validReq = true;
 	
   let values = { 
-  	fb_id: req.query.event_id, 
-  	name: req.query.name, 
-  	starts_at: req.query.starts_at, 
-  	ends_at: req.query.ends_at,
-  	quarter: req.query.quarter,
-  	location_id: req.query.location_id,
-  	description: req.query.description,
-  	fb_event: req.query.fb_event,
-  	picture: req.query.picture,
-  	is_featured: req.query.is_featured
+  	fb_id: req.body.event_id, 
+  	name: req.body.name, 
+  	starts_at: req.body.starts_at, 
+  	ends_at: req.body.ends_at,
+  	quarter: req.body.quarter,
+  	location_id: req.body.location_id,
+  	description: req.body.description,
+  	fb_event: req.body.fb_event,
+  	picture: req.body.picture,
+  	is_featured: req.body.is_featured
   };
 
-  let category_id = req.query.category_id;
-  let company_id = req.query.company_id;
-  let host_id = req.query.host_id;
+  let category_ids = req.body.categories;
+  let category_ids_length = category_ids.length;
+  let category_values = [];
+  for (var i = 0; i < category_ids_length; i++){
+  			category_values.push({ event_id: req.body.event_id, category_id: category_ids[i] });
+  }
+
+  let company_ids = req.body.companies;
+  let company_ids_length = company_ids.length;
+	let company_values = [];
+	for (var i = 0; i < company_ids_length; i++){
+  			company_values.push({ event_id: req.body.event_id, company_id: company_ids[i] });
+  }
+
+  let host_ids = req.body.hosts;
+  let host_ids_length = host_ids.length;
+  let host_values = [];
+  for (var i = 0; i < host_ids_length; i++){
+  			host_values.push({ event_id: req.body.event_id, host_id: host_ids[i] });
+  }
 
   Object.keys(values).forEach(function(key) {
   	if (!values[key]) {
@@ -52,93 +70,48 @@ router.post('/', function(req, res, next) {
   	}
 	});
 
-	if (!category_id) {
+	if (!category_ids) {
 		validReq = false;
 		errormsg += 'category_id, ';
 	}
-	if (!company_id) {
+	if (!company_ids) {
 		validReq = false;
 		errormsg += 'company_id, ';
 	}
-	if (!host_id) {
+	if (!host_ids) {
 		validReq = false;
-		errormsg += 'host+id, ';
+		errormsg += 'host_id, ';
 	}
 
 	if (!validReq) {
 		util.throwError(400, errormsg.substring(0, errormsg.length - 2));
 	}
-	else {
-		/*
-		knex.transaction(function(t) {
-   		return knex('event')
-   		.transacting(t)
-   		.insert(values)
-   		.then(function(t) {
-        return 
-        	knex('event_category')
-					.transacting(t)
-					.insert({
-						event_id: req.query.event_id,
-						category_id: category_id
-					})
-					.then(function(t) {
-						return 
-        			knex('event_company')
-							.transacting(t)
-							.insert({
-								event_id: req.query.event_id,
-								company_id: company_id
-							})
-							.then(function(t) {
-								return 
-        					knex('event_host')
-									.transacting(t)
-									.insert({
-										event_id: req.query.event_id,
-										host_id: host_id
-									})
-									.then(t.commit)
-									.catch(t.rollback)
+	knex.transaction(function(trx) {
+		return knex('event')
+			.transacting(trx)
+			.insert(values)
+			.then(function () {
+				return knex('event_category')
+					.transacting(trx)
+					.insert(category_values)
+					.then(function() {
+						return knex('event_company')
+							.transacting(trx)
+							.insert(company_values)
+							.then(function() {
+								return knex('event_host')
+									.transacting(trx)
+									.insert(host_values)
+									.then(trx.commit)
 							})
 					})
 			})
-  })
-	.then(function() {
- 		res.send(util.message('Successfully inserted new event: ' + req.query.name));
+			.catch(trx.rollback);
 	})
-	.catch(function(e) {
- 		err => { return next(err) }
-	});
-	*/
-
-		knex('event').insert(values)
-	  .catch(err => { return next(err) });
-	  
-		knex('event_category').insert({
-			event_id: req.query.event_id,
-			category_id: category_id
-		})
-		.catch(err => { return next(err) });
-
-		knex('event_company').insert({
-			event_id: req.query.event_id,
-			company_id: company_id
-		})
-		.catch(err => { return next(err) });
-
-		knex('event_host').insert({
-			event_id: req.query.event_id,
-			host_id: host_id
-		})
-		.catch(err => { return next(err) });
-
-	  knex('event').insert(values)
-	    .then(result => {
-	      res.send(util.message('Successfully inserted new event: ' + req.query.name));
-	    })
-	    .catch(err => { return next(err) });
-  }
+	.then(function() {
+		res.send(util.message('Successfully inserted new event: ' + req.body.name));
+	})
+	.catch(err => { return next(err) });
 });
 
 // GET all event names
@@ -183,60 +156,129 @@ router.get('/:event_id/id', function(req, res, next) {
 
 // Updated a single event by event_id
 router.put('/:event_id', function(req, res, next) {
-	const event_id = req.params.event_id;
+	const event_id = req.body.event_id;
+	let validReqForEvent = false;
+	//let successful = false;
 
 	let values = {
-  	name: req.query.name, 
-  	starts_at: req.query.starts_at, 
-  	ends_at: req.query.ends_at,
-  	quarter: req.query.quarter,
-  	location_id: req.query.location_id,
-  	description: req.query.description,
-  	fb_event: req.query.fb_event,
-  	picture: req.query.picture,
-  	is_featured: req.query.is_featured,
-  	updated_at: knex.raw('now()')
+  	name: req.body.name, 
+  	starts_at: req.body.starts_at, 
+  	ends_at: req.body.ends_at,
+  	quarter: req.body.quarter,
+  	location_id: req.body.location_id,
+  	description: req.body.description,
+  	fb_event: req.body.fb_event,
+  	picture: req.body.picture,
+  	is_featured: req.body.is_featured
   };
 
-  let category_id = req.query.category_id;
-  let company_id = req.query.company_id;
-  let host_id = req.query.host_id;
+  let category_id = req.body.category_id;
+  let company_id = req.body.company_id;
+  let host_id = req.body.host_id;
 
-  knex('event')
-  	.where({ fb_id: event_id })
-  	.update(values)
-    .then(result => {
-      if (result) {
-        res.send(util.message('Successfully updated event_id: ' + event_id));
-      } else {
-        util.throwError(404, 'No event_id found to update');
-      }
-    })
-    .catch(err => { return next(err) });
+  Object.keys(values).forEach(function(key) {
+  	if (!validReqForEvent && values[key]) {
+  		validReqForEvent = true;
+  	}
+	});
 
-  knex('event_category')
-  	.where({ event_id: event_id })
-		.update({
-			category_id: category_id,
-			updated_at: knex.raw('now()')
-		})
-		.catch(err => { return next(err) });
 
-	knex('event_host')
-		.where({ event_id: event_id })
-		.update({
-			host_id: host_id,
-			updated_at: knex.raw('now()')
-		})
-		.catch(err => { return next(err) });
+  knex.transaction(function(trx) {
+  	return knex('event')
+  		.transacting(trx)
+  		.where({ fb_id: event_id })
+  		.update(values)
+  		.then(function() {
+  			return knex('event_category')
+  				.transacting(trx)
+  				.where({ event_id: event_id })
+					.update({ category_id: category_id })
+					.then(function() {
+						return knex('event_host')
+							.where({ event_id: event_id })
+							.update({ host_id: host_id })
+							.then(function() {
+								return knex('event_company')
+									.where({ event_id: event_id })
+									.update({ company_id: company_id })
+									.then(trx.commit)
+							})
+					})
+  		})
+  		.catch(trx.rollback);
+  })
+  .then(function() {
+  	res.send(util.message('Successfully updated event_id: ' + event_id));
+  })
+  .catch(err => { return next(err) });
+ 
+
+  /*
+  if (validReqForEvent){
+	  knex('event')
+	  	.where({ fb_id: event_id })
+	  	.update(values)
+	    .then(result => {
+	      if (result) {
+	      	successful = true;
+	        res.send(util.message('Successfully updated event_id: ' + event_id));
+	      } else {
+	        util.throwError(404, 'No event_id found to update');
+	      }
+	    })
+	    .catch(err => { return next(err) });
+  }
+
+  if (category_id){
+	  knex('event_category')
+	  	.where({ event_id: event_id })
+			.update({
+				category_id: category_id
+			})
+			.then(result => {
+	      if (result) {
+	        res.send(util.message('Successfully updated event_id: ' + event_id));
+	      } else {
+	        util.throwError(404, 'No event_id found to update');
+	      }
+	    })
+			.catch(err => { return next(err) });
+	}
+
+	if (host_id){
+		knex('event_host')
+			.where({ event_id: event_id })
+			.update({
+				host_id: host_id
+			})
+			.then(result => {
+	      if (result) {
+	      	successful = true;
+	        res.send(util.message('Successfully updated event_id: ' + event_id));
+	      } else {
+	        util.throwError(404, 'No event_id found to update');
+	      }
+	    })
+			.catch(err => { return next(err) })
+	}
 		
-	knex('event_company')
-		.where({ event_id: event_id })
-		.update({
-			company_id: company_id,
-			updated_at: knex.raw('now()')
-		})
-		.catch(err => { return next(err) });
+	if (company_id){
+		knex('event_company')
+			.where({ event_id: event_id })
+			.update({
+				company_id: company_id
+			})
+			.then(result => {
+	      if (result) {
+	      	successful = true;
+	        res.send(util.message('Successfully updated event_id: ' + event_id));
+	      } else {
+	        util.throwError(404, 'No event_id found to update');
+	      }
+	    })
+			.catch(err => { return next(err) });
+	}
+	*/
 });
 
 
@@ -425,7 +467,7 @@ router.get('/:event_id/host', function(req, res, next) {
 // GET all companies for a given event
 router.get('/:event_id/companies', function(req, res, next) {
   const event_id = req.params.event_id;
-  knex('event_company').where('event_id', 'event_id').select('company_id')
+  knex('event_company').where('event_id', event_id).select('company_id')
   .then(result => {
   	if (result.length) {
   		res.json(result);
@@ -439,12 +481,12 @@ router.get('/:event_id/companies', function(req, res, next) {
 // GET all categories for a given event
 router.get('/:event_id/categories', function(req, res, next) {
   const event_id = req.params.event_id;
-  knex('event_category').where('event_id', 'event_id').select('category_id')
+  knex('event_category').where('event_id', event_id).select('category_id')
   .then(result => {
   	if (result.length) {
   		res.json(result);
   	} else {
-  		res.status(404).json('No cateogires found for event_id = ' + event_id + '.');
+  		res.status(404).json('No categories found for event_id = ' + event_id + '.');
   	}
   })
   .catch(err => { return next(err) });
