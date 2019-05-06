@@ -43,44 +43,61 @@ router.post('/', function(req, res, next) {
   };
 
   let category_ids = req.body.categories;
-  let category_ids_length = category_ids.length;
   let category_values = [];
-  for (var i = 0; i < category_ids_length; i++){
-  			category_values.push({ event_id: req.body.event_id, category_id: category_ids[i] });
-  }
+  let category_ids_length;
+
+  if (category_ids){
+  	category_ids_length = category_ids.length;
+
+	  for (var i = 0; i < category_ids_length; i++){
+	  			category_values.push({ event_id: req.body.event_id, category_id: category_ids[i] });
+	  }
+  } 
 
   let company_ids = req.body.companies;
-  let company_ids_length = company_ids.length;
 	let company_values = [];
-	for (var i = 0; i < company_ids_length; i++){
-  			company_values.push({ event_id: req.body.event_id, company_id: company_ids[i] });
-  }
+  let company_ids_length;
 
+  if (company_ids){
+  	company_ids_length = company_ids.length;
+		for (var i = 0; i < company_ids_length; i++){
+	  			company_values.push({ event_id: req.body.event_id, company_id: company_ids[i] });
+	  }
+	}
   let host_ids = req.body.hosts;
-  let host_ids_length = host_ids.length;
   let host_values = [];
-  for (var i = 0; i < host_ids_length; i++){
-  			host_values.push({ event_id: req.body.event_id, host_id: host_ids[i] });
-  }
+  let host_ids_length;
+
+  if (host_ids){
+  	host_ids_length = host_ids.length;
+	  for (var i = 0; i < host_ids_length; i++){
+	  			host_values.push({ event_id: req.body.event_id, host_id: host_ids[i] });
+	  }
+	}
 
   Object.keys(values).forEach(function(key) {
   	if (!values[key]) {
   		validReq = false;
-  		errormsg += key + ', ';
+  		if (key == 'fb_id'){
+  			errormsg += 'event_id, ';
+  		}
+  		else{
+  			errormsg += key + ', ';
+  		}
   	}
 	});
 
 	if (!category_ids) {
 		validReq = false;
-		errormsg += 'category_id, ';
+		errormsg += 'categories, ';
 	}
 	if (!company_ids) {
 		validReq = false;
-		errormsg += 'company_id, ';
+		errormsg += 'companies, ';
 	}
 	if (!host_ids) {
 		validReq = false;
-		errormsg += 'host_id, ';
+		errormsg += 'hosts, ';
 	}
 
 	if (!validReq) {
@@ -156,9 +173,8 @@ router.get('/:event_id/id', function(req, res, next) {
 
 // Updated a single event by event_id
 router.put('/:event_id', function(req, res, next) {
-	const event_id = req.body.event_id;
+	const event_id = req.params.event_id;
 	let validReqForEvent = false;
-	//let successful = false;
 
 	let values = {
   	name: req.body.name, 
@@ -172,9 +188,45 @@ router.put('/:event_id', function(req, res, next) {
   	is_featured: req.body.is_featured
   };
 
-  let category_id = req.body.category_id;
-  let company_id = req.body.company_id;
-  let host_id = req.body.host_id;
+  let category_ids = req.body.categories;
+	let category_values = [];
+  let category_ids_length; 
+
+  if (category_ids){
+	  category_ids_length = category_ids.length;
+
+	  for (var i = 0; i < category_ids_length; i++){
+	  			category_values.push({ event_id: event_id, category_id: category_ids[i] });
+	  }
+	}
+
+  let company_ids = req.body.companies;
+	let company_values = [];
+  let company_ids_length;
+
+  if (company_ids){
+		company_ids_length = company_ids.length;
+
+		for (var i = 0; i < company_ids_length; i++){
+	  			company_values.push({ event_id: event_id, company_id: company_ids[i] });
+	  }
+	}
+
+  let host_ids = req.body.hosts;
+  let host_values = [];
+  let host_ids_length;
+
+  if (host_ids){ 
+  	host_ids_length = host_ids.length;
+
+	  for (var i = 0; i < host_ids_length; i++){
+	  			host_values.push({ event_id: event_id, host_id: host_ids[i] });
+	  }
+	}
+
+	let remove_category_ids = req.body.remove_categories;
+	let remove_company_ids = req.body.remove_companies;
+  let remove_host_ids = req.body.remove_hosts;
 
   Object.keys(values).forEach(function(key) {
   	if (!validReqForEvent && values[key]) {
@@ -182,26 +234,66 @@ router.put('/:event_id', function(req, res, next) {
   	}
 	});
 
-
   knex.transaction(function(trx) {
   	return knex('event')
   		.transacting(trx)
-  		.where({ fb_id: event_id })
-  		.update(values)
+  		.modify(function(queryBuilder) {
+  			if (validReqForEvent){
+  				queryBuilder.where({ fb_id: event_id }).update(values);
+  			}
+  		})
   		.then(function() {
   			return knex('event_category')
   				.transacting(trx)
-  				.where({ event_id: event_id })
-					.update({ category_id: category_id })
+  				.insert(category_values)
 					.then(function() {
-						return knex('event_host')
-							.where({ event_id: event_id })
-							.update({ host_id: host_id })
+						return knex('event_category')
+		  				.transacting(trx)
+		  				.modify(function(queryBuilder) {
+		  					if (remove_category_ids){
+		  						queryBuilder.where({ event_id: event_id })
+		  							.andWhere((builder) =>
+		  								builder.whereIn('category_id', remove_category_ids)
+		  							)
+										.del();
+		  					}
+		  				})
 							.then(function() {
-								return knex('event_company')
-									.where({ event_id: event_id })
-									.update({ company_id: company_id })
-									.then(trx.commit)
+								return knex('event_host')
+									.transacting(trx)
+						  		.insert(host_values)
+									.then(function() {
+										return knex('event_host')
+											.transacting(trx)
+											.modify(function(queryBuilder) {
+												if (remove_host_ids){
+													queryBuilder.where({ event_id: event_id })
+														.andWhere((builder) =>
+															builder.whereIn('host_id', remove_host_ids)
+														)
+														.del();
+												}
+											})
+											.then(function() {
+												return knex('event_company')
+													.transacting(trx)
+													.insert(company_values)
+													.then(function() {
+														return knex('event_company')
+															.transacting(trx)
+															.modify(function(queryBuilder){
+																if (remove_company_ids){
+																	queryBuilder.where({ event_id: event_id })
+																		.andWhere((builder) =>
+																			builder.whereIn('company_id', remove_company_ids)
+																		)
+																		.del();
+																}
+															})
+															.then(trx.commit)
+													})
+											})
+									})
 							})
 					})
   		})
@@ -211,74 +303,6 @@ router.put('/:event_id', function(req, res, next) {
   	res.send(util.message('Successfully updated event_id: ' + event_id));
   })
   .catch(err => { return next(err) });
- 
-
-  /*
-  if (validReqForEvent){
-	  knex('event')
-	  	.where({ fb_id: event_id })
-	  	.update(values)
-	    .then(result => {
-	      if (result) {
-	      	successful = true;
-	        res.send(util.message('Successfully updated event_id: ' + event_id));
-	      } else {
-	        util.throwError(404, 'No event_id found to update');
-	      }
-	    })
-	    .catch(err => { return next(err) });
-  }
-
-  if (category_id){
-	  knex('event_category')
-	  	.where({ event_id: event_id })
-			.update({
-				category_id: category_id
-			})
-			.then(result => {
-	      if (result) {
-	        res.send(util.message('Successfully updated event_id: ' + event_id));
-	      } else {
-	        util.throwError(404, 'No event_id found to update');
-	      }
-	    })
-			.catch(err => { return next(err) });
-	}
-
-	if (host_id){
-		knex('event_host')
-			.where({ event_id: event_id })
-			.update({
-				host_id: host_id
-			})
-			.then(result => {
-	      if (result) {
-	      	successful = true;
-	        res.send(util.message('Successfully updated event_id: ' + event_id));
-	      } else {
-	        util.throwError(404, 'No event_id found to update');
-	      }
-	    })
-			.catch(err => { return next(err) })
-	}
-		
-	if (company_id){
-		knex('event_company')
-			.where({ event_id: event_id })
-			.update({
-				company_id: company_id
-			})
-			.then(result => {
-	      if (result) {
-	      	successful = true;
-	        res.send(util.message('Successfully updated event_id: ' + event_id));
-	      } else {
-	        util.throwError(404, 'No event_id found to update');
-	      }
-	    })
-			.catch(err => { return next(err) });
-	}
-	*/
 });
 
 
