@@ -95,9 +95,9 @@ router.post('/', function(req, res, next) {
   if (!category_ids){
   	util.throwError(400, "Missing 'categories' parameter.");
   } 
-	for (var i = 0; i < category_ids.length; i++){
-  	category_values.push({ event_id: req.body.event_id, category_id: category_ids[i] });
-  }
+  category_ids.forEach(function(entry) {
+  	category_values.push({ event_id: req.body.event_id, category_id: entry });
+  });
 
   let company_ids = req.body.companies;
 	let company_values = [];
@@ -106,9 +106,9 @@ router.post('/', function(req, res, next) {
   	util.throwError(400, "Missing 'companies' parameter.");	
 		
 	}
-	for (var i = 0; i < company_ids.length; i++){
-	  company_values.push({ event_id: req.body.event_id, company_id: company_ids[i] });
-	}
+	company_ids.forEach(function(entry) {
+		company_values.push({ event_id: req.body.event_id, company_id: entry });
+	});
 
   let host_ids = req.body.hosts;
   let host_values = [];
@@ -116,9 +116,9 @@ router.post('/', function(req, res, next) {
   if (!host_ids){
   	util.throwError(400, "Missing 'hosts' parameter.");
 	}
-	for (var i = 0; i < host_ids.length; i++){
-  	host_values.push({ event_id: req.body.event_id, host_id: host_ids[i] });
-  }
+  host_ids.forEach(function(entry) {
+  	host_values.push({ event_id: req.body.event_id, host_id: entry });
+  });
 
 	knex.transaction(function(trx) {
 		return knex('event')
@@ -169,27 +169,27 @@ router.put('/:event_id', function(req, res, next) {
 	let category_values = [];
 
   if (category_ids){
-	  for (var i = 0; i < category_ids.length; i++){
-	  			category_values.push({ event_id: event_id, category_id: category_ids[i] });
-	  }
+	  category_ids.forEach(function(entry) {
+	  	category_values.push({ event_id: event_id, category_id: entry });
+	  });
 	}
 
   let company_ids = req.body.companies;
 	let company_values = [];
 
   if (company_ids){
-		for (var i = 0; i < company_ids.length; i++){
-	  			company_values.push({ event_id: event_id, company_id: company_ids[i] });
-	  }
+	  company_ids.forEach(function(entry) {
+	  	company_values.push({ event_id: event_id, company_id: entry });
+	  });
 	}
 
   let host_ids = req.body.hosts;
   let host_values = [];
 
-  if (host_ids){ 
-	  for (var i = 0; i < host_ids.length; i++){
-	  			host_values.push({ event_id: event_id, host_id: host_ids[i] });
-	  }
+  if (host_ids){
+	  host_ids.forEach(function(entry) {
+	  	host_values.push({ event_id: event_id, host_id: entry });
+	  });
 	}
 
 	let remove_category_ids = req.body.remove_categories;
