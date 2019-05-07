@@ -92,38 +92,33 @@ router.post('/', function(req, res, next) {
 
   let category_ids = req.body.categories;
   let category_values = [];
-  if (category_ids){
-	  for (var i = 0; i < category_ids.length; i++){
-	  			category_values.push({ event_id: req.body.event_id, category_id: category_ids[i] });
-	  }
-  } 
-  else{
+  if (!category_ids){
   	util.throwError(400, "Missing 'categories' parameter.");
+  } 
+	for (var i = 0; i < category_ids.length; i++){
+  	category_values.push({ event_id: req.body.event_id, category_id: category_ids[i] });
   }
 
   let company_ids = req.body.companies;
 	let company_values = [];
 
-  if (company_ids){
-		for (var i = 0; i < company_ids.length; i++){
-	  			company_values.push({ event_id: req.body.event_id, company_id: company_ids[i] });
-	  }
+  if (!company_ids){
+  	util.throwError(400, "Missing 'companies' parameter.");	
+		
 	}
-	else{
-		util.throwError(400, "Missing 'companies' parameter.");	
+	for (var i = 0; i < company_ids.length; i++){
+	  company_values.push({ event_id: req.body.event_id, company_id: company_ids[i] });
 	}
 
   let host_ids = req.body.hosts;
   let host_values = [];
 
-  if (host_ids){
-	  for (var i = 0; i < host_ids.length; i++){
-	  			host_values.push({ event_id: req.body.event_id, host_id: host_ids[i] });
-	  }
+  if (!host_ids){
+  	util.throwError(400, "Missing 'hosts' parameter.");
 	}
-	else{
-		util.throwError(400, "Missing 'hosts' parameter.");
-	}
+	for (var i = 0; i < host_ids.length; i++){
+  	host_values.push({ event_id: req.body.event_id, host_id: host_ids[i] });
+  }
 
 	knex.transaction(function(trx) {
 		return knex('event')
