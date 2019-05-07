@@ -24,11 +24,6 @@ router.post('/', function(req, res, next) {
   if (!req.body.occupation_id) {
     util.throwError(400, 'Occupation ID cannot be null');
   }
-
-  let values = { // id populates automatically
-  if (!req.body.occupation_id) {
-    util.throwError(400, 'Occupation ID cannot be null');
-  }  
   if (!req.body.name) {
     util.throwError(400, 'Occupation name cannot be null');
   }
