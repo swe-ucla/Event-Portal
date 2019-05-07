@@ -92,15 +92,17 @@ router.post('/', function(req, res, next) {
 
   let category_ids = req.body.categories;
   let category_values = [];
+  let company_ids = req.body.companies;
+	let company_values = [];
+	let host_ids = req.body.hosts;
+  let host_values = [];
+
   if (!category_ids){
   	util.throwError(400, "Missing 'categories' parameter.");
   } 
   category_ids.forEach(function(entry) {
   	category_values.push({ event_id: req.body.event_id, category_id: entry });
   });
-
-  let company_ids = req.body.companies;
-	let company_values = [];
 
   if (!company_ids){
   	util.throwError(400, "Missing 'companies' parameter.");	
@@ -109,9 +111,6 @@ router.post('/', function(req, res, next) {
 	company_ids.forEach(function(entry) {
 		company_values.push({ event_id: req.body.event_id, company_id: entry });
 	});
-
-  let host_ids = req.body.hosts;
-  let host_values = [];
 
   if (!host_ids){
   	util.throwError(400, "Missing 'hosts' parameter.");
@@ -167,6 +166,10 @@ router.put('/:event_id', function(req, res, next) {
 
   let category_ids = req.body.categories;
 	let category_values = [];
+  let company_ids = req.body.companies;
+	let company_values = [];
+  let host_ids = req.body.hosts;
+  let host_values = [];
 
   if (category_ids){
 	  category_ids.forEach(function(entry) {
@@ -174,17 +177,11 @@ router.put('/:event_id', function(req, res, next) {
 	  });
 	}
 
-  let company_ids = req.body.companies;
-	let company_values = [];
-
   if (company_ids){
 	  company_ids.forEach(function(entry) {
 	  	company_values.push({ event_id: event_id, company_id: entry });
 	  });
 	}
-
-  let host_ids = req.body.hosts;
-  let host_values = [];
 
   if (host_ids){
 	  host_ids.forEach(function(entry) {
