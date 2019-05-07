@@ -20,7 +20,6 @@ router.get('/', function(req, res, next) {
 });
 
 // Add a single occupation
-// Add a single UCLA major. Can add duplicates due to unstrict checks.
 router.post('/', function(req, res, next) {
   if (!req.query.id) {
     util.throwError(400, 'Occupation id cannot be null');
