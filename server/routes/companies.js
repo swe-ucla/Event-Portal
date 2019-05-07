@@ -227,82 +227,82 @@ router.post('/', function(req, res, next) {
     citizenship_requirement: req.query.citizenship_requirement,
     description: req.query.description
   }
-  if (req.query.rank && req.query.user_id) {
-    rankValues = {
-      user_id: req.query.user_id,
-      company_id: ids[0],
-      rank: req.query.rank
-    };
-  }
-  if (req.query.position_id) {
-    Object.keys(req.query).forEach(function(key){
-      companyPositions = {
-        company_id: ids[0],
-        position_id: req.query.position_id
-      }
-    };
-  }
-  if (req.query.major_id) {
-    Object.keys(req.query).forEach(function(key){
-      companyMajors = {
-        company_id: ids[0],
-        major_id: req.query.major_id
-      };
-    }
-  }
-  if (req.query.contact_id) {
-    companyContacts = {
-      company_id: ids[0],
-      contact_id: req.query.contact_id
-    };
-  }
-  if (req.query.event_id) {
-    companyEvents = {
-      company_id: ids[0],
-      event_id: req.query.event_id
-    };
-  }
+
+  //let ids = [];
+  //ids[0] = 1;
+
+  var queryCompany = knex('company').insert(values)
 
   knex.transaction(function(trx) {
-    return knex('company')
-      .transacting(trx)
-      .insert(values)
-      .then(function(){
-        return knex('user_company_rank')
-          .transacting(trx)
-          .insert(rankValues)
-          .then(function() {
-            return knex('company_position')
-              .transacting(trx)
-              .insert(companyPositions)
-              .then(function() {
-                return knex('company_major')
-                  .transacting(trx)
-                  .insert(companyMajors)
-                  .then(function() {
-                    return knex('company_contact')
-                      .transacting(trx)
-                      .insert(companyContacts)
-                      .then(function() {
-                        return knex('event_company')
-                          .transacting(trx)
-                          .insert(companyEvents)
-                          .then(trx.commit)
-                      })
-                  })
-                //  .catch(trx.rollback);
-              })
-              //.catch(trx.rollback);
-          })
-          //.catch(trx.rollback);
+    return queryCompany.transacting(trx)
+      .returning('id')
+      .then(async function(ids){
+  
+        let queries = [];
+        let i = 0;
+        if (req.query.rank && req.query.user_id) {
+          rankValues = {
+            user_id: req.query.user_id,
+            company_id: ids[0],
+            rank: req.query.rank
+          };
+          var queryRank = knex('user_company_rank').insert(rankValues)
+          queries[i] = queryRank;
+          i++;
+        }
+        if (req.query.position_id) {
+            Object.keys(req.query).forEach(function(key){
+              companyPositions = {
+                company_id: parseInt(ids[0]),
+                position_id: req.query.position_id
+              };
+            });
+            var queryPos = knex('company_position').insert(companyPositions)
+            queries[i] = queryPos;
+            i++;
+          }
+        if (req.query.major_id) {
+          Object.keys(req.query).forEach(function(key){
+            companyMajors = {
+              company_id: ids[0],
+              major_id: req.query.major_id
+            };
+          });
+          var queryMajor = knex('company_major').insert(companyMajors)
+          queries[i] = queryMajor;
+          i++;
+        }
+        if (req.query.contact_id) {
+          companyContacts = {
+            company_id: ids[0],
+            contact_id: req.query.contact_id
+          };
+          var queryContact = knex('company_contact').insert(companyContacts)
+          queries[i] = queryContact;
+          i++;
+        }   
+        if (req.query.event_id) {
+          companyEvents = {
+            company_id: ids[0],
+            event_id: req.query.event_id
+          };
+          var queryEvent = knex('event_company').insert(companyEvents)
+          queries[i] = queryEvent;
+          i++;
+        }
+        //return knex.transaction(async function(trx){
+          for(let j = 0; j < i; i++){
+            //util.throwError(queries);
+            await queries[j].transacting(trx);
+          }
+          return trx.commit;
+        })
       })
-      .catch(trx.rollback);
-  })
-  .then(function(){
-    res.send(util.message('Successfully inserted company'));
-  })
-  .catch(errr => {return next(err) });
-});
+    .then(function(){
+      res.send(util.message('Successfully inserted company'));
+    })
+    .catch(err => {return next(err) });
+  });
 
 //Update a single company
 router.put('/:company_id', function(req, res, next) {
