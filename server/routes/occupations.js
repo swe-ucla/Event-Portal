@@ -21,15 +21,14 @@ router.get('/', function(req, res, next) {
 
 // Add a single occupation
 router.post('/', function(req, res, next) {
-  if (!req.query.id) {
-    util.throwError(400, 'Occupation id cannot be null');
+  if (!req.body.id) {
+    util.throwError(400, 'Occupation ID cannot be null');
   }
 
-  values = { 
-    id: req.query.id,
-    name: req.query.name,
-    updated_at: req.query.updated_at,
-    created_at: req.query.created_at
+  let values = { // id populates automatically
+    name: req.body.name,
+    updated_at: req.body.updated_at,
+    created_at: req.body.created_at
   };
 
   knex('occupation')
@@ -42,8 +41,8 @@ router.post('/', function(req, res, next) {
 
 // Update a single occupation
 router.put('/:occupation_id', function(req, res, next) {
-  const occupation_id = req.params.occupation_id;
-  values = { name: req.query.name };
+  let occupation_id = req.params.occupation_id;
+  let values = { name: req.body.name };
   knex('occupation').update(values).where({ id: occupation_id })
     .then(result => {
       if (result) {
@@ -53,11 +52,12 @@ router.put('/:occupation_id', function(req, res, next) {
       }
     })
     .catch(err => { return next(err) });
+
 });
 
 // Delete a single occupation
 router.delete('/:occupation_id', function(req, res, next) {
-  const occupation_id = req.params.occupation_id;
+  let occupation_id = req.params.occupation_id;
   knex('occupation').del().where({ id: occupation_id })
     .then(result => {
       if (result) {
