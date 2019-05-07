@@ -82,55 +82,47 @@ router.post('/', function(req, res, next) {
   Object.keys(values).forEach(function(key) {
   	if (!values[key]) {
   		if (key == 'fb_id'){
-  			util.throwError(400, 'Missing \'event_id\' parameter.');
+  			util.throwError(400, "Missing 'event_id' parameter.");
   		}
   		else{
-  			util.throwError(400, 'Missing \'' + key + '\' parameter.');
+  			util.throwError(400, "Missing '" + key + "' parameter.");
   		}
   	}
 	});
 
   let category_ids = req.body.categories;
   let category_values = [];
-  let category_ids_length;
-
   if (category_ids){
-  	category_ids_length = category_ids.length;
-
-	  for (var i = 0; i < category_ids_length; i++){
+	  for (var i = 0; i < category_ids.length; i++){
 	  			category_values.push({ event_id: req.body.event_id, category_id: category_ids[i] });
 	  }
   } 
   else{
-  	util.throwError(400, 'Missing \'categories\' parameter.');
+  	util.throwError(400, "Missing 'categories' parameter.");
   }
 
   let company_ids = req.body.companies;
 	let company_values = [];
-  let company_ids_length;
 
   if (company_ids){
-  	company_ids_length = company_ids.length;
-		for (var i = 0; i < company_ids_length; i++){
+		for (var i = 0; i < company_ids.length; i++){
 	  			company_values.push({ event_id: req.body.event_id, company_id: company_ids[i] });
 	  }
 	}
 	else{
-		util.throwError(400, 'Missing \'companies\' parameter.');	
+		util.throwError(400, "Missing 'companies' parameter.");	
 	}
 
   let host_ids = req.body.hosts;
   let host_values = [];
-  let host_ids_length;
 
   if (host_ids){
-  	host_ids_length = host_ids.length;
-	  for (var i = 0; i < host_ids_length; i++){
+	  for (var i = 0; i < host_ids.length; i++){
 	  			host_values.push({ event_id: req.body.event_id, host_id: host_ids[i] });
 	  }
 	}
 	else{
-		util.throwError(400, 'Missing \'hosts\' parameter.');
+		util.throwError(400, "Missing 'hosts' parameter.");
 	}
 
 	knex.transaction(function(trx) {
@@ -180,36 +172,27 @@ router.put('/:event_id', function(req, res, next) {
 
   let category_ids = req.body.categories;
 	let category_values = [];
-  let category_ids_length; 
 
   if (category_ids){
-	  category_ids_length = category_ids.length;
-
-	  for (var i = 0; i < category_ids_length; i++){
+	  for (var i = 0; i < category_ids.length; i++){
 	  			category_values.push({ event_id: event_id, category_id: category_ids[i] });
 	  }
 	}
 
   let company_ids = req.body.companies;
 	let company_values = [];
-  let company_ids_length;
 
   if (company_ids){
-		company_ids_length = company_ids.length;
-
-		for (var i = 0; i < company_ids_length; i++){
+		for (var i = 0; i < company_ids.length; i++){
 	  			company_values.push({ event_id: event_id, company_id: company_ids[i] });
 	  }
 	}
 
   let host_ids = req.body.hosts;
   let host_values = [];
-  let host_ids_length;
 
   if (host_ids){ 
-  	host_ids_length = host_ids.length;
-
-	  for (var i = 0; i < host_ids_length; i++){
+	  for (var i = 0; i < host_ids.length; i++){
 	  			host_values.push({ event_id: event_id, host_id: host_ids[i] });
 	  }
 	}

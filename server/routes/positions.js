@@ -22,7 +22,7 @@ router.get('/', function(req, res, next) {
 // Add a single position
 router.post('/', function(req, res, next) {
   if (!req.body.role) {
-    util.throwError(400, 'Position role must not be null');
+    util.throwError(400, "Missing 'role' parameter.");
   }
   
   knex('position').insert({ role: req.body.role })
@@ -35,10 +35,10 @@ router.post('/', function(req, res, next) {
 // Update a single position
 router.put('/:position_id', function(req, res, next) {
   if (!req.params.position_id){
-    util.throwError(400, 'Missing \'position_id\' parameter.');
+    util.throwError(400, "Missing 'position_id' parameter.");
   }
   if (!req.body.role){
-    util.throwError(400, 'Missing \'role\' parameter.');
+    util.throwError(400, "Missing 'role' parameter.");
   }
 
   knex('position').update({ role: req.body.role }).where({ id: req.params.position_id })
