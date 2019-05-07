@@ -21,14 +21,21 @@ router.get('/', function(req, res, next) {
 
 // Add a single occupation
 router.post('/', function(req, res, next) {
-  if (!req.body.id) {
+  if (!req.body.occupation_id) {
     util.throwError(400, 'Occupation ID cannot be null');
   }
 
   let values = { // id populates automatically
+  if (!req.body.occupation_id) {
+    util.throwError(400, 'Occupation id cannot be null');
+  }  
+  if (!req.body.name) {
+    util.throwError(400, 'Occupation name cannot be null');
+  }
+
+  let values = { 
+    id: req.body.occupation_id,
     name: req.body.name,
-    updated_at: req.body.updated_at,
-    created_at: req.body.created_at
   };
 
   knex('occupation')
