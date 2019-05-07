@@ -4,6 +4,7 @@ import ReactGA from 'react-ga';
 import { createBrowserHistory } from 'history';
 
 import NavBar from './components/NavBar.js'
+import Footer from './components/Footer.js'
 import Checkout from './components/Checkout.js';
 import ExamplePostForm from './components/ExamplePostForm.js'
 import ExamplePutForm from './components/ExamplePutForm.js'
@@ -35,6 +36,8 @@ class App extends Component {
     return (
       <Router history={history}>
         <NavBar />
+        <Footer />
+        
         <Route path="/checkout" component={Checkout} />
         <Route path="/post" component={ExamplePostForm} />
         <Route path="/put" component={ExamplePutForm} />
