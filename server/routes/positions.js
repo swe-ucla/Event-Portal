@@ -37,11 +37,11 @@ router.put('/:position_id', function(req, res, next) {
   if (!req.params.position_id){
     util.throwError(400, 'Missing \'position_id\' parameter.');
   }
-  if (!req.query.role){
+  if (!req.body.role){
     util.throwError(400, 'Missing \'role\' parameter.');
   }
-  
-  knex('position').update({ role: req.query.role }).where({ id: req.params.position_id })
+
+  knex('position').update({ role: req.body.role }).where({ id: req.params.position_id })
     .then(result => {
       if (result) {
         res.send(util.message('Successfully updated position: ' + req.params.position_id));
