@@ -266,6 +266,18 @@ router.get('/:user_id/companies', function(req, res, next) {
 // GET all events a user is attending
 router.get('/:user_id/events', function(req, res, next) {
   const user_id = req.params.user_id;
+  knex('swe_user').select()
+  .where( {id: user_id} )
+  .then(result => {
+      if (result.length) {
+        res.json(result);
+      } else {
+        util.throwError(404, 'No users matching user_id = ' + user_id + ' found');
+      }
+    })
+    .catch(err => { return next(err) 
+  });
+  const user_id = req.params.user_id;
   db.query('SELECT event_id FROM event_checkin WHERE user_id = $1 UNION SELECT event_id FROM event_registration \
   WHERE user_id = $1', [id], (err, result) => {
     if (err) return next(err);
@@ -275,6 +287,18 @@ router.get('/:user_id/events', function(req, res, next) {
 
 // GET all events a user is hosting
 router.get('/:user_id/host', function(req, res, next) {
+  const user_id = req.params.user_id;
+  knex('swe_user').select()
+  .where( {id: user_id} )
+  .then(result => {
+      if (result.length) {
+        res.json(result);
+      } else {
+        util.throwError(404, 'No users matching user_id = ' + user_id + ' found');
+      }
+    })
+    .catch(err => { return next(err) 
+  });
   const user_id = req.params.user_id;
   db.query('SELECT event_id FROM event_host WHERE host_id = $1', [user_id], (err, result) => {
     if (err) return next(err);
@@ -292,39 +316,99 @@ router.get('/:user_id/majors', function(req, res, next) {
 });
 
 // GET all positions a user is seeking
+//TODO: Test on Postman
 router.get('/:user_id/positions', function(req, res, next) {
+  const user_id = req.params.user_id;
+  knex('user_position').select('position_id')
+  .where( {id: user_id} )
+  .then(result => {
+      if (result.length) {
+        res.json(result);
+      } else {
+        util.throwError(404, 'No users matching user_id = ' + user_id + ' found');
+      }
+    })
+    .catch(err => { return next(err) 
+  });
+  /*
   const user_id = req.params.user_id;
   db.query('SELECT position_id FROM user_position WHERE user_id = $1', [user_id], (err, result) => {
     if (err) return next(err);
     res.send(result.rows);
   });
+  */
 });
 
 // GET all the user's occupations
+//TODO: Test on postman
 router.get('/:user_id/occupations', function(req, res, next) {
+  const user_id = req.params.user_id;
+  knex('user_occupation').select('occupation_id')
+  .where( {id: user_id} )
+  .then(result => {
+      if (result.length) {
+        res.json(result);
+      } else {
+        util.throwError(404, 'No users matching user_id = ' + user_id + ' found');
+      }
+    })
+    .catch(err => { return next(err) 
+  });
+    /*
   const user_id = req.params.user_id;
   db.query('SELECT occupation_id FROM user_occupation WHERE user_id = $1', [user_id], (err, result) => {
     if (err) return next(err);
     res.send(result.rows);
   });
+  */
 });
 
 // GET the user's diet information
+//TODO: Test on Postman
 router.get('/:user_id/diet', function(req, res, next) {
+  const user_id = req.params.user_id;
+  knex('user_diet').select('diet_id ')
+  .where( {id: user_id} )
+  .then(result => {
+      if (result.length) {
+        res.json(result);
+      } else {
+        util.throwError(404, 'No users matching user_id = ' + user_id + ' found');
+      }
+    })
+    .catch(err => { return next(err) 
+  });
+/*
   const user_id = req.params.user_id;
   db.query('SELECT diet_id FROM user_diet WHERE user_id = $1', [user_id], (err, result) => {
     if (err) return next(err);
     res.send(result.rows);
   });
+*/
 });
 
 // GET a user's favorite events
+//TODO: Test on Postman
 router.get('/:user_id/favorite', function(req, res, next) {
+  const user_id = req.params.user_id;
+  knex('favorite_events').select('event_id ')
+  .where( {id: user_id} )
+  .then(result => {
+      if (result.length) {
+        res.json(result);
+      } else {
+        util.throwError(404, 'No users matching user_id = ' + user_id + ' found');
+      }
+    })
+    .catch(err => { return next(err) 
+  });
+    /*
   const user_id = req.params.user_id;
   db.query('SELECT event_id FROM favorite_events WHERE user_id = $1', [user_id], (err, result) => {
     if (err) return next(err);
     res.send(result.rows);
   });
+  */
 });
 
 //Add a favorite event to a user
