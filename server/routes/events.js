@@ -24,6 +24,46 @@ router.get('/', function(req, res, next) {
   .catch(err => { return next(err) });
 });
 
+// GET all event names
+router.get('/names', function(req, res, next) {
+  knex('event').select('fb_id, name')
+  .then(result => {
+    if(result.length) {
+      res.json(result);
+    } else {
+      res.status(404).json('No event names found.');
+    }
+  })
+  .catch(err => { return next(err) });
+});
+
+// GET all unique event locations
+router.get('/locations', function(req, res, next) {
+  knex('event').select('location_id')
+  .then(result => {
+    if(result.length) {
+      res.json(result);
+    } else {
+      res.status(404).json('No event locations found.')
+    }
+  })
+});
+
+// GET event by event_id
+router.get('/:event_id/id', function(req, res, next) {
+  const event_id = req.params.event_id;
+  knex('event').select()
+  .where({ fb_id: event_id })
+  .then(result => {
+    if(result.length) {
+      res.json(result);
+    } else {
+      res.status(404).json('No events matching event_id = ' + event_id + ' found.');
+    }
+  })
+  .catch(err => { return next(err) });
+});
+
 // Add a single event
 router.post('/', function(req, res, next) {
   let values = { 
@@ -41,7 +81,6 @@ router.post('/', function(req, res, next) {
 
   Object.keys(values).forEach(function(key) {
   	if (!values[key]) {
-  		//validReq = false;
   		if (key == 'fb_id'){
   			util.throwError(400, 'Missing \'event_id\' parameter.');
   		}
@@ -120,46 +159,6 @@ router.post('/', function(req, res, next) {
 		res.send(util.message('Successfully inserted new event: ' + req.body.name));
 	})
 	.catch(err => { return next(err) });
-});
-
-// GET all event names
-router.get('/names', function(req, res, next) {
-  knex('event').select('fb_id, name')
-  .then(result => {
-    if(result.length) {
-      res.json(result);
-    } else {
-      res.status(404).json('No event names found.');
-    }
-  })
-  .catch(err => { return next(err) });
-});
-
-// GET all unique event locations
-router.get('/locations', function(req, res, next) {
-  knex('event').select('location_id')
-  .then(result => {
-    if(result.length) {
-      res.json(result);
-    } else {
-      res.status(404).json('No event locations found.')
-    }
-  })
-});
-
-// GET event by event_id
-router.get('/:event_id/id', function(req, res, next) {
-  const event_id = req.params.event_id;
-  knex('event').select()
-  .where({ fb_id: event_id })
-  .then(result => {
-    if(result.length) {
-      res.json(result);
-    } else {
-      res.status(404).json('No events matching event_id = ' + event_id + ' found.');
-    }
-  })
-  .catch(err => { return next(err) });
 });
 
 // Updated a single event by event_id
