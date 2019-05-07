@@ -459,7 +459,7 @@ router.get('/:event_id/host', function(req, res, next) {
   const event_id = req.params.event_id;
   knex('event_host').select('host_id').where({event_id: event_id})
   .then(result => {
-  	if(result.length) {
+    if(result.length) {
       res.json(result);
     } else {
       res.status(404).json('No event hosts for event_id = ' + event_id + '.');
