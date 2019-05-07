@@ -327,11 +327,10 @@ router.get('/:event_id/favorites', function(req, res, next) {
 router.put('/:event_id/register/:user_id', function(req, res, next) {
   const event_id = req.params.event_id;
   const user_id = req.params.user_id;
-  const paid = req.query.paid;
+  const paid = req.body.paid;
   knex('event_registration')
   .update({ 
-    has_paid: paid, 
-    updated_at: knex.raw('now()')
+    has_paid: paid
   })
   .where({ 
     event_id: event_id, 
@@ -347,33 +346,23 @@ router.put('/:event_id/register/:user_id', function(req, res, next) {
   .catch(err => { return next(err) });
 });
 
-// // GET all users registered and have paid or not paid for a given event
+// GET all users registered and have paid or not paid for a given event
 router.get('/:event_id/register', function(req, res, next) {
   const event_id = req.params.event_id;
   const paid = req.query.paid;
-  if (paid == undefined) {
-    knex('event_registration').select('user_id')
-    .where({ event_id: event_id })
-    .then(result => {
-    if(result.length) {
-      res.json(result);
-    } else {
-      res.status(404).json('No events where fb_id = ' + event_id + ' found.');
-    }
-  })
-  } else if (paid == "true" || paid == "false") {
+  if (!paid || paid == "true" || paid == "false") {
     knex('event_registration').select('user_id')
     .where({ 
       event_id: event_id,
       has_paid: paid
     })
     .then(result => {
-    if(result.length) {
-      res.json(result);
-    } else {
-      res.status(404).json('No events where fb_id = ' + event_id + ' found.');
-    }
-  })
+      if(result.length) {
+        res.json(result);
+      } else {
+        res.status(404).json('No events where fb_id = ' + event_id + ' found.');
+      }
+    })
   } else {
     return res.status(400).send({
       message: '\'paid\' is not a boolean'
