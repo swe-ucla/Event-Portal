@@ -20,17 +20,16 @@ router.get('/', function(req, res, next) {
 });
 
 // Add a single occupation
-// Add a single UCLA major. Can add duplicates due to unstrict checks.
 router.post('/', function(req, res, next) {
-  if (!req.query.id) {
+  if (!req.body.ID) {
     util.throwError(400, 'Occupation id cannot be null');
-  }
+  }  
 
-  values = { 
-    id: req.query.id,
-    name: req.query.name,
-    updated_at: req.query.updated_at,
-    created_at: req.query.created_at
+  let values = { 
+    id: req.body.ID,
+    name: req.body.name,
+    updated_at: req.body.updated_at,
+    created_at: req.body.created_at
   };
 
   knex('occupation')
@@ -43,8 +42,13 @@ router.post('/', function(req, res, next) {
 
 // Update a single occupation
 router.put('/:occupation_id', function(req, res, next) {
-  const occupation_id = req.params.occupation_id;
-  values = { name: req.query.name, user_id: req.query.user_id };
+  let occupation_id = req.occupation_id;
+
+  values = { 
+    name: req.body.name, 
+    user_id: req.body.user_id 
+  };
+
   knex('occupation').update(values).where({ id: occupation_id })
     .then(result => {
       if (result) {
@@ -58,7 +62,7 @@ router.put('/:occupation_id', function(req, res, next) {
 
 // Delete a single occupation
 router.delete('/:occupation_id', function(req, res, next) {
-  const occupation_id = occupation_id;
+  let occupation_id = occupation_id;
   knex('occupation').del().where({ id: occupation_id })
     .then(result => {
       if (result) {

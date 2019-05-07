@@ -64,7 +64,8 @@ router.put('/:position_id', function(req, res, next) {
 // Delete a single position
 router.delete('/positions/:position_id', function(req, res, next) {
   const position_id = req.params.position_id;
-  knex('position').del().where({ id: position_id, }).then(result => {
+  knex('position').del().where({ id: position_id, })
+  .then(result => {
     if (result) {
       res.send(util.message('Successfully deleted position with position id ' + position_id));
     } else {
