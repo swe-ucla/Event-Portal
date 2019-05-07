@@ -26,9 +26,6 @@ router.get('/', function(req, res, next) {
 
 // Add a single event
 router.post('/', function(req, res, next) {
-	let errormsg = 'The following fields must not be null: ';
-	let validReq = true;
-	
   let values = { 
   	fb_id: req.body.event_id, 
   	name: req.body.name, 
@@ -42,6 +39,18 @@ router.post('/', function(req, res, next) {
   	is_featured: req.body.is_featured
   };
 
+  Object.keys(values).forEach(function(key) {
+  	if (!values[key]) {
+  		//validReq = false;
+  		if (key == 'fb_id'){
+  			util.throwError(400, 'Missing \'event_id\' parameter.');
+  		}
+  		else{
+  			util.throwError(400, 'Missing \'' + key + '\' parameter.');
+  		}
+  	}
+	});
+
   let category_ids = req.body.categories;
   let category_values = [];
   let category_ids_length;
@@ -53,6 +62,9 @@ router.post('/', function(req, res, next) {
 	  			category_values.push({ event_id: req.body.event_id, category_id: category_ids[i] });
 	  }
   } 
+  else{
+  	util.throwError(400, 'Missing \'categories\' parameter.');
+  }
 
   let company_ids = req.body.companies;
 	let company_values = [];
@@ -64,6 +76,10 @@ router.post('/', function(req, res, next) {
 	  			company_values.push({ event_id: req.body.event_id, company_id: company_ids[i] });
 	  }
 	}
+	else{
+		util.throwError(400, 'Missing \'companies\' parameter.');	
+	}
+
   let host_ids = req.body.hosts;
   let host_values = [];
   let host_ids_length;
@@ -74,35 +90,10 @@ router.post('/', function(req, res, next) {
 	  			host_values.push({ event_id: req.body.event_id, host_id: host_ids[i] });
 	  }
 	}
-
-  Object.keys(values).forEach(function(key) {
-  	if (!values[key]) {
-  		validReq = false;
-  		if (key == 'fb_id'){
-  			errormsg += 'event_id, ';
-  		}
-  		else{
-  			errormsg += key + ', ';
-  		}
-  	}
-	});
-
-	if (!category_ids) {
-		validReq = false;
-		errormsg += 'categories, ';
-	}
-	if (!company_ids) {
-		validReq = false;
-		errormsg += 'companies, ';
-	}
-	if (!host_ids) {
-		validReq = false;
-		errormsg += 'hosts, ';
+	else{
+		util.throwError(400, 'Missing \'hosts\' parameter.');
 	}
 
-	if (!validReq) {
-		util.throwError(400, errormsg.substring(0, errormsg.length - 2));
-	}
 	knex.transaction(function(trx) {
 		return knex('event')
 			.transacting(trx)
