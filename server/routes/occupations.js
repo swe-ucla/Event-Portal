@@ -44,7 +44,7 @@ router.post('/', function(req, res, next) {
 // Update a single occupation
 router.put('/:occupation_id', function(req, res, next) {
   const occupation_id = req.params.occupation_id;
-  values = { name: req.query.name, user_id: req.query.user_id };
+  values = { name: req.query.name };
   knex('occupation').update(values).where({ id: occupation_id })
     .then(result => {
       if (result) {
@@ -58,7 +58,7 @@ router.put('/:occupation_id', function(req, res, next) {
 
 // Delete a single occupation
 router.delete('/:occupation_id', function(req, res, next) {
-  const occupation_id = occupation_id;
+  const occupation_id = req.params.occupation_id;
   knex('occupation').del().where({ id: occupation_id })
     .then(result => {
       if (result) {
