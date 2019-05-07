@@ -218,8 +218,6 @@ router.get('/filter', function(req, res, next) {
 
 // Add a single company or related data
 router.post('/', function(req, res, next) {
-  //make a dict to store multiple values?
-  
   values = {
     name: req.query.name,
     website: req.query.website,
@@ -228,16 +226,11 @@ router.post('/', function(req, res, next) {
     description: req.query.description
   }
 
-  //let ids = [];
-  //ids[0] = 1;
-
   var queryCompany = knex('company').insert(values)
-
   knex.transaction(function(trx) {
     return queryCompany.transacting(trx)
       .returning('id')
       .then(async function(ids){
-  
         let queries = [];
         let i = 0;
         if (req.query.rank && req.query.user_id) {
@@ -247,19 +240,17 @@ router.post('/', function(req, res, next) {
             rank: req.query.rank
           };
           var queryRank = knex('user_company_rank').insert(rankValues)
-          queries[i] = queryRank;
-          i++;
+          await queryRank.transacting(trx);
         }
         if (req.query.position_id) {
             Object.keys(req.query).forEach(function(key){
               companyPositions = {
-                company_id: parseInt(ids[0]),
+                company_id: ids[0],
                 position_id: req.query.position_id
               };
             });
             var queryPos = knex('company_position').insert(companyPositions)
-            queries[i] = queryPos;
-            i++;
+            await queryPos.transacting(trx);
           }
         if (req.query.major_id) {
           Object.keys(req.query).forEach(function(key){
@@ -269,8 +260,7 @@ router.post('/', function(req, res, next) {
             };
           });
           var queryMajor = knex('company_major').insert(companyMajors)
-          queries[i] = queryMajor;
-          i++;
+          await queryMajor.transacting(trx);
         }
         if (req.query.contact_id) {
           companyContacts = {
@@ -278,8 +268,7 @@ router.post('/', function(req, res, next) {
             contact_id: req.query.contact_id
           };
           var queryContact = knex('company_contact').insert(companyContacts)
-          queries[i] = queryContact;
-          i++;
+          await queryContact.transacting(trx);
         }   
         if (req.query.event_id) {
           companyEvents = {
@@ -287,14 +276,8 @@ router.post('/', function(req, res, next) {
             event_id: req.query.event_id
           };
           var queryEvent = knex('event_company').insert(companyEvents)
-          queries[i] = queryEvent;
-          i++;
+          await queryEvent.transacting(trx);
         }
-        //return knex.transaction(async function(trx){
-          for(let j = 0; j < i; i++){
-            //util.throwError(queries);
-            await queries[j].transacting(trx);
-          }
           return trx.commit;
         })
       })
