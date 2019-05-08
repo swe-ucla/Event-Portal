@@ -78,17 +78,22 @@ router.post('/', function(req, res, next) {
   	picture: req.body.picture,
   	is_featured: req.body.is_featured
   };
-
-  Object.keys(values).forEach(function(key) {
-  	if (!values[key]) {
-  		if (key == 'fb_id'){
-  			util.throwError(400, "Missing 'event_id' parameter.");
-  		}
-  		else{
-  			util.throwError(400, "Missing '" + key + "' parameter.");
-  		}
-  	}
-	});
+  
+  if (!req.body.event_id){
+  	util.throwError(400, "Missing 'event_id' parameter.");
+  }
+  if (!req.body.name){
+  	util.throwError(400, "Missing 'name' parameter.");
+  }
+  if (!req.body.starts_at){
+  	util.throwError(400, "Missing 'starts_at' parameter.");
+  }
+  if (!req.body.ends_at){
+  	util.throwError(400, "Missing 'ends_at' parameter.");
+  }
+  if (!req.body.quarter){
+  	util.throwError(400, "Missing 'quarter' parameter.");
+  }
 
   let category_ids = req.body.categories;
   let category_values = [];
@@ -97,27 +102,23 @@ router.post('/', function(req, res, next) {
 	let host_ids = req.body.hosts;
   let host_values = [];
 
-  if (!category_ids){
-  	util.throwError(400, "Missing 'categories' parameter.");
-  } 
-  category_ids.forEach(function(entry) {
-  	category_values.push({ event_id: req.body.event_id, category_id: entry });
-  });
+  if (category_ids){
+  	category_ids.forEach(function(entry) {
+  		category_values.push({ event_id: req.body.event_id, category_id: entry });
+  	});
+  }
 
-  if (!company_ids){
-  	util.throwError(400, "Missing 'companies' parameter.");	
-		
+  if (company_ids){
+		company_ids.forEach(function(entry) {
+			company_values.push({ event_id: req.body.event_id, company_id: entry });
+		});
 	}
-	company_ids.forEach(function(entry) {
-		company_values.push({ event_id: req.body.event_id, company_id: entry });
-	});
 
-  if (!host_ids){
-  	util.throwError(400, "Missing 'hosts' parameter.");
+  if (host_ids){
+  	host_ids.forEach(function(entry) {
+	  	host_values.push({ event_id: req.body.event_id, host_id: entry });
+	  });
 	}
-  host_ids.forEach(function(entry) {
-  	host_values.push({ event_id: req.body.event_id, host_id: entry });
-  });
 
   var events_query = knex('event').insert(values);
   var category_query = knex('event_category').insert(category_values);
