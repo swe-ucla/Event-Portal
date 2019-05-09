@@ -28,24 +28,18 @@ router.post('/', function(req, res, next) {
     util.throwError(400, 'Occupation name cannot be null');
   }
 
-  let values = { 
-    id: req.body.occupation_id,
-    name: req.body.name,
-  };
-
-  knex('occupation')
-  .insert(values)
-  .then(result => {
-    res.send(util.message('Successfully added a single occupation'));
-  })
-  .catch(err => { return next(err) });
+  let values = { id: req.body.occupation_id, name: req.body.name };
+  knex('occupation').insert(values)
+    .then(result => {
+      res.send(util.message('Successfully added a single occupation'));
+    })
+    .catch(err => { return next(err) });
 });
 
 // Update a single occupation
 router.put('/:occupation_id', function(req, res, next) {
   let occupation_id = req.params.occupation_id;
-  let values = { name: req.body.name };
-  knex('occupation').update(values).where({ id: occupation_id })
+  knex('occupation').update({ name: req.body.name }).where({ id: occupation_id })
     .then(result => {
       if (result) {
         res.send(util.message('Successfully updated occupation: ' + occupation_id));
@@ -54,7 +48,6 @@ router.put('/:occupation_id', function(req, res, next) {
       }
     })
     .catch(err => { return next(err) });
-
 });
 
 // Delete a single occupation
