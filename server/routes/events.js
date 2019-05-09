@@ -14,54 +14,53 @@ router.get('/ping', function(req, res, next) {
 // GET all events
 router.get('/', function(req, res, next) {
   knex('event').select()
-  .then(result => {
-    if (result.length) {
-      res.json(result);
-    } else {
-      res.status(404).json('No events found.');
-    }
-  })
-  .catch(err => { return next(err) });
+    .then(result => {
+      if (result.length) {
+        res.json(result);
+      } else {
+        res.status(404).json('No events found.');
+      }
+    })
+    .catch(err => { return next(err) });
 });
 
 // GET all event names
 router.get('/names', function(req, res, next) {
   knex('event').select('fb_id, name')
-  .then(result => {
-    if(result.length) {
-      res.json(result);
-    } else {
-      res.status(404).json('No event names found.');
-    }
-  })
-  .catch(err => { return next(err) });
+    .then(result => {
+      if(result.length) {
+        res.json(result);
+      } else {
+        res.status(404).json('No event names found.');
+      }
+    })
+    .catch(err => { return next(err) });
 });
 
 // GET all unique event locations
 router.get('/locations', function(req, res, next) {
   knex('event').select('location_id')
-  .then(result => {
-    if(result.length) {
-      res.json(result);
-    } else {
-      res.status(404).json('No event locations found.')
-    }
-  })
+    .then(result => {
+      if(result.length) {
+        res.json(result);
+      } else {
+        res.status(404).json('No event locations found.')
+      }
+    })
+    .catch(err => { return next(err) });
 });
 
 // GET event by event_id
 router.get('/:event_id/id', function(req, res, next) {
-  const event_id = req.params.event_id;
-  knex('event').select()
-  .where({ fb_id: event_id })
-  .then(result => {
-    if(result.length) {
-      res.json(result);
-    } else {
-      res.status(404).json('No events matching event_id = ' + event_id + ' found.');
-    }
-  })
-  .catch(err => { return next(err) });
+  knex('event').select().where({ fb_id: req.params.event_id })
+    .then(result => {
+      if(result.length) {
+        res.json(result);
+      } else {
+        res.status(404).json('No events with matching event ID found.');
+      }
+    })
+    .catch(err => { return next(err) });
 });
 
 // Add a single event
@@ -79,19 +78,19 @@ router.post('/', function(req, res, next) {
   	is_featured: req.body.is_featured
   };
   
-  if (!req.body.event_id){
+  if (!req.body.event_id) {
   	util.throwError(400, "Missing 'event_id' parameter.");
   }
-  if (!req.body.name){
+  if (!req.body.name) {
   	util.throwError(400, "Missing 'name' parameter.");
   }
-  if (!req.body.starts_at){
+  if (!req.body.starts_at) {
   	util.throwError(400, "Missing 'starts_at' parameter.");
   }
-  if (!req.body.ends_at){
+  if (!req.body.ends_at) {
   	util.throwError(400, "Missing 'ends_at' parameter.");
   }
-  if (!req.body.quarter){
+  if (!req.body.quarter) {
   	util.throwError(400, "Missing 'quarter' parameter.");
   }
 
@@ -102,19 +101,19 @@ router.post('/', function(req, res, next) {
 	let host_ids = req.body.hosts;
   let host_values = [];
 
-  if (category_ids){
+  if (category_ids) {
   	category_ids.forEach(function(entry) {
   		category_values.push({ event_id: req.body.event_id, category_id: entry });
   	});
   }
 
-  if (company_ids){
+  if (company_ids) {
 		company_ids.forEach(function(entry) {
 			company_values.push({ event_id: req.body.event_id, company_id: entry });
 		});
 	}
 
-  if (host_ids){
+  if (host_ids) {
   	host_ids.forEach(function(entry) {
 	  	host_values.push({ event_id: req.body.event_id, host_id: entry });
 	  });
@@ -255,28 +254,29 @@ router.put('/:event_id', function(req, res, next) {
 // Delete an event by event_id
 router.delete('/:event_id', function(req, res, next) {
   const event_id = req.params.event_id;
-  knex('event').del().where({ fb_id: event_id, }).then(result => {
-    if (result) {
-      res.send(util.message('Successfully deleted event with event_id ' + event_id));
-    } else {
-      util.throwError(404, 'No event found to delete');
-    }
-  })
-  .catch(err => { return next(err) });
+  knex('event').del().where({ fb_id: event_id })
+    .then(result => {
+      if (result) {
+        res.send(util.message('Successfully deleted event with event_id ' + event_id));
+      } else {
+        util.throwError(404, 'No event found to delete');
+      }
+    })
+    .catch(err => { return next(err) });
 });
 
 // GET all users that have favorited the given event
 router.get('/:event_id/favorites', function(req, res, next) {
   const event_id = req.params.event_id;
-  knex('favorite_events').select('user_id')
-  .where({ event_id: event_id })
-  .then(result => {
-    if(result.length) {
-      res.json(result);
-    } else {
-      res.status(404).json('No events where fb_id = ' + event_id + ' found.');
-    }
-  })
+  knex('favorite_events').select('user_id').where({ event_id: event_id })
+    .then(result => {
+      if(result.length) {
+        res.json(result);
+      } else {
+        res.status(404).json('No events where fb_id = ' + event_id + ' found.');
+      }
+    })
+    .catch(err => { return next(err) });
 });
 
 // Update user registration for a given event
@@ -308,21 +308,17 @@ router.get('/:event_id/register', function(req, res, next) {
   const paid = req.query.paid;
   if (!paid || paid == "true" || paid == "false") {
     knex('event_registration').select('user_id')
-    .where({ 
-      event_id: event_id,
-      has_paid: paid
-    })
-    .then(result => {
-      if(result.length) {
-        res.json(result);
-      } else {
-        res.status(404).json('No events where fb_id = ' + event_id + ' found.');
-      }
-    })
+      .where({ event_id: event_id, has_paid: paid })
+      .then(result => {
+        if(result.length) {
+          res.json(result);
+        } else {
+          res.status(404).json('No events with fb_id = ' + event_id + ' found.');
+        }
+      })
+      .catch(err => { return next(err) });
   } else {
-    return res.status(400).send({
-      message: '\'paid\' is not a boolean'
-    });
+    util.throwError(400, 'Parameter paid is not a boolean'
   }
 });
 
@@ -335,15 +331,11 @@ router.post('/:event_id/register/:user_id', function(req, res, next) {
     util.throwError(400, 'Paid query must not be null');
   }
   knex('event_registration')
-  .insert({
-    event_id: event_id, 
-    user_id: user_id, 
-    has_paid: paid
-  })
-  .then(result => {
-    res.send(util.message('Successfully registered user with user_id ' + user_id + ' for event with event_id ' + event_id));
-  })
-  .catch(err => { return next(err) });
+    .insert({ event_id: event_id, user_id: user_id, has_paid: paid })
+    .then(result => {
+      res.send(util.message('Successfully registered user with user_id ' + user_id + ' for event with event_id ' + event_id));
+    })
+    .catch(err => { return next(err) });
 });
 
 // DELETE user registration for an event
@@ -351,10 +343,7 @@ router.delete('/:event_id/register/:user_id', function(req, res, next) {
   const event_id = req.params.event_id;
   const user_id = req.params.user_id;
   knex('event_registration').del()
-    .where({ 
-      event_id: event_id,
-      user_id: user_id
-    })
+    .where({ event_id: event_id, user_id: user_id })
     .then(result => {
       if (result) {
         res.send(util.message('Successfully deleted user registration for event_id = ' + event_id));
@@ -369,23 +358,20 @@ router.delete('/:event_id/register/:user_id', function(req, res, next) {
 router.get('/:event_id/checkin', function(req, res, next) {
   const event_id = req.params.event_id;
   knex('event_checkin').select('user_id').where({event_id: event_id})
-  .then(result => {
-  	if(result.length) {
-      res.json(result);
-    } else {
-      res.status(404).json('No checked in users found for event_id = ' + event_id + '.');
-    }
-  });
+    .then(result => {
+    	if(result.length) {
+        res.json(result);
+      } else {
+        res.status(404).json('No checked in users found for event_id = ' + event_id + '.');
+      }
+    }).catch(err => { return next(err) });
 });
 
 // Check in a user for an event
 router.post('/:event_id/checkin/:user_id', function(req, res, next) {
   const event_id = req.params.event_id;
   const user_id = req.params.user_id;
-  knex('event_checkin').insert({
-      event_id: event_id,
-      user_id: user_id
-    })
+  knex('event_checkin').insert({ event_id: event_id, user_id: user_id })
     .then(result => {
       res.send(util.message('Successfully checked in user with user_id = ' + user_id + ' and event_id = ' + event_id + ' for event'));
     })
@@ -396,10 +382,7 @@ router.post('/:event_id/checkin/:user_id', function(req, res, next) {
 router.delete('/:event_id/checkin/:user_id', function(req, res, next) {
   const event_id = req.params.event_id;
   const user_id = req.params.user_id;
-  knex('event_checkin').del().where({
-      event_id: event_id,
-      user_id: user_id
-    })
+  knex('event_checkin').del().where({ event_id: event_id, user_id: user_id })
     .then(result => {
       if (result) {
         res.send(util.message('Successfully deleted user check in for user with user_id = ' + user_id + ' and event_id = ' + event_id));
@@ -413,62 +396,60 @@ router.delete('/:event_id/checkin/:user_id', function(req, res, next) {
 // GET all hosts for a given event
 router.get('/:event_id/host', function(req, res, next) {
   const event_id = req.params.event_id;
-  knex('event_host').select('host_id').where({event_id: event_id})
-  .then(result => {
-    if(result.length) {
-      res.json(result);
-    } else {
-      res.status(404).json('No event hosts for event_id = ' + event_id + '.');
-    }
-  });
+  knex('event_host').select('host_id').where('event_id': event_id)
+    .then(result => {
+      if(result.length) {
+        res.json(result);
+      } else {
+        util.throwError(404, 'No event hosts for event_id = ' + event_id + '.');
+      }
+    })
+    .catch(err => { return next(err) });
 });
 
 // GET all companies for a given event
 router.get('/:event_id/companies', function(req, res, next) {
   const event_id = req.params.event_id;
-  knex('event_company').where('event_id', event_id).select('company_id')
-  .then(result => {
-  	if (result.length) {
-  		res.json(result);
-  	} else {
-  		res.status(404).json('No companies found for event_id = ' + event_id + '.');
-  	}
-  })
-  .catch(err => { return next(err) });
+  knex('event_company').select('company_id').where('event_id', event_id)
+    .then(result => {
+    	if (result.length) {
+    		res.json(result);
+    	} else {
+        util.throwError(404, 'No companies found for event_id = ' + event_id + '.');
+    	}
+    })
+    .catch(err => { return next(err) });
 });
 
 // GET all categories for a given event
 router.get('/:event_id/categories', function(req, res, next) {
   const event_id = req.params.event_id;
-  knex('event_category').where('event_id', event_id).select('category_id')
-  .then(result => {
-  	if (result.length) {
-  		res.json(result);
-  	} else {
-  		res.status(404).json('No categories found for event_id = ' + event_id + '.');
-  	}
-  })
-  .catch(err => { return next(err) });
+  knex('event_category').select('category_id').where('event_id', event_id)
+    .then(result => {
+    	if (result.length) {
+    		res.json(result);
+    	} else {
+        util.throwError(404, 'No categories found for event_id = ' + event_id + '.');
+    	}
+    })
+    .catch(err => { return next(err) });
 });
 
 // GET all events containing term substring
 router.get('/search', function(req, res, next) {
   const term = req.query.term;
   if (term == undefined){
-    return res.status(400).send({
-      message: '\'term\' is undefined'
-    });
-  }
-  else {
-    knex('event').where('name', 'ilike', `%${term}%`).select()
-    .then(result => {
-    	if (result.length) {
-    		res.json(result);
-    	} else {
-    		res.status(404).json('No events found for substring for event_id = ' + event_id + '.');
-    	}
-    })
-    .catch(err => { return next(err) });
+    util.throwError(400, 'Term parameter is undefined');
+  } else {
+    knex('event').select().where('name', 'ilike', `%${term}%`)
+      .then(result => {
+      	if (result.length) {
+      		res.json(result);
+      	} else {
+          util.throwError(404, 'No events found for substring for event_id = ' + event_id + '.');
+      	}
+      })
+      .catch(err => { return next(err) });
 }});
 
 /*
@@ -502,7 +483,7 @@ generally filters of the similar type/category form an OR relationship while fil
 */
 
 // GET all columns from test table given :id.
-// TODO: fix filtering logic
+// TODO: fix filtering logic, convert to knex
 router.get('/filter', function(req, res, next) {
   const date = req.query.date;
   const month = req.query.month;
