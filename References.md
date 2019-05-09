@@ -169,3 +169,5 @@
   - https://github.com/chaudhryjunaid/alt-chaudhryjunaid.com/blob/43e158dacf306db41ae9d15dfb5524103c49bcf3/src/db/seeds/000-initial-seed.js
   - https://github.com/kingdomhail/sails_project/blob/a7505d8fe8dff659aef3e395ba70bb388dd2b79d/api/models/Account.js
   - https://stackoverflow.com/questions/14551194/how-are-parameters-sent-in-an-http-post-request
+  - https://stackoverflow.com/questions/26723467/what-is-the-difference-between-form-data-x-www-form-urlencoded-and-raw-in-the-p
+  - https://stackoverflow.com/questions/15694120/why-does-http-post-request-body-need-to-be-json-enconded-in-python
