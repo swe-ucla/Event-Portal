@@ -6,6 +6,7 @@ var router = express.Router();
 const db = require('../db')
 var knex = require('../db/knex');
 var util = require('../util');
+var Promise = require('bluebird');
 
 // GET test string to verify that Users server is running.
 router.get('/ping', function(req, res, next) {
@@ -65,7 +66,56 @@ router.get('/ids', function(req, res, next) {
 });
 
 //Add a user
+let id = []
+//var Promise = require('bluebird');
+
 router.post('/register', function(req, res, next) {
+ knex.transaction(function(trx) { 
+  values =
+  {
+    //id: req.query.id,
+    first_name: req.query.first_name,
+    last_name: req.query.last_name,
+    password: req.query.password,
+    email: req.query.email,
+    phone: req.query.phone,
+    university_id: req.query.university_id,
+    is_admin: req.query.is_admin,
+  }
+  return trx
+  .insert(values, 'id')
+  .into('swe_user')
+  .transacting(trx)
+  .then(function(ids){
+    dietValues = {
+      user_id: ids[0],
+      diet_id: req.query.diet_id
+    }
+    occupationValues = {
+      user_id: 99,//ids[0],
+      occupation_id: req.query.occupation_id
+    }
+    //[dietValues, 'user_diet'],
+    console.log(ids[0]); 
+    let pizzas = [[dietValues, 'user_diet'], [occupationValues, 'user_occupation']]
+    //let strings = ['users_diet','user_position']
+    return Promise.map(pizzas, function(pizza){
+        console.log("hello" + ids[0].toString() + pizza[0].toString() + pizza[1].toString() + dietValues.toString() + occupationValues.toString());
+        return knex.insert(pizza[0]).into(pizza[1]).transacting(trx);
+    });
+  });
+  //.then(trx.commit)
+  //.catch(trx.rollback);
+})
+.then(result => {
+   res.send(util.message('Successfully inserted new user: ' + req.query.first_name + 'with diet and occupation id'));    
+})
+.catch(err => { return next(err) 
+  // If we get here, that means that neither the user insert
+  //nor the diet insert has taken place.
+})
+
+  /*
   if (!req.query.first_name) {
     util.throwError(400, 'First name must not be null');
   }
@@ -83,11 +133,14 @@ router.post('/register', function(req, res, next) {
     university_id: req.query.university_id,
     is_admin: req.query.is_admin,
   }
-  knex('swe_user').insert(values)
+  id = knex('swe_user')
+  .returning('id')
+  .insert(values)
     .then(result => {
       res.send(util.message('Successfully inserted new user: ' + req.query.first_name));
     })
     .catch(err => { return next(err) });
+  */
 });
 
   /*
@@ -98,14 +151,12 @@ router.post('/register', function(req, res, next) {
       res.send(util.message('Successfully inserted new user: ' + req.query.first_name));
     })
     .catch(err => { return next(err) });
-
+*/
+/*
   values = {
-    user_id:  user_id[0],
+    user_id: id[0],
     diet_id: req.query.diet_id 
   }
-  */
-
-  /*
   
   knex('user_diet').insert(values)
     .then(result => {
@@ -113,6 +164,7 @@ router.post('/register', function(req, res, next) {
     })
     .catch(err => { return next(err) });
   /*
+
   values = {
     user_id: user_id, //req.query.id,
     occupation_id: req.query.occupation_id
@@ -183,6 +235,7 @@ router.put('/login', function(req, res, next) {
 
 
 // GET user info by user_id
+//P
 router.get('/:user_id/id', function(req, res, next) {
   const user_id = req.params.user_id;
   knex('swe_user').select()
@@ -199,6 +252,7 @@ router.get('/:user_id/id', function(req, res, next) {
 });
 
 // GET whether user is admin or not
+//P
 router.get('/:user_id/admin', function(req, res, next) {
   const user_id = req.params.user_id;
   knex('swe_user').select('is_admin')
@@ -264,10 +318,13 @@ router.get('/:user_id/companies', function(req, res, next) {
 });
 
 // GET all events a user is attending
+//P
 router.get('/:user_id/events', function(req, res, next) {
   const user_id = req.params.user_id;
-  knex('swe_user').select()
-  .where( {id: user_id} )
+  knex('event_checkin').select('event_id').where({user_id: user_id})
+  .union([
+    knex('event_registration').select('event_id').where({user_id: user_id})
+  ])
   .then(result => {
       if (result.length) {
         res.json(result);
@@ -276,20 +333,15 @@ router.get('/:user_id/events', function(req, res, next) {
       }
     })
     .catch(err => { return next(err) 
-  });
-  const user_id = req.params.user_id;
-  db.query('SELECT event_id FROM event_checkin WHERE user_id = $1 UNION SELECT event_id FROM event_registration \
-  WHERE user_id = $1', [id], (err, result) => {
-    if (err) return next(err);
-    res.send(result.rows);
   });
 });
 
 // GET all events a user is hosting
+//P
 router.get('/:user_id/host', function(req, res, next) {
   const user_id = req.params.user_id;
-  knex('swe_user').select()
-  .where( {id: user_id} )
+  knex('event_host').select('event_id')
+  .where( {host_id: user_id} )
   .then(result => {
       if (result.length) {
         res.json(result);
@@ -299,19 +351,22 @@ router.get('/:user_id/host', function(req, res, next) {
     })
     .catch(err => { return next(err) 
   });
-  const user_id = req.params.user_id;
-  db.query('SELECT event_id FROM event_host WHERE host_id = $1', [user_id], (err, result) => {
-    if (err) return next(err);
-    res.send(result.rows);
-  });
 });
 
 // GET all the user's majors
+//P
 router.get('/:user_id/majors', function(req, res, next) {
   const user_id = req.params.user_id;
-  db.query('SELECT major_id FROM user_major WHERE user_id = $1', [user_id], (err, result) => {
-    if (err) return next(err);
-    res.send(result.rows);
+  knex('user_major').select('major_id')
+  .where( {user_id: user_id} )
+  .then(result => {
+      if (result.length) {
+        res.json(result);
+      } else {
+        util.throwError(404, 'No users matching user_id = ' + user_id + ' found');
+      }
+    })
+    .catch(err => { return next(err) 
   });
 });
 
@@ -320,7 +375,7 @@ router.get('/:user_id/majors', function(req, res, next) {
 router.get('/:user_id/positions', function(req, res, next) {
   const user_id = req.params.user_id;
   knex('user_position').select('position_id')
-  .where( {id: user_id} )
+  .where( {user_id: user_id} )
   .then(result => {
       if (result.length) {
         res.json(result);
@@ -330,13 +385,6 @@ router.get('/:user_id/positions', function(req, res, next) {
     })
     .catch(err => { return next(err) 
   });
-  /*
-  const user_id = req.params.user_id;
-  db.query('SELECT position_id FROM user_position WHERE user_id = $1', [user_id], (err, result) => {
-    if (err) return next(err);
-    res.send(result.rows);
-  });
-  */
 });
 
 // GET all the user's occupations
@@ -344,7 +392,7 @@ router.get('/:user_id/positions', function(req, res, next) {
 router.get('/:user_id/occupations', function(req, res, next) {
   const user_id = req.params.user_id;
   knex('user_occupation').select('occupation_id')
-  .where( {id: user_id} )
+  .where( {user_id: user_id} )
   .then(result => {
       if (result.length) {
         res.json(result);
@@ -354,13 +402,6 @@ router.get('/:user_id/occupations', function(req, res, next) {
     })
     .catch(err => { return next(err) 
   });
-    /*
-  const user_id = req.params.user_id;
-  db.query('SELECT occupation_id FROM user_occupation WHERE user_id = $1', [user_id], (err, result) => {
-    if (err) return next(err);
-    res.send(result.rows);
-  });
-  */
 });
 
 // GET the user's diet information
@@ -368,7 +409,7 @@ router.get('/:user_id/occupations', function(req, res, next) {
 router.get('/:user_id/diet', function(req, res, next) {
   const user_id = req.params.user_id;
   knex('user_diet').select('diet_id ')
-  .where( {id: user_id} )
+  .where( {user_id: user_id} )
   .then(result => {
       if (result.length) {
         res.json(result);
@@ -378,13 +419,6 @@ router.get('/:user_id/diet', function(req, res, next) {
     })
     .catch(err => { return next(err) 
   });
-/*
-  const user_id = req.params.user_id;
-  db.query('SELECT diet_id FROM user_diet WHERE user_id = $1', [user_id], (err, result) => {
-    if (err) return next(err);
-    res.send(result.rows);
-  });
-*/
 });
 
 // GET a user's favorite events
@@ -392,7 +426,7 @@ router.get('/:user_id/diet', function(req, res, next) {
 router.get('/:user_id/favorite', function(req, res, next) {
   const user_id = req.params.user_id;
   knex('favorite_events').select('event_id ')
-  .where( {id: user_id} )
+  .where( {user_id: user_id} )
   .then(result => {
       if (result.length) {
         res.json(result);
@@ -402,13 +436,6 @@ router.get('/:user_id/favorite', function(req, res, next) {
     })
     .catch(err => { return next(err) 
   });
-    /*
-  const user_id = req.params.user_id;
-  db.query('SELECT event_id FROM favorite_events WHERE user_id = $1', [user_id], (err, result) => {
-    if (err) return next(err);
-    res.send(result.rows);
-  });
-  */
 });
 
 //Add a favorite event to a user
@@ -445,6 +472,7 @@ router.delete('/:user_id/favorite/:event_id', function(req, res, next) {
     .catch(err => { return next(err) });
 });
 
+//TODO: Fix Search Logic
 // GET a user's favorite events
 router.get('/search', function(req, res, next) {
   const name = req.query.name;
