@@ -217,15 +217,20 @@ var inserts = []
 
 router.put('/:user_id', function(req, res, next) {
   const user_id = req.params.user_id;
-  var first_name = req.query.first_name;
-  var last_name = req.query.last_name;
-  var password = req.query.password;
+  const first_name = req.query.first_name;
+  const last_name = req.query.last_name;
+  const password = req.query.password;
   const email = req.query.email;
-  var phone = req.query.phone;
-  var university_id = req.query.university_id;
-  var is_admin = req.query.is_admin;
+  const phone = req.query.phone;
+  const university_id = req.query.university_id;
+  const is_admin = req.query.is_admin;
+  console.log("hello");
+  console.log(inserts[0].values);
+  console.log(user_id);
 
+  knex.transaction(function(trx) { 
     name_values = {
+
       first_name: first_name,
       last_name: last_name
     }
@@ -244,13 +249,9 @@ router.put('/:user_id', function(req, res, next) {
     is_admin = {
       is_admin: is_admin
     }
-
-    
-
+    var query1;
     if(first_name && last_name){
-      inserts.push({
-        values: name_values,
-      });
+    
     }
     if(password){
       inserts.push({
@@ -277,18 +278,17 @@ router.put('/:user_id', function(req, res, next) {
         values: is_admin,
       });
     }
-  console.log(inserts[0].values);
-  console.log(user_id);
-  knex.transaction(function(trx) { 
-    knex('swe_user').transacting(trx).update({password: 'Nikhita'})
+
+
+    knex('swe_user').transacting(trx).update(email_value)
     .where({id: user_id})
     .then(function(inserts, user_id){
-    console.log(inserts[0].values);
+    //console.log(inserts[0].values);
   //console.log(user_id);
     
-      return Promise.map(inserts, function(insert_obj){
-        return knex('swe_user').update(insert_obj.values).where({user_id: user_id}).transacting(trx);
-      });
+      return 1;///Promise.map(inserts, function(insert_obj){
+        //return 1;//return knex('swe_user').update(insert_obj.values).where({user_id: user_id}).transacting(trx);
+      //});
     });
   })
   .then(result => {
