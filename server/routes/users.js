@@ -14,7 +14,6 @@ router.get('/ping', function(req, res, next) {
 });
 
 //GET all users.
-//TO DO: TEST ON POSTMAN
 router.get('/', function(req, res, next) {
   knex('swe_user').select('id')
     .then(result => {
@@ -27,8 +26,7 @@ router.get('/', function(req, res, next) {
     .catch(err => { return next(err) });
 });
 
-// GET all user names. - TODO: fix concat
-//TO DO: TEST ON POSTMAN
+// GET all user names.
 router.get('/names', function(req, res, next) {
   knex('swe_user').select('first_name', 'last_name')
     .then(result => {
@@ -42,7 +40,6 @@ router.get('/names', function(req, res, next) {
 });
 
 // GET all user emails.
-//TO DO: TEST ON POSTMAN
 router.get('/emails', function(req, res, next) {
   knex('swe_user').select('email')
     .then(result => {
@@ -56,7 +53,6 @@ router.get('/emails', function(req, res, next) {
 });
  
 // GET all user university IDs.
-//TO DO: TEST ON POSTMAN
 router.get('/ids', function(req, res, next) {
   knex('swe_user').select('university_id')
     .then(result => {
@@ -166,7 +162,6 @@ router.post('/register', function(req, res, next) {
 
 
 //Login a user
-//TO DO: TEST ON POSTMAN
 router.put('/login', function(req, res, next) {
   knex('swe_user')
     .update ({
@@ -185,7 +180,6 @@ router.put('/login', function(req, res, next) {
 
 
 // GET user info by user_id
-//TO DO: TEST ON POSTMAN
 router.get('/:user_id/id', function(req, res, next) {
   const user_id = req.params.user_id;
   knex('swe_user').select()
@@ -202,7 +196,6 @@ router.get('/:user_id/id', function(req, res, next) {
 });
 
 // GET whether user is admin or not
-//TO DO: TEST ON POSTMAN
 router.get('/:user_id/admin', function(req, res, next) {
   const user_id = req.params.user_id;
   knex('swe_user').select('is_admin')
@@ -220,23 +213,91 @@ router.get('/:user_id/admin', function(req, res, next) {
 
 //Update user info
 //TO DO: TEST ON POSTMAN
+var inserts = []
+
 router.put('/:user_id', function(req, res, next) {
-  values =
-  {
-    first_name: req.query.first_name,
-    last_name: req.query.last_name,
-    password: req.query.password,
-    email: req.query.email,
-    phone: req.query.phone,
-    university_id: req.query.university_id,
-    is_admin: req.query.is_admin,
-  }
-  knex('swe_user').update(values).where({ id: req.params.user_id })
-    .then(result => {
-      res.send(util.message('Successfully updated user: ' + req.query.first_name));
-    })
-    .catch(err => { return next(err) });
-});
+  const user_id = req.params.user_id;
+  var first_name = req.query.first_name;
+  var last_name = req.query.last_name;
+  var password = req.query.password;
+  const email = req.query.email;
+  var phone = req.query.phone;
+  var university_id = req.query.university_id;
+  var is_admin = req.query.is_admin;
+
+    name_values = {
+      first_name: first_name,
+      last_name: last_name
+    }
+    password_value = {
+      password: password
+    }
+    email_value = {
+      email: email
+    }
+    phone_value = {
+      phone: phone
+    } 
+    university_id_value = {
+      university_id: university_id
+    }
+    is_admin = {
+      is_admin: is_admin
+    }
+
+    
+
+    if(first_name && last_name){
+      inserts.push({
+        values: name_values,
+      });
+    }
+    if(password){
+      inserts.push({
+        values: password_value,
+      });
+    }
+    if(email){
+      inserts.push({
+        values: email_value,
+      });
+    }
+    if(phone){
+      inserts.push({
+        values: phone_value,
+      });
+    }
+    if(university_id){
+      inserts.push({
+        values: university_id_value,
+      });
+    }
+    if(is_admin){
+      inserts.push({
+        values: is_admin,
+      });
+    }
+  console.log(inserts[0].values);
+  console.log(user_id);
+  knex.transaction(function(trx) { 
+    knex('swe_user').transacting(trx).update({password: 'Nikhita'})
+    .where({id: user_id})
+    .then(function(inserts, user_id){
+    console.log(inserts[0].values);
+  //console.log(user_id);
+    
+      return Promise.map(inserts, function(insert_obj){
+        return knex('swe_user').update(insert_obj.values).where({user_id: user_id}).transacting(trx);
+      });
+    });
+  })
+  .then(result => {
+    res.send(util.message('Successfully updated user'));    
+  })
+  .catch(err => { return next(err) 
+    // If we get here, that means that neither the user insert nor any of the other inserts hav taken place
+  })
+})
 
 
 // GET a user's past events
