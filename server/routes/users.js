@@ -216,80 +216,74 @@ router.get('/:user_id/admin', function(req, res, next) {
 var inserts = []
 
 router.put('/:user_id', function(req, res, next) {
-  const user_id = req.params.user_id;
-  const first_name = req.query.first_name;
-  const last_name = req.query.last_name;
-  const password = req.query.password;
-  const email = req.query.email;
-  const phone = req.query.phone;
-  const university_id = req.query.university_id;
-  const is_admin = req.query.is_admin;
-  console.log("hello");
-  console.log(inserts[0].values);
-  console.log(user_id);
+  var user_id = req.params.user_id;
+  var first_name = req.query.first_name;
+  var last_name = req.query.last_name;
+  var password = req.query.password;
+  var email = req.query.email;
+  var phone = req.query.phone;
+  var university_id = req.query.university_id;
+  var is_admin = req.query.is_admin;
 
-  knex.transaction(function(trx) { 
-    name_values = {
+  name_values = {
+    first_name: first_name,
+    last_name: last_name
+  }
+  password_value = {
+    password: password
+  }
+  email_value = {
+    email: email
+  }
+  phone_value = {
+    phone: phone
+  } 
+  university_id_value = {
+    university_id: university_id
+  }
+  is_admin_value = {
+    is_admin: is_admin
+  }
 
-      first_name: first_name,
-      last_name: last_name
-    }
-    password_value = {
-      password: password
-    }
-    email_value = {
-      email: email
-    }
-    phone_value = {
-      phone: phone
-    } 
-    university_id_value = {
-      university_id: university_id
-    }
-    is_admin = {
-      is_admin: is_admin
-    }
-    var query1;
-    if(first_name && last_name){
+  knex.transaction(async function(trx) { 
     
+    var query1;
+    var query2;
+    var query3;
+    var query4;
+    var query5;
+    if(first_name && last_name){
+      query1 = knex('swe_user').update(name_values).where({id: user_id});
     }
     if(password){
-      inserts.push({
-        values: password_value,
-      });
+      query2 = knex('swe_user').update(password_value).where({id: user_id});
     }
     if(email){
-      inserts.push({
-        values: email_value,
-      });
-    }
-    if(phone){
-      inserts.push({
-        values: phone_value,
-      });
+      query3 = knex('swe_user').update(email_value).where({id: user_id});
     }
     if(university_id){
-      inserts.push({
-        values: university_id_value,
-      });
+      query4 = knex('swe_user').update(university_id_value).where({id: user_id});
     }
     if(is_admin){
-      inserts.push({
-        values: is_admin,
-      });
+      query5 = knex('swe_user').update(is_admin_value).where({id: user_id});
     }
 
-
-    knex('swe_user').transacting(trx).update(email_value)
-    .where({id: user_id})
-    .then(function(inserts, user_id){
-    //console.log(inserts[0].values);
-  //console.log(user_id);
-    
-      return 1;///Promise.map(inserts, function(insert_obj){
-        //return 1;//return knex('swe_user').update(insert_obj.values).where({user_id: user_id}).transacting(trx);
-      //});
-    });
+    if(first_name && last_name){
+      await query1.transacting(trx);
+    }
+    if (password){
+      await query2.transacting(trx);
+    }
+    if (email){
+      await query3.transacting(trx);
+    }
+    if (university_id){
+      await query4.transacting(trx);
+    }
+    if (is_admin){
+      await query5.transacting(trx);
+    }
+    return trx.commit;
   })
   .then(result => {
     res.send(util.message('Successfully updated user'));    
@@ -297,11 +291,10 @@ router.put('/:user_id', function(req, res, next) {
   .catch(err => { return next(err) 
     // If we get here, that means that neither the user insert nor any of the other inserts hav taken place
   })
-})
+});
 
 
 // GET a user's past events
-//TO DO: TEST ON POSTMAN
 router.get('/:user_id/past', function(req, res, next) {
   const user_id = req.params.user_id;
   knex('event_checkin')
@@ -329,7 +322,6 @@ router.get('/:user_id/past', function(req, res, next) {
 });
 
 // GET all companies a user is interested in 
-//TO DO: TEST ON POSTMAN
 router.get('/:user_id/companies', function(req, res, next) {
   const user_id = req.params.user_id;
   knex('user_company_rank').select('company_id', 'rank')
@@ -346,7 +338,6 @@ router.get('/:user_id/companies', function(req, res, next) {
 });
 
 // GET all events a user is attending
-//TO DO: TEST ON POSTMAN
 router.get('/:user_id/events', function(req, res, next) {
   const user_id = req.params.user_id;
   knex('event_checkin').select('event_id').where({user_id: user_id})
@@ -365,7 +356,6 @@ router.get('/:user_id/events', function(req, res, next) {
 });
 
 // GET all events a user is hosting
-//TO DO: TEST ON POSTMAN
 router.get('/:user_id/host', function(req, res, next) {
   const user_id = req.params.user_id;
   knex('event_host').select('event_id')
@@ -382,7 +372,6 @@ router.get('/:user_id/host', function(req, res, next) {
 });
 
 // GET all the user's majors
-//TO DO: TEST ON POSTMAN
 router.get('/:user_id/majors', function(req, res, next) {
   const user_id = req.params.user_id;
   knex('user_major').select('major_id')
@@ -399,7 +388,6 @@ router.get('/:user_id/majors', function(req, res, next) {
 });
 
 // GET all positions a user is seeking
-//TO DO: TEST ON POSTMAN
 router.get('/:user_id/positions', function(req, res, next) {
   const user_id = req.params.user_id;
   knex('user_position').select('position_id')
@@ -416,7 +404,6 @@ router.get('/:user_id/positions', function(req, res, next) {
 });
 
 // GET all the user's occupations
-//TODO: Test on postman
 router.get('/:user_id/occupations', function(req, res, next) {
   const user_id = req.params.user_id;
   knex('user_occupation').select('occupation_id')
@@ -433,7 +420,6 @@ router.get('/:user_id/occupations', function(req, res, next) {
 });
 
 // GET the user's diet information
-//TODO: Test on Postman
 router.get('/:user_id/diet', function(req, res, next) {
   const user_id = req.params.user_id;
   knex('user_diet').select('diet_id ')
@@ -450,7 +436,6 @@ router.get('/:user_id/diet', function(req, res, next) {
 });
 
 // GET a user's favorite events
-//TODO: Test on Postman
 router.get('/:user_id/favorite', function(req, res, next) {
   const user_id = req.params.user_id;
   knex('favorite_events').select('event_id')
@@ -467,7 +452,6 @@ router.get('/:user_id/favorite', function(req, res, next) {
 });
 
 //Add a favorite event to a user
-//TO DO: TEST ON POSTMAN
 router.post('/:user_id/favorite/:event_id', function(req, res, next) {
   if (!req.params.event_id) {
     util.throwError(400, 'Event ID must not be null');
@@ -488,7 +472,6 @@ router.post('/:user_id/favorite/:event_id', function(req, res, next) {
 });
 
 //Delete a favorite event from a user
-//TO DO: TEST ON POSTMAN
 router.delete('/:user_id/favorite/:event_id', function(req, res, next) {
   values =
   {
@@ -504,7 +487,6 @@ router.delete('/:user_id/favorite/:event_id', function(req, res, next) {
 
 //TODO: Fix Search Logic
 // GET a user's favorite events
-//TO DO: TEST ON POSTMAN
 router.get('/search', function(req, res, next) {
   const email = req.query.email;
   const name = req.query.name;
@@ -535,7 +517,6 @@ router.get('/search', function(req, res, next) {
 });
 
 //GET specific users
-//TO DO: TEST ON POSTMAN
 router.get('/filter', function(req, res, next) {
   const cid = req.query.cid;
   const oid = req.query.oid;
