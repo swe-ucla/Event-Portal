@@ -66,7 +66,6 @@ router.get('/ids', function(req, res, next) {
 });
 
 //Add a user
-//TO DO: TEST ON POSTMAN
 router.post('/register', function(req, res, next) {
   const diet_id = req.query.diet_id;
   const occupation_id = req.query.occupation_id;
@@ -212,7 +211,6 @@ router.get('/:user_id/admin', function(req, res, next) {
 });
 
 //Update user info
-//TO DO: TEST ON POSTMAN
 var inserts = []
 
 router.put('/:user_id', function(req, res, next) {
@@ -516,6 +514,7 @@ router.get('/search', function(req, res, next) {
   }
 });
 
+//TODO: Fix Filter Logic
 //GET specific users
 router.get('/filter', function(req, res, next) {
   const cid = req.query.cid;
