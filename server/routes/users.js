@@ -14,6 +14,7 @@ router.get('/ping', function(req, res, next) {
 });
 
 //GET all users.
+//TO DO: TEST ON POSTMAN
 router.get('/', function(req, res, next) {
   knex('swe_user').select('id')
     .then(result => {
@@ -27,6 +28,7 @@ router.get('/', function(req, res, next) {
 });
 
 // GET all user names. - TODO: fix concat
+//TO DO: TEST ON POSTMAN
 router.get('/names', function(req, res, next) {
   knex('swe_user').select('first_name', 'last_name')
     .then(result => {
@@ -40,6 +42,7 @@ router.get('/names', function(req, res, next) {
 });
 
 // GET all user emails.
+//TO DO: TEST ON POSTMAN
 router.get('/emails', function(req, res, next) {
   knex('swe_user').select('email')
     .then(result => {
@@ -53,6 +56,7 @@ router.get('/emails', function(req, res, next) {
 });
  
 // GET all user university IDs.
+//TO DO: TEST ON POSTMAN
 router.get('/ids', function(req, res, next) {
   knex('swe_user').select('university_id')
     .then(result => {
@@ -66,14 +70,18 @@ router.get('/ids', function(req, res, next) {
 });
 
 //Add a user
-let id = []
-//var Promise = require('bluebird');
-
+//TO DO: TEST ON POSTMAN
 router.post('/register', function(req, res, next) {
- knex.transaction(function(trx) { 
+  const diet_id = req.query.diet_id;
+  const occupation_id = req.query.occupation_id;
+  const position_id = req.query.position_id;
+  const company_id = req.query.company_id;
+  const major_id = req.query.major_id;
+  const rank = req.query.rank;
+
+  knex.transaction(function(trx) { 
   values =
   {
-    //id: req.query.id,
     first_name: req.query.first_name,
     last_name: req.query.last_name,
     password: req.query.password,
@@ -87,140 +95,82 @@ router.post('/register', function(req, res, next) {
   .into('swe_user')
   .transacting(trx)
   .then(function(ids){
-    dietValues = {
-      user_id: ids[0],
-      diet_id: req.query.diet_id
-    }
-    occupationValues = {
-      user_id: 99,//ids[0],
-      occupation_id: req.query.occupation_id
-    }
-    //[dietValues, 'user_diet'],
-    console.log(ids[0]); 
-    let pizzas = [[dietValues, 'user_diet'], [occupationValues, 'user_occupation']]
-    //let strings = ['users_diet','user_position']
-    return Promise.map(pizzas, function(pizza){
-        console.log("hello" + ids[0].toString() + pizza[0].toString() + pizza[1].toString() + dietValues.toString() + occupationValues.toString());
-        return knex.insert(pizza[0]).into(pizza[1]).transacting(trx);
-    });
-  });
-  //.then(trx.commit)
-  //.catch(trx.rollback);
-})
-.then(result => {
-   res.send(util.message('Successfully inserted new user: ' + req.query.first_name + 'with diet and occupation id'));    
-})
-.catch(err => { return next(err) 
-  // If we get here, that means that neither the user insert
-  //nor the diet insert has taken place.
-})
 
-  /*
-  if (!req.query.first_name) {
-    util.throwError(400, 'First name must not be null');
-  }
-  if (!req.query.last_name) {
-    util.throwError(400, 'First name must not be null');
-  }
-  values =
-  {
-    id: req.query.id,
-    first_name: req.query.first_name,
-    last_name: req.query.last_name,
-    password: req.query.password,
-    email: req.query.email,
-    phone: req.query.phone,
-    university_id: req.query.university_id,
-    is_admin: req.query.is_admin,
-  }
-  id = knex('swe_user')
-  .returning('id')
-  .insert(values)
-    .then(result => {
-      res.send(util.message('Successfully inserted new user: ' + req.query.first_name));
-    })
-    .catch(err => { return next(err) });
-  */
+    diet_values = {
+      user_id: ids[0],
+      diet_id: diet_id
+    }
+    occupation_values = {
+      user_id: ids[0],
+      occupation_id: occupation_id
+    }
+    position_values = {
+      user_id: ids[0],
+      position_id: position_id
+    }
+    major_values = {
+      user_id:  ids[0],
+      major_id: major_id,
+    } 
+    company_rank_values = {
+      user_id:  ids[0],
+      company_id: company_id,
+      rank: rank
+    }
+
+    inserts = []
+
+    if(diet_id){
+      inserts.push({
+        values: diet_values,
+        table_name: 'user_diet'
+      });
+    }
+    if(occupation_id){
+      inserts.push({
+        values: occupation_values,
+        table_name: 'user_occupation'
+      });
+    }
+    if(position_id){
+      inserts.push({
+        values: position_values,
+        table_name: 'user_position'
+      });
+    }
+    if(major_id){
+      inserts.push({
+        values: major_values,
+        table_name: 'user_major'
+      });
+    }
+    if(company_id && rank){
+      inserts.push({
+        values: company_rank_values,
+        table_name: 'user_company_rank'
+      });
+    }
+    console.log(ids[0]); 
+    return Promise.map(inserts, function(insert_obj){
+        return knex.insert(insert_obj.values).into(insert_obj.table_name).transacting(trx);
+      });
+    });
+  })
+  .then(result => {
+   res.send(util.message('Successfully inserted new user: ' + req.query.first_name + 'with diet and occupation id'));    
+  })
+  .catch(err => { return next(err) 
+  // If we get here, that means that neither the user insert nor any of the other inserts hav taken place
+  })
 });
 
-  /*
-  var user_id = knex('swe_user')
-    .('id')
-    .insert(values)
-    .then(result => {
-      res.send(util.message('Successfully inserted new user: ' + req.query.first_name));
-    })
-    .catch(err => { return next(err) });
-*/
-/*
-  values = {
-    user_id: id[0],
-    diet_id: req.query.diet_id 
-  }
-  
-  knex('user_diet').insert(values)
-    .then(result => {
-      res.send(util.message('Successfully inserted diet for user: ' + req.query.id));
-    })
-    .catch(err => { return next(err) });
-  /*
-
-  values = {
-    user_id: user_id, //req.query.id,
-    occupation_id: req.query.occupation_id
-  }
-  */
-  /*
-  knex('user_occupation').insert(values)
-    .then(result => {
-      res.send(util.message('Successfully inserted occupation for user: ' + req.query.id));
-    })
-    .catch(err => { return next(err) });
-
-  values = {
-    user_id: req.query.id,
-    position_id: req.query.position_id
-  }
-
-  knex('user_position').insert(values)
-    .then(result => {
-      res.send(util.message('Successfully inserted position for user: ' + req.query.id));
-    })
-    .catch(err => { return next(err) });
-  
-  values = {
-    user_id:  req.query.id,
-    major_id: req.query.major_id,
-  } 
-
-  knex('user_major').insert(values)
-    .then(result => {
-      res.send(util.message('Successfully inserted major for user: ' + req.query.id));
-    })
-    .catch(err => { return next(err) });
-  
-  values = {
-    user_id:  req.query.id,
-    company_id: req.query.company_id,
-    rank: req.query.rank
-
-  }
-  
-  knex('user_company_rank').insert(values)
-    .then(result => {
-      res.send(util.message('Successfully inserted company rank for user: ' + req.query.id));
-    })
-    .catch(err => { return next(err) }
-    */
-  
 
 //Login a user
-//Unsuccessful on postman
-//TODO: add updated at to the database
+//TO DO: TEST ON POSTMAN
 router.put('/login', function(req, res, next) {
   knex('swe_user')
     .update ({
-        update_at: knex.fn.now(),
+        updated_at: knex.fn.now(),
     })
     .where({ 
         email: req.query.email, 
@@ -235,7 +185,7 @@ router.put('/login', function(req, res, next) {
 
 
 // GET user info by user_id
-//P
+//TO DO: TEST ON POSTMAN
 router.get('/:user_id/id', function(req, res, next) {
   const user_id = req.params.user_id;
   knex('swe_user').select()
@@ -252,7 +202,7 @@ router.get('/:user_id/id', function(req, res, next) {
 });
 
 // GET whether user is admin or not
-//P
+//TO DO: TEST ON POSTMAN
 router.get('/:user_id/admin', function(req, res, next) {
   const user_id = req.params.user_id;
   knex('swe_user').select('is_admin')
@@ -269,6 +219,7 @@ router.get('/:user_id/admin', function(req, res, next) {
 });
 
 //Update user info
+//TO DO: TEST ON POSTMAN
 router.put('/:user_id', function(req, res, next) {
   values =
   {
@@ -289,19 +240,35 @@ router.put('/:user_id', function(req, res, next) {
 
 
 // GET a user's past events
-//TO DO: convert to knex (Nikhita)
+//TO DO: TEST ON POSTMAN
 router.get('/:user_id/past', function(req, res, next) {
   const user_id = req.params.user_id;
-  db.query('SELECT event_id FROM event_checkin INNER JOIN event ON event_checkin.event_id = event.fb_id \
-  WHERE event_checkin.user_id = 3 AND event.ends_at < now() UNION SELECT event_id FROM event_registration\
-  INNER JOIN event ON event_registration.event_id = event.fb_id WHERE event_registration.user_id = 3 \
-  AND event.ends_at < now()', [], (err, result) => {
-    if (err) return next(err);
-    res.send(result.rows);
+  knex('event_checkin')
+    .select('event_id')
+      .innerJoin('event', 'event_checkin.event_id', 'event.fb_id')
+        .where('event_checkin.user_id', 3)
+          .andWhere('event.ends_at' < now())
+            .union([
+              knex.select('event_id')
+                .from('event_registration')
+                  .innerJoin('event', 'event_registration.event_id', 'event.fb_id')
+                    .where('event_checkin.user_id', 3)
+                      .andWhere('event.ends_at' < now())
+
+            ])
+  .then(result => {
+      if (result.length) {
+        res.json(result);
+      } else {
+        util.throwError(404, 'No users matching user_id = ' + user_id + ' found');
+      }
+    })
+    .catch(err => { return next(err) 
   });
 });
 
 // GET all companies a user is interested in 
+//TO DO: TEST ON POSTMAN
 router.get('/:user_id/companies', function(req, res, next) {
   const user_id = req.params.user_id;
   knex('user_company_rank').select('company_id', 'rank')
@@ -318,7 +285,7 @@ router.get('/:user_id/companies', function(req, res, next) {
 });
 
 // GET all events a user is attending
-//P
+//TO DO: TEST ON POSTMAN
 router.get('/:user_id/events', function(req, res, next) {
   const user_id = req.params.user_id;
   knex('event_checkin').select('event_id').where({user_id: user_id})
@@ -337,7 +304,7 @@ router.get('/:user_id/events', function(req, res, next) {
 });
 
 // GET all events a user is hosting
-//P
+//TO DO: TEST ON POSTMAN
 router.get('/:user_id/host', function(req, res, next) {
   const user_id = req.params.user_id;
   knex('event_host').select('event_id')
@@ -354,7 +321,7 @@ router.get('/:user_id/host', function(req, res, next) {
 });
 
 // GET all the user's majors
-//P
+//TO DO: TEST ON POSTMAN
 router.get('/:user_id/majors', function(req, res, next) {
   const user_id = req.params.user_id;
   knex('user_major').select('major_id')
@@ -371,7 +338,7 @@ router.get('/:user_id/majors', function(req, res, next) {
 });
 
 // GET all positions a user is seeking
-//TODO: Test on Postman
+//TO DO: TEST ON POSTMAN
 router.get('/:user_id/positions', function(req, res, next) {
   const user_id = req.params.user_id;
   knex('user_position').select('position_id')
@@ -425,7 +392,7 @@ router.get('/:user_id/diet', function(req, res, next) {
 //TODO: Test on Postman
 router.get('/:user_id/favorite', function(req, res, next) {
   const user_id = req.params.user_id;
-  knex('favorite_events').select('event_id ')
+  knex('favorite_events').select('event_id')
   .where( {user_id: user_id} )
   .then(result => {
       if (result.length) {
@@ -439,6 +406,7 @@ router.get('/:user_id/favorite', function(req, res, next) {
 });
 
 //Add a favorite event to a user
+//TO DO: TEST ON POSTMAN
 router.post('/:user_id/favorite/:event_id', function(req, res, next) {
   if (!req.params.event_id) {
     util.throwError(400, 'Event ID must not be null');
@@ -459,6 +427,7 @@ router.post('/:user_id/favorite/:event_id', function(req, res, next) {
 });
 
 //Delete a favorite event from a user
+//TO DO: TEST ON POSTMAN
 router.delete('/:user_id/favorite/:event_id', function(req, res, next) {
   values =
   {
@@ -474,24 +443,38 @@ router.delete('/:user_id/favorite/:event_id', function(req, res, next) {
 
 //TODO: Fix Search Logic
 // GET a user's favorite events
-router.get('/search', function(req, res, next) {
-  const name = req.query.name;
-  db.query('SELECT id FROM swe_user WHERE CONCAT(first_name, \' \', last_name) ILIKE $1', ['%' + name + '%'], (err, result) => {
-    if (err) return next(err);
-    res.send(result.rows);
-  });
-});
-
-// TODO: Add Postman Request
+//TO DO: TEST ON POSTMAN
 router.get('/search', function(req, res, next) {
   const email = req.query.email;
-  db.query('SELECT id FROM swe_user WHERE email ILIKE $1', ['%' + email + '%'], (err, result) => {
-    if (err) return next(err);
-    res.send(result.rows);
-  });
+  const name = req.query.name;
+  if (email){
+    knex('swe_user').select().where('email', 'ilike', '%' + email +'%')
+      .then(result => {
+        if (result.length) {
+          res.json(result);
+        } else {
+          util.throwError(404, 'No users found');
+        }
+      })
+      .catch(err => { return next(err) });
+  }
+  else if (name){
+    knex('swe_user').select().where(knex.raw('CONCAT(first_name, \'\', last_name)'), 'ilike', '%' + name +'%')
+      .then(result => {
+        if (result.length) {
+          res.json(result);
+        } else {
+          util.throwError(404, 'No users found');
+        }
+      })
+      .catch(err => { return next(err) });
+  } else { 
+    util.throwError(400, '\'email\' and \'name\' are undefined');
+  }
 });
 
-//TODO: Fix Filter Logic
+//GET specific users
+//TO DO: TEST ON POSTMAN
 router.get('/filter', function(req, res, next) {
   const cid = req.query.cid;
   const oid = req.query.oid;
@@ -500,43 +483,66 @@ router.get('/filter', function(req, res, next) {
   const admin = req.query.admin;
   // GET all users interested in a given company.
   if (cid){
-    db.query('SELECT user_id FROM user_company_rank WHERE company_id = $1', [cid], (err, result) => {
-      if (err) return next(err);
-      res.send(result.rows);
-    });
- }
-
- // GET all users of the given occupation
- if (oid){
-    db.query('SELECT user_id FROM user_occupation WHERE occupation_id = $1', [oid], (err, result) => {
-      if (err) return next(err);
-      res.send(result.rows);
-    });
- }
-
- // GET all users of the given major
- if (mid){
-    db.query('SELECT user_id FROM user_major WHERE major_id = $1', [mid], (err, result) => {
-      if (err) return next(err);
-      res.send(result.rows);
-    });
- }
-
- // GET all users seeking the given position
- if (pid){
-    db.query('SELECT user_id FROM user_position WHERE position_id = $1', [pid], (err, result) => {
-      if (err) return next(err);
-      res.send(result.rows);
-    });
- }
-
-// GET all admin users
- if (admin){
-    db.query('SELECT id FROM swe_user WHERE is_admin = $1', [admin], (err, result) => {
-      if (err) return next(err);
-      res.send(result.rows);
-   });
- }
+    knex('user_company_rank').select('user_id').where({company_id: cid})
+      .then(result => {
+        if (result.length) {
+          res.json(result);
+        } else {
+          util.throwError(404, 'No users found');
+        }
+      })
+      .catch(err => { return next(err) });
+  }
+  // GET all users of the given occupation
+  else if (oid){
+    knex('user_occupation').select('user_id').where({occupation_id: oid})
+      .then(result => {
+        if (result.length) {
+          res.json(result);
+        } else {
+          util.throwError(404, 'No users found');
+        }
+      })
+      .catch(err => { return next(err) });
+  }
+  // GET all users of the given major
+  else if (mid){
+    knex('user_major').select('user_id').where({major_id: mid})
+      .then(result => {
+        if (result.length) {
+          res.json(result);
+        } else {
+          util.throwError(404, 'No users found');
+        }
+      })
+      .catch(err => { return next(err) });
+  }
+  // GET all users seeking the given position
+  else if (pid){
+    knex('user_position').select('user_id').where({position_id: pid})
+      .then(result => {
+        if (result.length) {
+          res.json(result);
+        } else {
+          util.throwError(404, 'No users found');
+        }
+      })
+      .catch(err => { return next(err) });
+  }
+  // GET all admin users
+  else if (admin){
+    knex('swe_user').select('id').where({is_admin: admin})
+      .then(result => {
+        if (result.length) {
+          res.json(result);
+        } else {
+          util.throwError(404, 'No users found');
+        }
+      })
+      .catch(err => { return next(err) });
+  } else { 
+    util.throwError(400, 'No parameters are defined');
+  }
 });
 
 module.exports = router;
