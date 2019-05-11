@@ -225,6 +225,12 @@ router.post('/', function(req, res, next) {
     citizenship_requirement: req.body.citizenship_requirement,
     description: req.body.description
   }
+  let position_ids = req.body.position_id;
+  let major_ids = req.body.major_id;
+  let contact_ids = req.body.contact_id;
+  let event_ids = req.body.event_id;
+
+  console.log(req.body.position_id);
 
   var queryCompany = knex('company').insert(values)
   knex.transaction(function(trx) {
@@ -242,53 +248,54 @@ router.post('/', function(req, res, next) {
           var queryRank = knex('user_company_rank').insert(rankValues)
           await queryRank.transacting(trx);
         }
-        if (req.body.position_id) {
-          let length = position_id.length;
+        if (position_ids) {
           let companyPositions = [];
+          let length = position_ids.length;
+          console.log("Length", length);
           for(let n=0; n < length; n++)
           {
             companyPositions.push({
                company_id: ids[0],
-               position_id: req.body.position_id[n]
-            })
+               position_id: position_ids[n]
+            });
           }
           var queryPos = knex('company_position').insert(companyPositions)
           await queryPos.transacting(trx);
         }
-        if (req.body.major_id) {
-          let length = major_id.length;
+        if (major_ids) {
+          let length = major_ids.length;
           let companyMajors = [];
           for(let n=0; n < length; n++)
           {
             companyMajors.push({
                company_id: ids[0],
-               major_id: req.body.major_id[n]
+               major_id: major_ids[n]
             })
           }
           var queryMajor = knex('company_major').insert(companyMajors)
           await queryMajor.transacting(trx);
         }
-        if (req.body.contact_id) {
-          let length = contact_id.length;
+        if (contact_ids) {
+          let length = contact_ids.length;
           let companyContacts = [];
           for(let n=0; n < length; n++)
           {
             companyContacts.push({
                company_id: ids[0],
-               contact_id: req.body.contact_id[n]
+               contact_id: contacts_id[n]
             })
           }
           var queryContact = knex('company_contact').insert(companyContacts)
           await queryContact.transacting(trx);
         }   
-        if (req.body.event_id) {
-          let length = event_id.length;
+        if (event_ids) {
+          let length = event_ids.length;
           let companyEvents = [];
           for(let n=0; n < length; n++)
           {
             companyEvents.push({
                company_id: ids[0],
-               event_id: req.body.event_id[n]
+               event_id: event_ids[n]
             })
           }
           var queryEvent = knex('event_company').insert(companyEvents)
