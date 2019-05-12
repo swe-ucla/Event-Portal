@@ -230,7 +230,7 @@ router.post('/', function(req, res, next) {
   let position_ids = req.body.position_id;
   let major_ids = req.body.major_id;
   let contact_ids = req.body.contact_id;
-  let event_ids = req.body.event_id;
+  let event_ids = req.body.event_id[8000];
 
   console.log(req.body.position_id);
 
@@ -393,7 +393,7 @@ router.put('/:company_id', function(req, res, next) {
   if (req.body.event_id) {
     companyEvents = {
       company_id: req.params.company_id,
-      event_id: req.body.event_id
+      event_id: req.body.event_id[8000]
     };
 
     knex('event_company').insert(companyEvents)
