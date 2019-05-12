@@ -230,7 +230,7 @@ router.post('/', function(req, res, next) {
   let position_ids = req.body.position_id;
   let major_ids = req.body.major_id;
   let contact_ids = req.body.contact_id;
-  let event_ids = req.body.event_id[8000];
+  let event_ids = req.body.event_id;
 
   console.log(req.body.position_id);
 
@@ -239,79 +239,120 @@ router.post('/', function(req, res, next) {
     return queryCompany.transacting(trx)
       .returning('id')
       .then(async function(ids){
-        let queries = [];
-        let i = 0;
+        let company_id = ids[0];
+
         if (ranks && user_ids) {
-          let length = ranks.length;
-          if (ranks.length > user_ids.length)
-            length = user_ids.length;
-          for(let n=0; n < length; n++)
-          {
+          let rankValues = [];
+          if(Array.isArray(ranks) && Array.isArray(user_ids)){
+            let length = ranks.length;
+            if (ranks.length > user_ids.length)
+              length = user_ids.length; //not sure about error handling for length
+            for(let n=0; n < length; n++)
+            {
+              rankValues.push({
+                user_id: user_ids[n],
+                company_id: company_id,
+                rank: ranks[n]
+              });
+            }
+          } else{
             rankValues = {
-              user_id: user_ids[n],
-              company_id: ids[0],
-              rank: ranks[n]
-            };
+                user_id: user_ids,
+                company_id: company_id,
+                rank: ranks
+              };
           }
           var queryRank = knex('user_company_rank').insert(rankValues)
           await queryRank.transacting(trx);
         }
+
         if (position_ids) {
           let companyPositions = [];
-          let length = position_ids.length;
-          console.log("Length", length);
-          for(let n=0; n < length; n++)
-          {
-            companyPositions.push({
-               company_id: ids[0],
-               position_id: position_ids[n]
-            });
+          if(Array.isArray(position_ids)){
+            let length = position_ids.length;
+            for(let n=0; n < length; n++)
+            {
+              companyPositions.push({
+                 company_id: company_id,
+                 position_id: position_ids[n]
+              });
+            }
+          } else {
+            companyPositions = {
+                 company_id: company_id,
+                 position_id: position_ids
+              }
           }
           var queryPos = knex('company_position').insert(companyPositions)
           await queryPos.transacting(trx);
         }
+
         if (major_ids) {
-          let length = major_ids.length;
           let companyMajors = [];
-          for(let n=0; n < length; n++)
-          {
-            companyMajors.push({
-               company_id: ids[0],
-               major_id: major_ids[n]
-            })
+          if(Array.isArray(major_ids)){
+            let length = major_ids.length;
+            for(let n=0; n < length; n++)
+            {
+              companyMajors.push({
+                 company_id: company_id,
+                 major_id: major_ids[n]
+              })
+            }
+          } else {
+            companyMajors = {
+                 company_id: company_id,
+                 major_id: major_ids
+              }
           }
           var queryMajor = knex('company_major').insert(companyMajors)
           await queryMajor.transacting(trx);
         }
+
         if (contact_ids) {
-          let length = contact_ids.length;
           let companyContacts = [];
-          for(let n=0; n < length; n++)
-          {
-            companyContacts.push({
-               company_id: ids[0],
-               contact_id: contacts_id[n]
-            })
+          if(Array.isArray(contact_ids)){
+            let length = contact_ids.length;
+            for(let n=0; n < length; n++)
+            {
+              companyContacts.push({
+                 company_id: company_id,
+                 contact_id: contact_ids[n]
+              })
+            }
+          } else {
+              companyContacts = {
+                 company_id: company_id,
+                 contact_id: contact_ids
+              }
           }
           var queryContact = knex('company_contact').insert(companyContacts)
           await queryContact.transacting(trx);
         }   
+
         if (event_ids) {
-          let length = event_ids.length;
           let companyEvents = [];
-          for(let n=0; n < length; n++)
-          {
-            companyEvents.push({
-               company_id: ids[0],
-               event_id: event_ids[n]
-            })
+          if(Array.isArray(event_ids)){
+            let length = event_ids.length;
+            for(let n=0; n < length; n++)
+            {
+              companyEvents.push({
+                 company_id: company_id,
+                 event_id: event_ids[n]
+              })
+            }
+          } else{
+            let companyEvents = {
+                 company_id: company_id,
+                 event_id: event_ids
+              }
           }
           var queryEvent = knex('event_company').insert(companyEvents)
           await queryEvent.transacting(trx);
         }
-          return trx.commit;
-        })
+
+        return trx.commit;
       })
+    })
     .then(function(){
       res.send(util.message('Successfully inserted company'));
     })
@@ -320,89 +361,206 @@ router.post('/', function(req, res, next) {
 
 //Update a single company
 router.put('/:company_id', function(req, res, next) {
-  if(req.body.name){
-    values = { 
-      name: req.body.name,
-      website: req.body.website,
-      logo: req.body.logo,
-      citizenship_requirement: req.body.citizenship_requirement,
-      description: req.body.description,
-    };
-
-  knex('company').update(values).where({ id: req.params.company_id })
-     .then(result => {
-        res.send(util.message('Successfully updated company: ' + req.body.name));
-      })
-      .catch(err => { return next(err) });
+  values = {
+    name: req.body.name,
+    website: req.body.website,
+    logo: req.body.logo,
+    citizenship_requirement: req.body.citizenship_requirement,
+    description: req.body.description
   }
+  let ranks = req.body.rank;
+  let user_ids = req.body.user_id;
+  let position_ids = req.body.position_id;
+  let major_ids = req.body.major_id;
+  let contact_ids = req.body.contact_id;
+  let event_ids = req.body.event_id;
+  //let remove_ranks = req.body.remove_rank;
+  let remove_user_ids = req.body.remove_user_id;
+  let remove_position_ids = req.body.remove_position_id;
+  let remove_major_ids = req.body.remove_major_id;
+  let remove_contact_ids = req.body.remove_contact_id;
+  let remove_event_ids = req.body.remove_event_id;
+  let company_id = req.params.company_id;
 
-  if (req.body.rank && req.body.user_id) {
+  console.log(req.body.position_id);
 
-    rankValues = {
-      user_id: req.body.user_id,
-      company_id: req.params.company_id,
-      rank: req.body.rank
-    };
-
-    knex('user_company_rank').insert(rankValues)
-      .then(result => {
-        res.send(util.message('Successfully inserted new company rank: ' + req.body.rank));
-      })  
-      .catch(err => { return next(err) });
-  }
-  //company position
-  if (req.body.position_id) {
-    companyPositions = {
-      company_id: req.params.company_id,
-      position_id: req.body.position_id
-    };
-
-    knex('company_position').insert(companyPositions)
-      .then(result => {
-        res.send(util.message('Successfully inserted new company position: ' + req.body.position_id));
-      })  
-      .catch(err => { return next(err) });
-  }
-  //company major
-  if (req.body.major_id) {
-    companyMajors = {
-      company_id: req.params.company_id,
-      major_id: req.body.major_id
-    };
-
-    knex('company_major').insert(companyMajors)
-      .then(result => {
-        res.send(util.message('Successfully inserted new company major: ' + req.body.major_id));
-      })  
-      .catch(err => { return next(err) });
-  }
-  //company contact
-  if (req.body.contact_id) {
-    companyContacts = {
-      company_id: req.params.company_id,
-      contact_id: req.body.contact_id
-    };
-
-    knex('company_contact').insert(companyContacts)
-      .then(result => {
-        res.send(util.message('Successfully inserted new company contact: ' + req.body.contact_id));
-      })  
-      .catch(err => { return next(err) });
-  }
-  //event company
-  if (req.body.event_id) {
-    companyEvents = {
-      company_id: req.params.company_id,
-      event_id: req.body.event_id[8000]
-    };
-
-    knex('event_company').insert(companyEvents)
-      .then(result => {
-        res.send(util.message('Successfully inserted new company event: ' + req.body.event_id));
-      })  
-      .catch(err => { return next(err) });
-    }
-});
+  var queryCompany = knex('company').update(values).where({ id: req.params.company_id })
+  knex.transaction(async function(trx) {
+      if(req.body.name || req.body.website || req.body.logo || req.body.citizenship_requirement || req.body.description){
+        await queryCompany;
+      }
+      if (ranks && user_ids) {
+        let rankValues = [];
+        if(Array.isArray(ranks) && Array.isArray(user_ids)){
+          let length = ranks.length;
+          if (ranks.length > user_ids.length)
+            length = user_ids.length; //not sure about error handling for length
+          for(let n=0; n < length; n++)
+          {
+            rankValues.push({
+              user_id: user_ids[n],
+              company_id: company_id,
+              rank: ranks[n]
+            });
+          }
+        } else{
+          rankValues = {
+              user_id: user_ids,
+              company_id: company_id,
+              rank: ranks
+            };
+        }
+        var queryRank = knex('user_company_rank').insert(rankValues)
+        await queryRank.transacting(trx);
+      }
+      if (position_ids) {
+        let companyPositions = [];
+        if(Array.isArray(position_ids)){
+          let length = position_ids.length;
+          for(let n=0; n < length; n++)
+          {
+            companyPositions.push({
+               company_id: company_id,
+               position_id: position_ids[n]
+            });
+          }
+        } else{
+          companyPositions = {
+               company_id: company_id,
+               position_id: position_ids
+            }
+        }
+        var queryPos = knex('company_position').insert(companyPositions)
+        await queryPos.transacting(trx);
+      }
+      if (major_ids) {
+        let companyMajors = [];
+        if(Array.isArray(major_ids)){
+          let length = major_ids.length;
+          for(let n=0; n < length; n++)
+          {
+            companyMajors.push({
+               company_id: company_id,
+               major_id: major_ids[n]
+            })
+          }
+        } else {
+          companyMajors = {
+               company_id: company_id,
+               major_id: major_ids
+            }
+        }
+        var queryMajor = knex('company_major').insert(companyMajors)
+        await queryMajor.transacting(trx);
+      }
+      if (contact_ids) {
+        let companyContacts = [];
+        if(Array.isArray(contact_ids)){
+          let length = contact_ids.length;
+          for(let n=0; n < length; n++)
+          {
+            companyContacts.push({
+               company_id: company_id,
+               contact_id: contact_ids[n]
+            })
+          }
+        } else {
+            companyContacts = {
+               company_id: company_id,
+               contact_id: contact_ids
+            }
+        }
+        var queryContact = knex('company_contact').insert(companyContacts)
+        await queryContact.transacting(trx);
+      }   
+      if (event_ids) {
+        let companyEvents = [];
+        if(Array.isArray(event_ids)){
+          let length = event_ids.length;
+          for(let n=0; n < length; n++)
+          {
+            companyEvents.push({
+               company_id: company_id,
+               event_id: event_ids[n]
+            })
+          }
+        } else {
+          let companyEvents = {
+               company_id: company_id,
+               event_id: event_ids
+            }
+        }
+        var queryEvent = knex('event_company').insert(companyEvents)
+        await queryEvent.transacting(trx);
+      }
+      //remove
+      if (remove_user_ids) {
+        if (Array.isArray(remove_user_ids)) {
+          let length = remove_user_ids.length;
+          for(let n=0; n < length; n++)
+          {
+            let removeQueryRank = knex('user_company_rank').del().where("user_id", remove_user_ids[n])
+            await removeQueryRank.transacting(trx);
+          }   
+        } else {
+          let removeQueryRank = knex('user_company_rank').del().where("user_id", remove_user_ids)
+          await removeQueryRank.transacting(trx);
+        }
+      }
+      if (remove_position_ids) {
+        let length = remove_position_ids.length;
+        for(let n=0; n < length; n++)
+        {
+          var removeQueryPos = knex('company_position').del().where("company_id", company_id).andWhere("position_id", remove_position_ids[n])
+          await removeQueryPos.transacting(trx);
+        }
+      }
+      if (remove_major_ids) {
+        let length = remove_major_ids.length;
+        if(Array.isArray(remove_major_ids)){
+          for(let n=0; n < length; n++)
+          {
+            var removeQueryMajor = knex('company_major').del().where("company_id", company_id).andWhere("major_id", remove_major_ids[n])
+            await removeQueryMajor.transacting(trx);
+          }
+        } else {
+          var removeQueryMajor = knex('company_major').del().where("company_id", company_id).andWhere("major_id", remove_major_ids)
+          await removeQueryMajor.transacting(trx);
+        }
+      }
+      if (remove_contact_ids) {
+        let length = remove_contact_ids.length;
+        if(Array.isArray(remove_contact_ids)){
+          for(let n=0; n < length; n++)
+          {
+            var removeQueryContact = knex('company_contact').del().where("company_id", company_id).andWhere("contact_id", remove_contact_ids[n])
+            await removeQueryContact.transacting(trx);
+          }
+        } else {
+          var removeQueryContact = knex('company_contact').del().where("company_id", company_id).andWhere("contact_id", remove_contact_ids)
+          await removeQueryContact.transacting(trx);
+        }
+      }
+      if (remove_event_ids) {
+        let length = remove_event_ids.length;
+        if(Array.isArray(remove_event_ids)){
+          for(let n=0; n < length; n++)
+          {
+            var removeQueryEvent = knex('company_event').del().where("company_id", company_id).andWhere("event_id", remove_event_ids[n])
+            await removeQueryEvent.transacting(trx);
+          }
+        } else {
+          var removeQueryEvent = knex('company_event').del().where("company_id", company_id).andWhere("event_id", remove_event_ids)
+          await removeQueryEvent.transacting(trx);
+        }
+      }
+      return trx.commit;
+    })
+    .then(function(){
+      res.send(util.message('Successfully updated company'));
+    })
+    .catch(err => {return next(err) });
+  });
 
 // Delete a single company
 router.delete('/:company_id', function(req,res,next){
