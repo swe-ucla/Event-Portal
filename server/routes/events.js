@@ -284,22 +284,20 @@ router.put('/:event_id/register/:user_id', function(req, res, next) {
   const event_id = req.params.event_id;
   const user_id = req.params.user_id;
   const paid = req.body.paid;
-  knex('event_registration')
-  .update({ 
-    has_paid: paid
-  })
-  .where({ 
-    event_id: event_id, 
-    user_id: user_id
-  })
-  .then(result => {
-    if (result) {
-      res.send(util.message('Successfully updated user registration for event with event_id ' + event_id));
-    } else {
-      util.throwError(404, 'No user found with user_id ' + user_id + ' for event with event_id ' + event_id);
-    }
-  })
-  .catch(err => { return next(err) });
+  if (paid == "true" || paid == "false") {
+    knex('event_registration').update({ has_paid: paid })
+      .where({ event_id: event_id, user_id: user_id })
+      .then(result => {
+        if (result) {
+          res.send(util.message('Successfully updated user registration for event with event_id ' + event_id));
+        } else {
+          util.throwError(404, 'No user found with user_id ' + user_id + ' for event with event_id ' + event_id);
+        }
+      })
+      .catch(err => { return next(err) });
+  } else {
+    util.throwError(400, 'Parameter paid is not a boolean')
+  }
 });
 
 // GET all users registered and have paid or not paid for a given event
@@ -318,7 +316,7 @@ router.get('/:event_id/register', function(req, res, next) {
       })
       .catch(err => { return next(err) });
   } else {
-    util.throwError(400, 'Parameter paid is not a boolean'
+    util.throwError(400, 'Parameter paid is not a boolean')
   }
 });
 
@@ -326,12 +324,11 @@ router.get('/:event_id/register', function(req, res, next) {
 router.post('/:event_id/register/:user_id', function(req, res, next) {
   const event_id = req.params.event_id;
   const user_id = req.params.user_id;
-  const paid = req.query.paid;
-  if (!req.query.paid) {
-    util.throwError(400, 'Paid query must not be null');
+  const paid = req.body.paid;
+  if (!paid || paid != "true" || paid != "false") {
+    util.throwError(400, 'Paid query must be true or false');
   }
-  knex('event_registration')
-    .insert({ event_id: event_id, user_id: user_id, has_paid: paid })
+  knex('event_registration').insert({ event_id: event_id, user_id: user_id, has_paid: paid })
     .then(result => {
       res.send(util.message('Successfully registered user with user_id ' + user_id + ' for event with event_id ' + event_id));
     })
