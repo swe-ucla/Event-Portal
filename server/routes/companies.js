@@ -225,6 +225,8 @@ router.post('/', function(req, res, next) {
     citizenship_requirement: req.body.citizenship_requirement,
     description: req.body.description
   }
+  let ranks = req.body.rank;
+  let user_ids = req.body.user_id;
   let position_ids = req.body.position_id;
   let major_ids = req.body.major_id;
   let contact_ids = req.body.contact_id;
@@ -239,12 +241,18 @@ router.post('/', function(req, res, next) {
       .then(async function(ids){
         let queries = [];
         let i = 0;
-        if (req.body.rank && req.body.user_id) {
-          rankValues = {
-            user_id: req.body.user_id,
-            company_id: ids[0],
-            rank: req.body.rank
-          };
+        if (ranks && user_ids) {
+          let length = ranks.length;
+          if (ranks.length > user_ids.length)
+            length = user_ids.length;
+          for(let n=0; n < length; n++)
+          {
+            rankValues = {
+              user_id: user_ids[n],
+              company_id: ids[0],
+              rank: ranks[n]
+            };
+          }
           var queryRank = knex('user_company_rank').insert(rankValues)
           await queryRank.transacting(trx);
         }
