@@ -341,7 +341,7 @@ router.post('/', function(req, res, next) {
               })
             }
           } else{
-            let companyEvents = {
+              companyEvents = {
                  company_id: company_id,
                  event_id: event_ids
               }
@@ -485,7 +485,7 @@ router.put('/:company_id', function(req, res, next) {
             })
           }
         } else {
-          let companyEvents = {
+            companyEvents = {
                company_id: company_id,
                event_id: event_ids
             }
@@ -546,11 +546,11 @@ router.put('/:company_id', function(req, res, next) {
         if(Array.isArray(remove_event_ids)){
           for(let n=0; n < length; n++)
           {
-            var removeQueryEvent = knex('company_event').del().where("company_id", company_id).andWhere("event_id", remove_event_ids[n])
+            var removeQueryEvent = knex('event_company').del().where("company_id", company_id).andWhere("event_id", remove_event_ids[n])
             await removeQueryEvent.transacting(trx);
           }
         } else {
-          var removeQueryEvent = knex('company_event').del().where("company_id", company_id).andWhere("event_id", remove_event_ids)
+          var removeQueryEvent = knex('event_company').del().where("company_id", company_id).andWhere("event_id", remove_event_ids)
           await removeQueryEvent.transacting(trx);
         }
       }
