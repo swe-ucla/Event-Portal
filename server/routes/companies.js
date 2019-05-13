@@ -376,6 +376,7 @@ router.put('/:company_id', function(req, res, next) {
   let remove_event_ids = req.body.remove_event_id;
   let company_id = req.params.company_id;
 
+  //insert
   let rankValues = [];
   if (ranks && user_ids) {
     if(Array.isArray(ranks) && Array.isArray(user_ids)){
@@ -476,11 +477,80 @@ router.put('/:company_id', function(req, res, next) {
     var queryEvent = knex('event_company').insert(companyEvents)
   }
 
+  //remove
+  let removeUsers = []
+  if (remove_user_ids) {
+    if (Array.isArray(remove_user_ids)) {
+      let length = remove_user_ids.length;
+      for (let n=0; n < length; n++) {
+        removeUsers.push(remove_user_ids[n]);
+      }
+    } else {
+      removeUsers.push(remove_user_ids);
+    }
+  }
+  let removeQueryRank = knex('user_company_rank').whereIn('user_id', removeUsers).andWhere("company_id", company_id).del()
+  
+  let removePositions = []
+  if (remove_position_ids) {
+    let length = remove_position_ids.length;
+    if(Array.isArray(remove_position_ids)){
+      for (let n=0; n < length; n++) {
+        removePositions.push(remove_position_ids[n]);
+      }
+    } else {
+      removePositions.push(remove_position_ids);
+    }
+  }
+  let removeQueryPos = knex('company_position').whereIn('position_id', removePositions).andWhere("company_id", company_id).del()
+
+  let removeMajors = []
+  if (remove_major_ids) {
+    let length = remove_major_ids.length;
+    if(Array.isArray(remove_major_ids)){
+      for (let n=0; n < length; n++) {
+        removeMajors.push(remove_major_ids[n]);
+      }
+    } else {
+      removeMajors.push(remove_major_ids);
+    }
+  }
+  let removeQueryMajor = knex('company_major').whereIn('major_id', removeMajors).andWhere("company_id", company_id).del()
+
+  let removeContacts = []
+  if (remove_contact_ids) {
+    let length = remove_contact_ids.length;
+    if(Array.isArray(remove_contact_ids)){
+      for (let n=0; n < length; n++) {
+        removeContacts.push(remove_contact_ids[n]);
+      }
+    } else {
+      removeContacts.push(remove_contact_ids)
+    }
+  }
+  let removeQueryContact = knex('company_contact').whereIn("contact_id", removeContacts).andWhere("company_id", company_id).del()
+
+  let removeEvents = []
+  if (remove_event_ids) {
+    let length = remove_event_ids.length;
+    if(Array.isArray(remove_event_ids)){
+      for (let n=0; n < length; n++) {
+        removeEvents.push(remove_event_ids[n])
+      }
+    } else {
+      removeEvents.push(remove_event_ids)
+    }
+  } 
+  let removeQueryEvent = knex('event_company').whereIn("event_id", removeEvents).andWhere("company_id", company_id).del()
+
   var queryCompany = knex('company').update(values).where({ id: req.params.company_id })
   knex.transaction(async function(trx) {
+    //modify company attributes
     if (req.body.name || req.body.website || req.body.logo || req.body.citizenship_requirement || req.body.description) {
       await queryCompany;
     }
+
+    //insert
     if (user_ids && ranks) {
       await queryRank.transacting(trx);
     }
@@ -497,71 +567,26 @@ router.put('/:company_id', function(req, res, next) {
       await queryContact.transacting(trx);
     }
 
-    //a bit tricker to extract these if statements from transaction due to loop
+    //remove
     if (remove_user_ids) {
-      if (Array.isArray(remove_user_ids)) {
-        let length = remove_user_ids.length;
-        for (let n=0; n < length; n++) {
-          let removeQueryRank = knex('user_company_rank').del().where("user_id", remove_user_ids[n])
-          await removeQueryRank.transacting(trx);
-        }   
-      } else {
-        let removeQueryRank = knex('user_company_rank').del().where("user_id", remove_user_ids)
-        await removeQueryRank.transacting(trx);
-      }
+      await removeQueryRank.transacting(trx);
     }
-
     if (remove_position_ids) {
-      let length = remove_position_ids.length;
-      if(Array.isArray(remove_position_ids)){
-        for (let n=0; n < length; n++) {
-          var removeQueryPos = knex('company_position').del().where("company_id", company_id).andWhere("position_id", remove_position_ids[n])
-          await removeQueryPos.transacting(trx);
-        }
-      } else {
-        var removeQueryPos = knex('company_position').del().where("company_id", company_id).andWhere("position_id", remove_position_ids)
-        await removeQueryPos.transacting(trx);
-      }
+      await removeQueryPos.transacting(trx);
     }
 
     if (remove_major_ids) {
-      let length = remove_major_ids.length;
-      if(Array.isArray(remove_major_ids)){
-        for(let n=0; n < length; n++) {
-          var removeQueryMajor = knex('company_major').del().where("company_id", company_id).andWhere("major_id", remove_major_ids[n])
-          await removeQueryMajor.transacting(trx);
-        }
-      } else {
-        var removeQueryMajor = knex('company_major').del().where("company_id", company_id).andWhere("major_id", remove_major_ids)
-        await removeQueryMajor.transacting(trx);
-      }
+      await removeQueryMajor.transacting(trx);
     }
 
     if (remove_contact_ids) {
-      let length = remove_contact_ids.length;
-      if(Array.isArray(remove_contact_ids)){
-        for (let n=0; n < length; n++) {
-          var removeQueryContact = knex('company_contact').del().where("company_id", company_id).andWhere("contact_id", remove_contact_ids[n])
-          await removeQueryContact.transacting(trx);
-        }
-      } else {
-        var removeQueryContact = knex('company_contact').del().where("company_id", company_id).andWhere("contact_id", remove_contact_ids)
-        await removeQueryContact.transacting(trx);
-      }
+      await removeQueryContact.transacting(trx);
     }
 
     if (remove_event_ids) {
-      let length = remove_event_ids.length;
-      if(Array.isArray(remove_event_ids)){
-        for (let n=0; n < length; n++) {
-          var removeQueryEvent = knex('event_company').del().where("company_id", company_id).andWhere("event_id", remove_event_ids[n])
-          await removeQueryEvent.transacting(trx);
-        }
-      } else {
-        var removeQueryEvent = knex('event_company').del().where("company_id", company_id).andWhere("event_id", remove_event_ids)
-        await removeQueryEvent.transacting(trx);
-      }
-    } 
+      await removeQueryEvent.transacting(trx);
+    }
+
     return trx.commit;
   })
   .then(function(){
