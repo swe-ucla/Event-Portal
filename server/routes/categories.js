@@ -21,21 +21,21 @@ router.get('/', function(req, res, next) {
 
 // Add a single category
 router.post('/', function(req, res, next) {
-  if (!req.query.name) {
+  if (!req.body.name) {
     util.throwError(400, 'Category name must not be null');
   }
   
-  values = { name: req.query.name };
+  values = { name: req.body.name };
   knex('category').insert(values)
     .then(result => {
-      res.send(util.message('Successfully inserted new category: ' + req.query.name));
+      res.send(util.message('Successfully inserted new category: ' + req.body.name));
     })
     .catch(err => { return next(err) });
 });
 
 // Update a single category
 router.put('/:category_id', function(req, res, next) {
-  values = { name: req.query.name };
+  values = { name: req.body.name };
   knex('category').update(values).where({ id: req.params.category_id })
     .then(result => {
       if (result) {
