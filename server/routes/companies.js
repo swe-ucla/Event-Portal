@@ -2,7 +2,6 @@
 var express = require('express');
 var router = express.Router();
 
-const db = require('../db');
 var knex = require('../db/knex');
 var util = require('../util');
 
@@ -14,7 +13,7 @@ router.get('/ping', function(req, res, next) {
 // GET all companies' info
 router.get('/', function(req, res, next) {
   knex('company').select()
-  .then(result => {
+    .then(result => {
       if (result.length) {
         res.json(result);
       } else {
@@ -39,7 +38,7 @@ router.get('/names', function(req, res, next) {
 
 // GET all company names and logos
 router.get('/logos', function(req, res, next) {
-  knex('company').select('logo','name').orderBy('name', 'asc')
+  knex('company').select('logo', 'name').orderBy('name', 'asc')
     .then(result => {
       if (result.length) {
         res.json(result);
@@ -52,7 +51,7 @@ router.get('/logos', function(req, res, next) {
 
 // GET all company names, logos, and websites
 router.get('/websites', function(req, res, next) {
-  knex('company').select('logo','name','website').orderBy('name', 'asc')
+  knex('company').select('logo', 'name', 'website').orderBy('name', 'asc')
     .then(result => {
       if (result.length) {
         res.json(result);
@@ -66,10 +65,10 @@ router.get('/websites', function(req, res, next) {
 
 // GET company info by company_id
 router.get('/:company_id/id', function(req, res, next) {
-  if(isNaN(req.params.company_id)){
+  if (isNaN(req.params.company_id)) {
     util.throwError(400, '\'company_id\' is invalid');
   }
-  knex('company').select().where({id: req.params.company_id})
+  knex('company').select().where({ id: req.params.company_id })
     .then(result => {
       if (result.length) {
         res.json(result);
@@ -82,10 +81,10 @@ router.get('/:company_id/id', function(req, res, next) {
 
 // GET all events associated with a given company
 router.get('/:company_id/events', function(req, res, next) {
-  if(isNaN(req.params.company_id)){
+  if (isNaN(req.params.company_id)) {
     util.throwError(400, '\'company_id\' is invalid');
   }
-  knex('event_company').select('event_id').where({company_id: req.params.company_id})
+  knex('event_company').select('event_id').where({ company_id: req.params.company_id )
     .then(result => {
       if (result.length) {
         res.json(result);
@@ -98,10 +97,10 @@ router.get('/:company_id/events', function(req, res, next) {
 
 // GET all positions a given company is hiring
 router.get('/:company_id/positions', function(req, res, next) {
-  if(isNaN(req.params.company_id)){
+  if (isNaN(req.params.company_id)) {
     util.throwError(400, '\'company_id\' is invalid');
   }
-  knex('company_position').select().where({company_id: req.params.company_id})
+  knex('company_position').select().where({ company_id: req.params.company_id })
     .then(result => {
       if (result.length) {
         res.json(result);
@@ -115,10 +114,10 @@ router.get('/:company_id/positions', function(req, res, next) {
 
 // GET all majors a given company is hiring
 router.get('/:company_id/majors', function(req, res, next) {
-  if(isNaN(req.params.company_id)){
+  if (isNaN(req.params.company_id)) {
     util.throwError(400, '\'company_id\' is invalid');
   }
-  knex('company_major').select().where({company_id: req.params.company_id})
+  knex('company_major').select().where({ company_id: req.params.company_id })
     .then(result => {
       if (result.length) {
         res.json(result);
@@ -131,10 +130,10 @@ router.get('/:company_id/majors', function(req, res, next) {
 
 // GET all contacts for a given company
 router.get('/:company_id/contacts', function(req, res, next) {
-  if(isNaN(req.params.company_id)){
+  if (isNaN(req.params.company_id)) {
     util.throwError(400, '\'company_id\' is invalid');
   }
-  knex('company_contact').select().where({company_id: req.params.company_id})
+  knex('company_contact').select().where({ company_id: req.params.company_id 
     .then(result => {
       if (result.length) {
         res.json(result);
@@ -147,10 +146,10 @@ router.get('/:company_id/contacts', function(req, res, next) {
 
 // GET all users interested in a certain company
 router.get('/:company_id/users', function(req, res, next) {
-  if(isNaN(req.params.company_id)){
+  if (isNaN(req.params.company_id)) {
     util.throwError(400, '\'company_id\' is invalid');
   }
-  knex('user_company_rank').select('user_id').where({company_id: req.params.company_id})
+  knex('user_company_rank').select('user_id').where({ company_id: req.params.company_id )
     .then(result => {
       if (result.length) {
         res.json(result);
@@ -359,7 +358,7 @@ router.post('/', function(req, res, next) {
     .catch(err => {return next(err) });
   });
 
-//Update a single company
+// Update a single company
 router.put('/:company_id', function(req, res, next) {
   values = {
     name: req.body.name,
@@ -564,7 +563,7 @@ router.put('/:company_id', function(req, res, next) {
 
 // Delete a single company
 router.delete('/:company_id', function(req,res,next){
-  knex('company').del().where({id: req.params.company_id})
+  knex('company').del().where({ id: req.params.company_id })
     .then(result => {
       if (result) {
         res.send(util.message('Successfully deleted company: ' + req.params.company_id));
