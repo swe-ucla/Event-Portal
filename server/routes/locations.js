@@ -32,34 +32,31 @@ router.get('/names', function(req, res, next) {
     .catch(err => { return next(err) });
 });
 
-//POST - Add a single location 
+// POST - Add a single location 
 router.post('/', function(req, res, next) {
   values = {
-    id: req.query.id,
-    name: req.query.name,
-    address_id: req.query.address_id,
-    description: req.query.description
-
+    name: req.body.name,
+    address_id: req.body.address_id,
+    description: req.body.description
   };
-knex('location').insert(values)
-  .then(result => {
-      res.send(util.message('Successfully inserted new location: ' + req.query.id));
+  knex('location').insert(values)
+    .then(result => {
+      res.send(util.message('Successfully inserted new location: ' + req.body.name));
     })
     .catch(err => { return next(err) });
 });
 
-//PUT - Update a single location
+// PUT - Update a single location
 router.put('/:location_id', function(req, res, next) {
   values = { 
-    id: req.query.id,
-    name: req.query.name,
-    address_id: req.query.address_id,
-    description: req.query.description
+    name: req.body.name,
+    address_id: req.body.address_id,
+    description: req.body.description
   };
-knex('location').update(values).where({ id: req.params.location_id })
-.then(result => {
+  knex('location').update(values).where({ id: req.params.location_id })
+    .then(result => {
       if (result) {
-        res.send(util.message('Successfully updated location: ' + req.params.location));
+        res.send(util.message('Successfully updated location: ' + req.params.location_id));
       } else {
         util.throwError(404, 'No location found to update');
       }
@@ -67,7 +64,7 @@ knex('location').update(values).where({ id: req.params.location_id })
     .catch(err => { return next(err) });
 });
 
-//DELETE - Delete a single location
+// DELETE - Delete a single location
 router.delete('/:location_id', function(req, res, next) {
   knex('location').del().where({ id: req.params.location_id })
     .then(result => {
@@ -79,7 +76,5 @@ router.delete('/:location_id', function(req, res, next) {
     })
     .catch(err => { return next(err) });
 });
-
-
 
 module.exports = router;
