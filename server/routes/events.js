@@ -102,22 +102,34 @@ router.post('/', function(req, res, next) {
 	let host_ids = req.body.hosts;
   let host_values = [];
 
-  if (category_ids){
-  	category_ids.forEach(function(entry) {
-  		category_values.push({ event_id: req.body.event_id, category_id: entry });
-  	});
+  if (category_ids) {
+  	if (Array.isArray(category_ids)) {
+	  	category_ids.forEach(function(entry) {
+	  		category_values.push({ event_id: req.body.event_id, category_id: entry });
+	  	});
+	  } else {
+	  	category_values.push({ event_id: req.body.event_id, category_id: category_ids });
+	  }
   }
 
   if (company_ids){
-		company_ids.forEach(function(entry) {
-			company_values.push({ event_id: req.body.event_id, company_id: entry });
-		});
+  	if (Array.isArray(company_ids)) {
+			company_ids.forEach(function(entry) {
+				company_values.push({ event_id: req.body.event_id, company_id: entry });
+			});
+		} else {
+			company_values.push({ event_id: req.body.event_id, company_id: company_ids });
+		}
 	}
 
   if (host_ids){
-  	host_ids.forEach(function(entry) {
-	  	host_values.push({ event_id: req.body.event_id, host_id: entry });
-	  });
+  	if (Array.isArray(host_values)){
+	  	host_ids.forEach(function(entry) {
+		  	host_values.push({ event_id: req.body.event_id, host_id: entry });
+		  });
+	  } else {
+	  	host_values.push({ event_id: req.body_event_id, host_id: host_ids });
+	  }
 	}
 
   var events_query = knex('event').insert(values);
@@ -165,21 +177,33 @@ router.put('/:event_id', function(req, res, next) {
   let host_values = [];
 
   if (category_ids){
-	  category_ids.forEach(function(entry) {
-	  	category_values.push({ event_id: event_id, category_id: entry });
-	  });
+  	if (Array.isArray(category_ids)) {
+		  category_ids.forEach(function(entry) {
+		  	category_values.push({ event_id: event_id, category_id: entry });
+		  });
+		} else {
+			category_values.push({ event_id: event_id, category_id: category_ids });
+		}
 	}
 
   if (company_ids){
-	  company_ids.forEach(function(entry) {
-	  	company_values.push({ event_id: event_id, company_id: entry });
-	  });
+  	if (Array.isArray(company_ids)) {
+		  company_ids.forEach(function(entry) {
+		  	company_values.push({ event_id: event_id, company_id: entry });
+		  });
+		} else {
+			company_values.push({ event_id: event_id, company_id: company_ids });
+		}
 	}
 
   if (host_ids){
-	  host_ids.forEach(function(entry) {
-	  	host_values.push({ event_id: event_id, host_id: entry });
-	  });
+  	if (Array.isArray(host_ids)) {
+		  host_ids.forEach(function(entry) {
+		  	host_values.push({ event_id: event_id, host_id: entry });
+		  });
+		} else {
+			host_values.push({ event_id: event_id, host_id: host_ids });
+		}
 	}
 
 	let remove_category_ids = req.body.remove_categories;
@@ -198,35 +222,20 @@ router.put('/:event_id', function(req, res, next) {
 		}
 	});
 
-	var remove_category_query = knex('event_category').modify(function(queryBuilder) {
-		if (remove_category_ids){
-			queryBuilder.where({ event_id: event_id })
-				.andWhere((builder) =>
-					builder.whereIn('category_id', remove_category_ids)
-				)
-				.del();
-		}
-	});
+	var remove_category_query = knex('event_category')
+		.whereIn('category_id', remove_category_ids)
+		.andWhere({ event_id: event_id })
+		.del();
 
-	var remove_host_query = knex('event_host').modify(function(queryBuilder) {
-		if (remove_host_ids){
-			queryBuilder.where({ event_id: event_id })
-				.andWhere((builder) =>
-					builder.whereIn('host_id', remove_host_ids)
-				)
-				.del();
-		}
-	});
+	var remove_host_query = knex('event_host')
+		.whereIn('host_id', remove_host_ids)
+		.andWhere({ event_id: event_id })
+		.del();
 
-	var remove_company_query = knex('event_company').modify(function(queryBuilder){
-		if (remove_company_ids){
-			queryBuilder.where({ event_id: event_id })
-				.andWhere((builder) =>
-					builder.whereIn('company_id', remove_company_ids)
-				)
-				.del();
-		}
-	});
+	var remove_company_query = knex('event_company')
+		.whereIn('company_id', remove_company_ids)
+		.andWhere({ event_id: event_id })
+		.del();
 
 	var category_query = knex('event_category').insert(category_values);
 	var host_query = knex('event_host').insert(host_values);
@@ -236,11 +245,23 @@ router.put('/:event_id', function(req, res, next) {
 		return event_query.transacting(trx)
 			.then(async function() {
 				await category_query.transacting(trx);
-				await remove_category_query.transacting(trx);
+
+				if (remove_company_ids) {
+					await remove_category_query.transacting(trx);
+				}
+
 				await host_query.transacting(trx);
-				await remove_host_query.transacting(trx);
+
+				if (remove_host_ids) {
+					await remove_host_query.transacting(trx);
+				}
+
 				await company_query.transacting(trx);
-				await remove_company_query.transacting(trx);
+
+				if (remove_company_ids) {
+					await remove_company_query.transacting(trx);
+				}
+
 				return trx.commit;
 			})
 	})
