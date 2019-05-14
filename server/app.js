@@ -8,16 +8,16 @@ var bodyParser = require('body-parser');
 // Create the server for handling REST requests, initialize Express
 var app = express();
 
-// Register API routes in app, REST endpoints
-var routes = require('./routes');
-routes(app)
-
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
+
+// Register API routes in app, REST endpoints
+var routes = require('./routes');
+routes(app)
 
 // Static path to production build of React Client
 // https://expressjs.com/en/starter/static-files.html

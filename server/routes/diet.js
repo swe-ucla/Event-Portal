@@ -21,14 +21,15 @@ router.get('/', function(req, res, next) {
 
 // Add a single diet
 router.post('/', function(req, res, next) {
-  if (!req.body.type) {
+  const type = req.body.type;
+  if (!type) {
     util.throwError(400, 'Diet type must not be null');
   }
   
-  values = { type: req.body.type };
+  values = { type: type };
   knex('diet').insert(values)
     .then(result => {
-      res.send(util.message('Successfully inserted new diet: ' + req.body.type));
+      res.send(util.message('Successfully inserted new diet: ' + type));
     })
     .catch(err => { return next(err) });
 });
