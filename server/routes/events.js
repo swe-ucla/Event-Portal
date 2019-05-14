@@ -158,7 +158,7 @@ router.post('/', function(req, res, next) {
 // Updated a single event by event_id
 router.put('/:event_id', function(req, res, next) {
 	const event_id = req.params.event_id;
-	let validReqForEvent = false;
+	let validReqForEvent = true;
 
 	let values = {
   	name: req.body.name, 
@@ -171,6 +171,12 @@ router.put('/:event_id', function(req, res, next) {
   	picture: req.body.picture,
   	is_featured: req.body.is_featured
   };
+
+  if (!values.name && !values.starts_at && !values.ends_at && !values.quarter 
+			 && !values.location_id && !values.description && !values.fb_event
+			 && !values.picture && !values.is_featured) {
+  	validReqForEvent = false;
+  }
 
   let category_ids = req.body.categories;
 	let category_values = [];
@@ -212,12 +218,6 @@ router.put('/:event_id', function(req, res, next) {
 	let remove_category_ids = req.body.remove_categories;
 	let remove_company_ids = req.body.remove_companies;
   let remove_host_ids = req.body.remove_hosts;
-
-  Object.keys(values).forEach(function(key) {
-  	if (!validReqForEvent && values[key]) {
-  		validReqForEvent = true;
-  	}
-	});
 
 	var event_query = knex('event').modify(function(queryBuilder) {
 		if (validReqForEvent){
