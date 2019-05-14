@@ -274,17 +274,14 @@ router.post('/', function(req, res, next) {
       let length = major_ids.length;
       for (let n=0; n < length; n++) {
         companyMajors.push({
-        //   company_id: 0,
            major_id: major_ids[n]
         })
       }
     } else {
       companyMajors = {
-     //      company_id: 0,
            major_id: major_ids
         }
     }
-    var queryMajor = knex('company_major').insert(companyMajors)
   }
 
   let companyContacts = [];
@@ -293,17 +290,14 @@ router.post('/', function(req, res, next) {
       let length = contact_ids.length;
       for (let n=0; n < length; n++) {
         companyContacts.push({
-      //     company_id: 0,
            contact_id: contact_ids[n]
         })
       }
     } else {
         companyContacts = {
-      //     company_id: 0,
            contact_id: contact_ids
         }
     }
-    var queryContact = knex('company_contact').insert(companyContacts)
   }   
 
   let companyEvents = [];
@@ -312,17 +306,14 @@ router.post('/', function(req, res, next) {
       let length = event_ids.length;
       for (let n=0; n < length; n++) {
         companyEvents.push({
-      //     company_id: 0,
            event_id: event_ids[n]
         })
       }
     } else {
         companyEvents = {
-      //     company_id: 0,
            event_id: event_ids
         }
     }
-    var queryEvent = knex('event_company').insert(companyEvents)
   }
 
 
