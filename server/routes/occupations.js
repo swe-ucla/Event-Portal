@@ -21,14 +21,14 @@ router.get('/', function(req, res, next) {
 
 // Add a single occupation
 router.post('/', function(req, res, next) {
-  if (!req.body.occupation_id) {
+  if (!req.body.oid) {
     util.throwError(400, 'Occupation ID cannot be null');
   }
   if (!req.body.name) {
     util.throwError(400, 'Occupation name cannot be null');
   }
 
-  let values = { id: req.body.occupation_id, name: req.body.name };
+  let values = { id: req.body.oid, name: req.body.name };
   knex('occupation').insert(values)
     .then(result => {
       res.send(util.message('Successfully added a single occupation'));
@@ -37,12 +37,11 @@ router.post('/', function(req, res, next) {
 });
 
 // Update a single occupation
-router.put('/:occupation_id', function(req, res, next) {
-  let occupation_id = req.params.occupation_id;
-  knex('occupation').update({ name: req.body.name }).where({ id: occupation_id })
+router.put('/:oid', function(req, res, next) {
+  knex('occupation').update({ name: req.body.name }).where({ id: req.params.oid })
     .then(result => {
       if (result) {
-        res.send(util.message('Successfully updated occupation: ' + occupation_id));
+        res.send(util.message('Successfully updated occupation: ' + req.params.oid));
       } else {
         util.throwError(404, 'No occupation found to update');
       }
@@ -51,12 +50,11 @@ router.put('/:occupation_id', function(req, res, next) {
 });
 
 // Delete a single occupation
-router.delete('/:occupation_id', function(req, res, next) {
-  let occupation_id = req.params.occupation_id;
-  knex('occupation').del().where({ id: occupation_id })
+router.delete('/:oid', function(req, res, next) {
+  knex('occupation').del().where({ id: req.params.oid })
     .then(result => {
       if (result) {
-        res.send(util.message('Successfully deleted occupation: ' + occupation_id));
+        res.send(util.message('Successfully deleted occupation: ' + req.params.oid
       } else {
         util.throwError(404, 'No occupation found to delete');
       }
