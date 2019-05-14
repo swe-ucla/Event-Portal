@@ -143,9 +143,15 @@ router.post('/', function(req, res, next) {
 	knex.transaction(function(trx) {
 		return events_query.transacting(trx)
 			.then(async function() {
-				await category_query.transacting(trx);
-				await company_query.transacting(trx);
-				await host_query.transacting(trx);
+				if (category_ids) {
+					await category_query.transacting(trx);
+				}
+				if (company_ids) {
+					await company_query.transacting(trx);
+				}
+				if (host_ids) {
+					await host_query.transacting(trx);
+				}
 				return trx.commit;
 			})
 	})
@@ -219,11 +225,7 @@ router.put('/:event_id', function(req, res, next) {
 	let remove_company_ids = req.body.remove_companies;
   let remove_host_ids = req.body.remove_hosts;
 
-	var event_query = knex('event').modify(function(queryBuilder) {
-		if (validReqForEvent){
-			queryBuilder.where({ fb_id: event_id }).update(values);
-		}
-	});
+	var event_query = knex('event').where({ fb_id: event_id }).update(values);
 
 	var remove_category_query = knex('event_category')
 		.whereIn('category_id', remove_category_ids)
@@ -244,29 +246,31 @@ router.put('/:event_id', function(req, res, next) {
 	var host_query = knex('event_host').insert(host_values);
 	var company_query = knex('event_company').insert(company_values);
 
-	knex.transaction(function(trx) {
-		return event_query.transacting(trx)
-			.then(async function() {
-				await category_query.transacting(trx);
+	knex.transaction(async function (trx) {
+		if (validReqForEvent){
+			await event_query.transacting(trx);
+		}
 
-				if (remove_company_ids) {
-					await remove_category_query.transacting(trx);
-				}
+		if (category_ids) {
+			await category_query.transacting(trx);
+		}
+		if (remove_company_ids) {
+			await remove_category_query.transacting(trx);
+		}
+		if (host_ids) {
+			await host_query.transacting(trx);
+		}
+		if (remove_host_ids) {
+			await remove_host_query.transacting(trx);
+		}
+		if (company_ids) {
+			await company_query.transacting(trx);
+		}
+		if (remove_company_ids) {
+			await remove_company_query.transacting(trx);
+		}
 
-				await host_query.transacting(trx);
-
-				if (remove_host_ids) {
-					await remove_host_query.transacting(trx);
-				}
-
-				await company_query.transacting(trx);
-
-				if (remove_company_ids) {
-					await remove_company_query.transacting(trx);
-				}
-
-				return trx.commit;
-			})
+		return trx.commit;
 	})
 	.then(function() {
   	res.send(util.message('Successfully updated event_id: ' + event_id));
@@ -473,7 +477,7 @@ router.get('/:event_id/categories', function(req, res, next) {
 // GET all events containing term substring
 router.get('/search', function(req, res, next) {
   const term = req.query.term;
-  if (term == undefined){
+  if (!term){
     util.throwError(400, 'Term parameter is undefined');
   } else {
     knex('event').select().where('name', 'ilike', `%${term}%`)
