@@ -52,6 +52,10 @@ router.get('/locations', function(req, res, next) {
 
 // GET event by event_id
 router.get('/:event_id/id', function(req, res, next) {
+  if (isNaN(req.params.event_id)) {
+    util.throwError(400, "Event ID must be a number.");
+  }
+
   knex('event').select().where({ fb_id: req.params.event_id })
     .then(result => {
       if(result.length) {
