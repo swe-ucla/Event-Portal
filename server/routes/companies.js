@@ -224,6 +224,7 @@ router.post('/', function(req, res, next) {
     citizenship_requirement: req.body.citizenship_requirement,
     description: req.body.description
   }
+
   let ranks = req.body.rank;
   let user_ids = req.body.user_id;
   let position_ids = req.body.position_id;
@@ -231,7 +232,99 @@ router.post('/', function(req, res, next) {
   let contact_ids = req.body.contact_id;
   let event_ids = req.body.event_id;
 
-  console.log(req.body.position_id);
+  let rankValues = [];
+  if (ranks && user_ids) {
+    if(Array.isArray(ranks) && Array.isArray(user_ids)){
+      let length = ranks.length;
+      if (ranks.length > user_ids.length)
+        length = user_ids.length; 
+      for (let n=0; n < length; n++) {
+        rankValues.push({
+          user_id: user_ids[n],
+          rank: ranks[n]
+        });
+      }
+    } else{
+      rankValues = {
+          user_id: user_ids,
+          rank: ranks
+        };
+    }
+  }
+
+  let companyPositions = [];
+  if (position_ids) {
+    if(Array.isArray(position_ids)){
+      let length = position_ids.length;
+      for (let n=0; n < length; n++) {
+        companyPositions.push({
+           position_id: position_ids[n]
+        });
+      }
+    } else{
+      companyPositions = {
+           position_id: position_ids
+      }
+    }
+  }
+
+  let companyMajors = [];
+  if (major_ids) {
+    if(Array.isArray(major_ids)){
+      let length = major_ids.length;
+      for (let n=0; n < length; n++) {
+        companyMajors.push({
+        //   company_id: 0,
+           major_id: major_ids[n]
+        })
+      }
+    } else {
+      companyMajors = {
+     //      company_id: 0,
+           major_id: major_ids
+        }
+    }
+    var queryMajor = knex('company_major').insert(companyMajors)
+  }
+
+  let companyContacts = [];
+  if (contact_ids) {
+    if(Array.isArray(contact_ids)){
+      let length = contact_ids.length;
+      for (let n=0; n < length; n++) {
+        companyContacts.push({
+      //     company_id: 0,
+           contact_id: contact_ids[n]
+        })
+      }
+    } else {
+        companyContacts = {
+      //     company_id: 0,
+           contact_id: contact_ids
+        }
+    }
+    var queryContact = knex('company_contact').insert(companyContacts)
+  }   
+
+  let companyEvents = [];
+  if (event_ids) {
+    if(Array.isArray(event_ids)){
+      let length = event_ids.length;
+      for (let n=0; n < length; n++) {
+        companyEvents.push({
+      //     company_id: 0,
+           event_id: event_ids[n]
+        })
+      }
+    } else {
+        companyEvents = {
+      //     company_id: 0,
+           event_id: event_ids
+        }
+    }
+    var queryEvent = knex('event_company').insert(companyEvents)
+  }
+
 
   var queryCompany = knex('company').insert(values)
   knex.transaction(function(trx) {
@@ -241,106 +334,49 @@ router.post('/', function(req, res, next) {
         let company_id = ids[0];
 
         if (ranks && user_ids) {
-          let rankValues = [];
-          if(Array.isArray(ranks) && Array.isArray(user_ids)){
-            let length = ranks.length;
-            if (ranks.length > user_ids.length)
-              length = user_ids.length; //not sure about error handling for length
+          let length = ranks.length;
+           if (ranks.length > user_ids.length)
+              length = user_ids.length; 
             for (let n=0; n < length; n++) {
-              rankValues.push({
-                user_id: user_ids[n],
-                company_id: company_id,
-                rank: ranks[n]
-              });
+              rankValues[n].company_id = company_id;
             }
-          } else{
-            rankValues = {
-                user_id: user_ids,
-                company_id: company_id,
-                rank: ranks
-              };
-          }
           var queryRank = knex('user_company_rank').insert(rankValues)
           await queryRank.transacting(trx);
         }
 
         if (position_ids) {
-          let companyPositions = [];
-          if(Array.isArray(position_ids)){
-            let length = position_ids.length;
-            for (let n=0; n < length; n++) {
-              companyPositions.push({
-                 company_id: company_id,
-                 position_id: position_ids[n]
-              });
-            }
-          } else {
-            companyPositions = {
-                 company_id: company_id,
-                 position_id: position_ids
-              }
+          let length = position_ids.length;
+          for (let n=0; n < length; n++) {
+            companyPositions[n].company_id = company_id;
           }
           var queryPos = knex('company_position').insert(companyPositions)
           await queryPos.transacting(trx);
         }
 
         if (major_ids) {
-          let companyMajors = [];
-          if(Array.isArray(major_ids)){
-            let length = major_ids.length;
-            for (let n=0; n < length; n++) {
-              companyMajors.push({
-                 company_id: company_id,
-                 major_id: major_ids[n]
-              })
-            }
-          } else {
-            companyMajors = {
-                 company_id: company_id,
-                 major_id: major_ids
-              }
+          let length = major_ids.length;
+          for (let n=0; n < length; n++) {
+            companyMajors[n].company_id = company_id;
           }
           var queryMajor = knex('company_major').insert(companyMajors)
           await queryMajor.transacting(trx);
         }
 
         if (contact_ids) {
-          let companyContacts = [];
-          if(Array.isArray(contact_ids)){
-            let length = contact_ids.length;
-            for (let n=0; n < length; n++) {
-              companyContacts.push({
-                 company_id: company_id,
-                 contact_id: contact_ids[n]
-              })
-            }
-          } else {
-              companyContacts = {
-                 company_id: company_id,
-                 contact_id: contact_ids
-              }
+          let length = contact_ids.length;
+          for (let n=0; n < length; n++) {
+            companyContacts[n].company_id = company_id;
           }
           var queryContact = knex('company_contact').insert(companyContacts)
           await queryContact.transacting(trx);
         }   
 
         if (event_ids) {
-          let companyEvents = [];
-          if(Array.isArray(event_ids)){
-            let length = event_ids.length;
-            for (let n=0; n < length; n++) {
-              companyEvents.push({
-                 company_id: company_id,
-                 event_id: event_ids[n]
-              })
-            }
-          } else{
-              companyEvents = {
-                 company_id: company_id,
-                 event_id: event_ids
-              }
+          let length = event_ids.length;
+          for (let n=0; n < length; n++) {
+            companyEvents[n].company_id = company_id;
           }
-          var queryEvent = knex('event_company').insert(companyEvents)
+          var queryEvent = knex('company_major').insert(companyMajors)
           await queryEvent.transacting(trx);
         }
 
