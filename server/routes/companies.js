@@ -236,20 +236,26 @@ router.post('/', function(req, res, next) {
   if (ranks && user_ids) {
     if(Array.isArray(ranks) && Array.isArray(user_ids)){
       let length = ranks.length;
-      if (ranks.length > user_ids.length)
-        length = user_ids.length; 
+      if (ranks.length != user_ids.length)
+        util.throwError(400, "Both user_ids and ranks must be the same size.");
+      length = user_ids.length; 
       for (let n=0; n < length; n++) {
         rankValues.push({
           user_id: user_ids[n],
           rank: ranks[n]
+
         });
+       // util.throwError(400, ranks)
       }
-    } else{
+    } else if(Array.isArray(ranks) || Array.isArray(user_ids)) {
+       util.throwError(400, "Both user_ids and ranks must be the same size.");
+    }else{
       rankValues = {
           user_id: user_ids,
           rank: ranks
         };
     }
+
   }
 
   let companyPositions = [];
@@ -335,7 +341,9 @@ router.post('/', function(req, res, next) {
             } else{
               rankValues.company_id = company_id;
             }
+         // util.throwError(400, ranks);
           var queryRank = knex('user_company_rank').insert(rankValues)
+          util.throwError(400, queryRank);
           await queryRank.transacting(trx);
         }
 
@@ -387,7 +395,7 @@ router.post('/', function(req, res, next) {
           }else {
             companyEvents.company_id = company_id;
           }
-          var queryEvent = knex('company_major').insert(companyMajors)
+          var queryEvent = knex('event_company').insert(companyMajors)
           await queryEvent.transacting(trx);
         }
 
