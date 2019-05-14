@@ -159,3 +159,15 @@
   - https://stackoverflow.com/questions/154059/how-to-check-empty-undefined-null-string-in-javascript
   - https://stackoverflow.com/questions/17781472/how-to-get-a-subset-of-a-javascript-objects-properties
   - https://stackoverflow.com/questions/679915/how-do-i-test-for-an-empty-javascript-object
+  - https://github.com/react-ga/react-ga/issues/136
+  - https://github.com/react-ga/react-ga/wiki/React-Router-v4-withTracker
+  - https://github.com/react-ga/react-ga/issues/122
+  - https://stackoverflow.com/questions/52724447/how-to-use-google-analytics-with-react
+  - https://medium.com/alturasoluciones/how-to-set-up-and-use-google-analytics-in-react-apps-fb057d195d13
+  - https://stackoverflow.com/questions/49279820/adding-google-analytics-to-react
+  - https://stackoverflow.com/questions/9329446/for-each-over-an--array-in-javascript
+  - https://github.com/chaudhryjunaid/alt-chaudhryjunaid.com/blob/43e158dacf306db41ae9d15dfb5524103c49bcf3/src/db/seeds/000-initial-seed.js
+  - https://github.com/kingdomhail/sails_project/blob/a7505d8fe8dff659aef3e395ba70bb388dd2b79d/api/models/Account.js
+  - https://stackoverflow.com/questions/14551194/how-are-parameters-sent-in-an-http-post-request
+  - https://stackoverflow.com/questions/26723467/what-is-the-difference-between-form-data-x-www-form-urlencoded-and-raw-in-the-p
+  - https://stackoverflow.com/questions/15694120/why-does-http-post-request-body-need-to-be-json-enconded-in-python
