@@ -303,33 +303,25 @@ router.post('/', function(req, res, next) {
         let company_id = ids[0];
 
         if (position_ids) {
-          companyPositions.forEach(function(element){
-            element.company_id = company_id;
-          })
+          companyPositions.forEach(function(element){ element.company_id = company_id; })
           var queryPos = knex('company_position').insert(companyPositions)
           await queryPos.transacting(trx);
         }
 
         if (major_ids) {
-          companyMajors.forEach(function(element){
-            element.company_id = company_id;
-          })
+          companyMajors.forEach(function(element){ element.company_id = company_id; })
           var queryMajor = knex('company_major').insert(companyMajors)
           await queryMajor.transacting(trx);
         }
 
         if (contact_ids) {
-          companyContacts.forEach(function(element){
-            element.company_id = company_id;
-          })
+          companyContacts.forEach(function(element){ element.company_id = company_id; })
           var queryContact = knex('company_contact').insert(companyContacts)
           await queryContact.transacting(trx);
         }   
 
         if (event_ids) {
-          companyEvents.forEach(function(element){
-            element.company_id = company_id;
-          })
+          companyEvents.forEach(function(element){ element.company_id = company_id; })
           var queryEvent = knex('event_company').insert(companyEvents)
           await queryEvent.transacting(trx);
         }
@@ -398,7 +390,7 @@ router.put('/:company_id', function(req, res, next) {
       companyMajors = {
            company_id: company_id,
            major_id: major_ids
-        }
+      }
     }
     var queryMajor = knex('company_major').insert(companyMajors)
   }
