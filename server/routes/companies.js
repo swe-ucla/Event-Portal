@@ -225,38 +225,10 @@ router.post('/', function(req, res, next) {
     description: req.body.description
   }
 
-  let ranks = req.body.rank;
-  let user_ids = req.body.user_id;
   let position_ids = req.body.position_id;
   let major_ids = req.body.major_id;
   let contact_ids = req.body.contact_id;
   let event_ids = req.body.event_id;
-
-  let rankValues = [];
-  if (ranks && user_ids) {
-    if(Array.isArray(ranks) && Array.isArray(user_ids)){
-      let length = ranks.length;
-      if (ranks.length != user_ids.length)
-        util.throwError(400, "Both user_ids and ranks must be the same size.");
-      length = user_ids.length; 
-      for (let n=0; n < length; n++) {
-        rankValues.push({
-          user_id: user_ids[n],
-          rank: ranks[n]
-
-        });
-       // util.throwError(400, ranks)
-      }
-    } else if(Array.isArray(ranks) || Array.isArray(user_ids)) {
-       util.throwError(400, "Both user_ids and ranks must be the same size.");
-    }else{
-      rankValues.push({
-          user_id: user_ids,
-          rank: ranks
-        });
-    }
-
-  }
 
   let companyPositions = [];
   if (position_ids) {
@@ -330,14 +302,6 @@ router.post('/', function(req, res, next) {
       .then(async function(ids){
         let company_id = ids[0];
 
-        if (ranks && user_ids) {
-          rankValues.forEach(function(element){
-            element.company_id = company_id;
-          })
-          var queryRank = knex('user_company_rank').insert(rankValues)
-          await queryRank.transacting(trx);
-        }
-
         if (position_ids) {
           companyPositions.forEach(function(element){
             element.company_id = company_id;
@@ -388,44 +352,18 @@ router.put('/:company_id', function(req, res, next) {
     citizenship_requirement: req.body.citizenship_requirement,
     description: req.body.description
   }
-  let ranks = req.body.rank;
-  let user_ids = req.body.user_id;
   let position_ids = req.body.position_id;
   let major_ids = req.body.major_id;
   let contact_ids = req.body.contact_id;
   let event_ids = req.body.event_id;
 
-  let remove_user_ids = req.body.remove_user_id;
   let remove_position_ids = req.body.remove_position_id;
   let remove_major_ids = req.body.remove_major_id;
   let remove_contact_ids = req.body.remove_contact_id;
   let remove_event_ids = req.body.remove_event_id;
   let company_id = req.params.company_id;
 
-  //insert
-  let rankValues = [];
-  if (ranks && user_ids) {
-    if(Array.isArray(ranks) && Array.isArray(user_ids)){
-      let length = ranks.length;
-      if (ranks.length > user_ids.length)
-        length = user_ids.length; //not sure about error handling for length
-                                  //transaction should fail if different lengths?
-      for (let n=0; n < length; n++) {
-        rankValues.push({
-          user_id: user_ids[n],
-          company_id: company_id,
-          rank: ranks[n]
-        });
-      }
-    } else{
-      rankValues = {
-          user_id: user_ids,
-          company_id: company_id,
-          rank: ranks
-        };
-    }
-    var queryRank = knex('user_company_rank').insert(rankValues)
-  }
+  // insert
 
   let companyPositions = [];
   if (position_ids) {
@@ -503,20 +441,7 @@ router.put('/:company_id', function(req, res, next) {
     var queryEvent = knex('event_company').insert(companyEvents)
   }
 
-  //remove
-  let removeUsers = []
-  if (remove_user_ids) {
-    if (Array.isArray(remove_user_ids)) {
-      let length = remove_user_ids.length;
-      for (let n=0; n < length; n++) {
-        removeUsers.push(remove_user_ids[n]);
-      }
-    } else {
-      removeUsers.push(remove_user_ids);
-    }
-  }
-  let removeQueryRank = knex('user_company_rank').whereIn('user_id', removeUsers).andWhere("company_id", company_id).del()
-  
+  // remove
   let removePositions = []
   if (remove_position_ids) {
     let length = remove_position_ids.length;
@@ -571,47 +496,28 @@ router.put('/:company_id', function(req, res, next) {
 
   var queryCompany = knex('company').update(values).where({ id: req.params.company_id })
   knex.transaction(async function(trx) {
-    //modify company attributes
+    // modify company attributes
     if (req.body.name || req.body.website || req.body.logo || req.body.citizenship_requirement || req.body.description) {
       await queryCompany;
     }
 
-    //insert
-    if (user_ids && ranks) {
-      await queryRank.transacting(trx);
-    }
-    if (position_ids) {
-      await queryPos.transacting(trx);
-    }
-    if (major_ids) {
-      await queryMajor.transacting(trx);
-    }
-    if (event_ids) {
-      await queryEvent.transacting(trx);
-    }
-    if (contact_ids) {
-      await queryContact.transacting(trx);
-    }
+    // insert
+    if (position_ids) await queryPos.transacting(trx);
+    
+    if (major_ids) await queryMajor.transacting(trx);
+    
+    if (event_ids) await queryEvent.transacting(trx);
+    
+    if (contact_ids) await queryContact.transacting(trx);
 
-    //remove
-    if (remove_user_ids) {
-      await removeQueryRank.transacting(trx);
-    }
-    if (remove_position_ids) {
-      await removeQueryPos.transacting(trx);
-    }
+    // remove
+    if (remove_position_ids) await removeQueryPos.transacting(trx);
+    
+    if (remove_major_ids) await removeQueryMajor.transacting(trx);
 
-    if (remove_major_ids) {
-      await removeQueryMajor.transacting(trx);
-    }
+    if (remove_contact_ids) await removeQueryContact.transacting(trx);
 
-    if (remove_contact_ids) {
-      await removeQueryContact.transacting(trx);
-    }
-
-    if (remove_event_ids) {
-      await removeQueryEvent.transacting(trx);
-    }
+    if (remove_event_ids) await removeQueryEvent.transacting(trx);
 
     return trx.commit;
   })
