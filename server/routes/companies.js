@@ -66,7 +66,7 @@ router.get('/websites', function(req, res, next) {
 // GET company info by company_id
 router.get('/:company_id/id', function(req, res, next) {
   if (isNaN(req.params.company_id)) {
-    util.throwError(400, '\'company_id\' is invalid');
+    util.throwError(400, 'Company ID is invalid');
   }
   knex('company').select().where({ id: req.params.company_id })
     .then(result => {
@@ -82,7 +82,7 @@ router.get('/:company_id/id', function(req, res, next) {
 // GET all events associated with a given company
 router.get('/:company_id/events', function(req, res, next) {
   if (isNaN(req.params.company_id)) {
-    util.throwError(400, '\'company_id\' is invalid');
+    util.throwError(400, 'Company ID is invalid');
   }
   knex('event_company').select('event_id').where({ company_id: req.params.company_id })
     .then(result => {
@@ -98,7 +98,7 @@ router.get('/:company_id/events', function(req, res, next) {
 // GET all positions a given company is hiring
 router.get('/:company_id/positions', function(req, res, next) {
   if (isNaN(req.params.company_id)) {
-    util.throwError(400, '\'company_id\' is invalid');
+    util.throwError(400, 'Company ID is invalid');
   }
   knex('company_position').select().where({ company_id: req.params.company_id })
     .then(result => {
@@ -115,7 +115,7 @@ router.get('/:company_id/positions', function(req, res, next) {
 // GET all majors a given company is hiring
 router.get('/:company_id/majors', function(req, res, next) {
   if (isNaN(req.params.company_id)) {
-    util.throwError(400, '\'company_id\' is invalid');
+    util.throwError(400, 'Company ID is invalid');
   }
   knex('company_major').select().where({ company_id: req.params.company_id })
     .then(result => {
@@ -131,7 +131,7 @@ router.get('/:company_id/majors', function(req, res, next) {
 // GET all contacts for a given company
 router.get('/:company_id/contacts', function(req, res, next) {
   if (isNaN(req.params.company_id)) {
-    util.throwError(400, '\'company_id\' is invalid');
+    util.throwError(400, 'Company ID is invalid');
   }
   knex('company_contact').select().where({ company_id: req.params.company_id })
     .then(result => {
@@ -147,7 +147,7 @@ router.get('/:company_id/contacts', function(req, res, next) {
 // GET all users interested in a certain company
 router.get('/:company_id/users', function(req, res, next) {
   if (isNaN(req.params.company_id)) {
-    util.throwError(400, '\'company_id\' is invalid');
+    util.throwError(400, 'Company ID is invalid');
   }
   knex('user_company_rank').select('user_id').where({ company_id: req.params.company_id })
     .then(result => {
@@ -211,7 +211,7 @@ router.get('/filter', function(req, res, next) {
       })
       .catch(err => { return next(err) });
   } else { 
-    util.throwError(400, '\'mid\' and \'pid\' are undefined');
+    util.throwError(400, 'mid and pid are undefined');
   }
 });
 
@@ -233,67 +233,38 @@ router.post('/', function(req, res, next) {
   let companyPositions = [];
   if (position_ids) {
     if(Array.isArray(position_ids)){
-      let length = position_ids.length;
-      for (let n=0; n < length; n++) {
-        companyPositions.push({
-           position_id: position_ids[n]
-        });
-      }
+      position_ids.forEach(function(element) { companyPositions.push({ position_id: element }); });
     } else{
-      companyPositions.push({
-           position_id: position_ids
-      })
+      companyPositions.push({ position_id: position_ids });
     }
   }
 
   let companyMajors = [];
   if (major_ids) {
     if(Array.isArray(major_ids)){
-      let length = major_ids.length;
-      for (let n=0; n < length; n++) {
-        companyMajors.push({
-           major_id: major_ids[n]
-        })
-      }
+      major_ids.forEach(function(element) { companyMajors.push({ major_id: element }); });
     } else {
-      companyMajors.push({
-           major_id: major_ids
-        })
+      companyMajors.push({ major_id: major_ids });
     }
   }
 
   let companyContacts = [];
   if (contact_ids) {
     if(Array.isArray(contact_ids)){
-      let length = contact_ids.length;
-      for (let n=0; n < length; n++) {
-        companyContacts.push({
-           contact_id: contact_ids[n]
-        })
-      }
+      contact_ids.forEach(function(element) { companyContacts.push({ contact_id: element }); });
     } else {
-        companyContacts.push({
-           contact_id: contact_ids
-        })
+        companyContacts.push({ contact_id: contact_ids });
     }
   }   
 
   let companyEvents = [];
   if (event_ids) {
     if(Array.isArray(event_ids)){
-      let length = event_ids.length;
-      for (let n=0; n < length; n++) {
-        companyEvents.push({
-           event_id: event_ids[n]
-        })
-      }
-    } else {
-        companyEvents.push({
-           event_id: event_ids
-        })
+      event_ids.forEach(function(element) { companyEvents.push({ event_id: element }); });
+    } else { 
+      companyEvents.push({ event_id: event_ids });
     }
   }
-
 
   var queryCompany = knex('company').insert(values)
   knex.transaction(function(trx) {
@@ -360,18 +331,11 @@ router.put('/:company_id', function(req, res, next) {
   let companyPositions = [];
   if (position_ids) {
     if(Array.isArray(position_ids)){
-      let length = position_ids.length;
-      for (let n=0; n < length; n++) {
-        companyPositions.push({
-           company_id: company_id,
-           position_id: position_ids[n]
-        });
-      }
+      position_ids.forEach(function(element) {  
+        companyPositions.push({ company_id: company_id, position_id: element });
+      });
     } else{
-      companyPositions = {
-           company_id: company_id,
-           position_id: position_ids
-      }
+      companyPositions = { company_id: company_id, position_id: position_ids }
     }
     var queryPos = knex('company_position').insert(companyPositions)
   }
@@ -379,18 +343,11 @@ router.put('/:company_id', function(req, res, next) {
   let companyMajors = [];
   if (major_ids) {
     if(Array.isArray(major_ids)){
-      let length = major_ids.length;
-      for (let n=0; n < length; n++) {
-        companyMajors.push({
-           company_id: company_id,
-           major_id: major_ids[n]
-        })
-      }
+      major_ids.forEach(function(element) {
+        companyMajors.push({ company_id: company_id, major_id: element })
+      });
     } else {
-      companyMajors = {
-           company_id: company_id,
-           major_id: major_ids
-      }
+      companyMajors = { company_id: company_id, major_id: major_ids }
     }
     var queryMajor = knex('company_major').insert(companyMajors)
   }
@@ -398,18 +355,11 @@ router.put('/:company_id', function(req, res, next) {
   let companyContacts = [];
   if (contact_ids) {
     if(Array.isArray(contact_ids)){
-      let length = contact_ids.length;
-      for (let n=0; n < length; n++) {
-        companyContacts.push({
-           company_id: company_id,
-           contact_id: contact_ids[n]
-        })
-      }
+      contact_ids.forEach(function(element) {
+        companyContacts.push({ company_id: company_id, contact_id: element })
+      });
     } else {
-        companyContacts = {
-           company_id: company_id,
-           contact_id: contact_ids
-        }
+        companyContacts = { company_id: company_id, contact_id: contact_ids }
     }
     var queryContact = knex('company_contact').insert(companyContacts)
   }   
@@ -417,18 +367,11 @@ router.put('/:company_id', function(req, res, next) {
   let companyEvents = [];
   if (event_ids) {
     if(Array.isArray(event_ids)){
-      let length = event_ids.length;
-      for (let n=0; n < length; n++) {
-        companyEvents.push({
-           company_id: company_id,
-           event_id: event_ids[n]
-        })
-      }
+      event_ids.forEach(function(element){
+        companyEvents.push({ company_id: company_id, event_id: element })
+      });
     } else {
-        companyEvents = {
-           company_id: company_id,
-           event_id: event_ids
-        }
+        companyEvents = { company_id: company_id, event_id: event_ids }
     }
     var queryEvent = knex('event_company').insert(companyEvents)
   }
@@ -436,11 +379,10 @@ router.put('/:company_id', function(req, res, next) {
   // remove
   let removePositions = []
   if (remove_position_ids) {
-    let length = remove_position_ids.length;
     if(Array.isArray(remove_position_ids)){
-      for (let n=0; n < length; n++) {
-        removePositions.push(remove_position_ids[n]);
-      }
+      remove_position_ids.forEach(function(element){
+        removePositions.push(element);
+      });
     } else {
       removePositions.push(remove_position_ids);
     }
@@ -449,11 +391,10 @@ router.put('/:company_id', function(req, res, next) {
 
   let removeMajors = []
   if (remove_major_ids) {
-    let length = remove_major_ids.length;
     if(Array.isArray(remove_major_ids)){
-      for (let n=0; n < length; n++) {
+      remove_major_ids.forEach(function(element) {
         removeMajors.push(remove_major_ids[n]);
-      }
+      });
     } else {
       removeMajors.push(remove_major_ids);
     }
@@ -462,11 +403,10 @@ router.put('/:company_id', function(req, res, next) {
 
   let removeContacts = []
   if (remove_contact_ids) {
-    let length = remove_contact_ids.length;
     if(Array.isArray(remove_contact_ids)){
-      for (let n=0; n < length; n++) {
+      remove_contact_ids.forEach(function(element) {
         removeContacts.push(remove_contact_ids[n]);
-      }
+      });
     } else {
       removeContacts.push(remove_contact_ids)
     }
@@ -475,11 +415,10 @@ router.put('/:company_id', function(req, res, next) {
 
   let removeEvents = []
   if (remove_event_ids) {
-    let length = remove_event_ids.length;
     if(Array.isArray(remove_event_ids)){
-      for (let n=0; n < length; n++) {
+      remove_event_ids.forEach(function(element) {
         removeEvents.push(remove_event_ids[n])
-      }
+      });
     } else {
       removeEvents.push(remove_event_ids)
     }
