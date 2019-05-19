@@ -92,38 +92,38 @@ router.post('/register', function(req, res, next) {
   if(diet_ids){
     if (Array.isArray(diet_ids)){
       diet_ids.forEach(function(diet_id) {
-        diet_values.push({ diet_id : diet_id})
+        diet_values.push({ diet_id : diet_id })
       });
     } else { 
-      diet_values.push({ diet_id : diet_ids})
+      diet_values.push({ diet_id : diet_ids })
     }
   }
   if(occupation_ids){
     if (Array.isArray(occupation_ids)){
       occupation_ids.forEach(function(element) { occupation_values.push({ occupation_id : element}) });
     } else {
-      occupation_values.push({ occupation_id : occupation_ids})
+      occupation_values.push({ occupation_id : occupation_ids })
     }
   }
   if(position_ids){
     if (Array.isArray(position_ids)){
       position_ids.forEach(function(element) { position_values.push({ position_id : element}) });
     } else {
-      position_values.push({ position_id : position_ids})
+      position_values.push({ position_id : position_ids })
     }
   }
   if(major_ids){
     if (Array.isArray(major_ids)){
       major_ids.forEach(function(element) { major_values.push({ major_id : element}) });
     } else {
-      major_values.push({ major_id : major_ids})
+      major_values.push({ major_id : major_ids })
     }
   }
   if(company_ids && ranks){
     if (Array.isArray(company_ids) && Array.isArray(ranks)){
       company_ids.forEach(function(element, i) { company_rank_values.push({ company_id : element, rank: ranks[i]}) });
     } else {
-      diet_values.push({ company_id : company_ids, rank : ranks})
+      diet_values.push({ company_id : company_ids, rank : ranks })
     }
   }
 
@@ -134,11 +134,9 @@ router.post('/register', function(req, res, next) {
       .then(async function(ids){
 
       let user_id = ids[0];
-
+      
       if(diet_ids){
         diet_values.forEach(function(element) { element.user_id = user_id; })
-        console.log(diet_values);
-        console.log(user_id);
         var query_diet = knex('user_diet').insert(diet_values)
         await query_diet.transacting(trx);
       }
@@ -240,11 +238,11 @@ router.put('/:user_id', function(req, res, next) {
   let position_ids = req.body.position_ids;
   let remove_position_ids = req.body.remove_position_ids;
 
+  let major_ids = req.body.major_ids;
+  let remove_major_ids = req.body.remove_major_ids;
+
   let company_ids = req.body.company_ids;
   let remove_company_ids = req.body.remove_company_ids;
-
-  let major_ids = req.body.remove_major_ids;
-  let remove_major_ids = req.body.remove_major_ids;
 
   let ranks = req.body.ranks;
 
@@ -252,21 +250,21 @@ router.put('/:user_id', function(req, res, next) {
   if(diet_ids){
     if (Array.isArray(diet_ids)){
       diet_ids.forEach(function(element) {
-        diet_values.push({ user_id : user_id, diet_id: element})
+        diet_values.push({ user_id : user_id, diet_id: element })
       });
     } else { 
-      diet_values.push({ user_id : user_id, diet_id : diet_ids})
+      diet_values.push({ user_id : user_id, diet_id : diet_ids })
     }
     var query_diet = knex('user_diet').insert(diet_values);
   }
   let occupation_values = [];
   if(occupation_ids){
     if (Array.isArray(occupation_ids)){
-      occupation_ids.forEach(function(element) {
-        occupation_values.push({ user_id : user_id, occupation_id: element})
+      occupation_ids.forEach(function(element) { 
+        occupation_values.push({ user_id : user_id, occupation_id: element })
       });
     } else { 
-      occupation_values.push({ user_id : user_id, occupation_id : occupation_ids})
+      occupation_values.push({ user_id : user_id, occupation_id : occupation_ids })
     }
     var query_occupation = knex('user_occupation').insert(occupation_values);
   }
@@ -274,10 +272,10 @@ router.put('/:user_id', function(req, res, next) {
   if(position_ids){
     if (Array.isArray(position_ids)){
       position_ids.forEach(function(element) {
-        position_values.push({ user_id : user_id, position_id: element})
+        position_values.push({ user_id : user_id, position_id: element })
       });
     } else { 
-      position_values.push({ user_id : user_id, position_id : occupation_ids})
+      position_values.push({ user_id : user_id, position_id : position_ids })
     }
     var query_position = knex('user_position').insert(position_values);
   }
@@ -288,20 +286,20 @@ router.put('/:user_id', function(req, res, next) {
         major_values.push({ user_id : user_id, major_id: element})
       });
     } else { 
-      position_values.push({ user_id : user_id, major_id : major_ids})
+      major_values.push({ user_id : user_id, major_id : major_ids })
     }
     var query_major = knex('user_major').insert(major_values);
   }
   let company_values = [];
   if(company_ids && ranks){
     if (Array.isArray(company_ids)){
-      major_ids.forEach(function(element, i) {
-        major_values.push({ user_id : user_id, major_id: element, rank: ranks[i]})
+      company_ids.forEach(function(element, i) {
+        company_values.push({ user_id : user_id, company_id: element, rank: ranks[i] })
       });
     } else { 
-      position_values.push({ user_id : user_id, major_id : major_ids, ranks: rank})
+      company_values.push({ user_id : user_id, company_id : company_ids, rank: ranks })
     }
-    var query_rank = knex('user_company_rank').insert(major_values);
+    var query_company = knex('user_company_rank').insert(company_values);
   }
   let diet_removes = [];
   if(remove_diet_ids){
@@ -345,7 +343,7 @@ router.put('/:user_id', function(req, res, next) {
     } else { 
       major_removes.push([ user_id, remove_major_ids ]);
     }
-    var query_remove_position = knex('user_major').del().whereIn(['user_id', 'major_id'], major_removes);
+    var query_remove_major = knex('user_major').del().whereIn(['user_id', 'major_id'], major_removes);
   }
   let company_removes = [];
   if(remove_company_ids){
@@ -356,70 +354,34 @@ router.put('/:user_id', function(req, res, next) {
     } else { 
       company_removes.push([ user_id, remove_company_ids ]);
     }
-    var query_remove_position = knex('user_company_rank').del().whereIn(['user_id', 'company_id'], company_removes);
+    var query_remove_company = knex('user_company_rank').del().whereIn(['user_id', 'company_id'], company_removes);
   }
   
-  /*
-  if(occupation_ids){
-    if (Array.isArray(occupation_ids)){
-      occupation_ids.forEach(function(element) { occupation_values.push({ occupation_id : element}) });
-    } else {
-      occupation_values.push({ occupation_id : occupation_ids})
-    }
-  }
-  if(position_ids){
-    if (Array.isArray(position_ids)){
-      position_ids.forEach(function(element) { position_values.push({ position_id : element}) });
-    } else {
-      position_values.push({ position_id : position_ids})
-    }
-  }
-  if(major_ids){
-    if (Array.isArray(major_ids)){
-      major_ids.forEach(function(element) { major_values.push({ major_id : element}) });
-    } else {
-      major_values.push({ major_id : major_ids})
-    }
-  }
-  if(company_ids && ranks){
-    if (Array.isArray(company_ids) && Array.isArray(ranks)){
-      company_ids.forEach(function(element, i) { company_rank_values.push({ company_id : element, rank: ranks[i]}) });
-    } else {
-      diet_values.push({ company_id : company_ids, rank : ranks})
-    }
-  }
-  */
-
-
   var query_user = knex('swe_user').update(values).where({ id : user_id})
   knex.transaction(async function(trx) { 
-    
     if ((req.body.first_name && req.body.last_name) || req.body.password || req.body.email || req.body.phone || req.body.university_id || req.body.is_admin) {
       await query_user;
     }
 
-    // insert
     if (query_diet) await query_diet.transacting(trx);
 
     if (query_occupation) await query_occupation.transacting(trx);
+
+    if (query_position) await query_position.transacting(trx);
+
+    if (query_major) await query_major.transacting(trx);
+
+    if (query_company) await query_company.transacting(trx);
     
     if (query_remove_diet) await query_remove_diet.transacting(trx);
 
     if (query_remove_occupation) await query_remove_occupation.transacting(trx);
 
-    
-    //if (event_ids) await queryEvent.transacting(trx);
-    
-    //if (contact_ids) await queryContact.transacting(trx);
+    if (query_remove_position) await query_remove_position.transacting(trx);
 
-    // remove
-    //if (remove_position_ids) await removeQueryPos.transacting(trx);
+    if (query_remove_major) await query_remove_major.transacting(trx);
     
-    //if (remove_major_ids) await removeQueryMajor.transacting(trx);
-
-    //if (remove_contact_ids) await removeQueryContact.transacting(trx);
-
-    //if (remove_event_ids) await removeQueryEvent.transacting(trx);
+    if (query_remove_company) await query_remove_company.transacting(trx);
 
     return trx.commit;
   })
