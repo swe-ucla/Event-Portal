@@ -479,106 +479,123 @@ router.get('/search', function(req, res, next) {
       .catch(err => { return next(err) });
 }});
 
-// /*
-// from katrina:
+/*
+from katrina:
 
-// One thing to note when implementing the API is all queries under the same route (/events/filter) will be under the same function. You'll need to check whether or not a query parameter exists and filter by it. It's a bit complex, but there's an AND OR relationship between some of these filters.
+One thing to note when implementing the API is all queries under the same route (/events/filter) will be under the same function. You'll need to check whether or not a query parameter exists and filter by it. It's a bit complex, but there's an AND OR relationship between some of these filters.
 
-// e.g. if date= is set, and so is month=, then its date OR month because it wouldn't make sense to answer both queries. Here date is more specific, so do date
+e.g. if date= is set, and so is month=, then its date OR month because it wouldn't make sense to answer both queries. Here date is more specific, so do date
 
-// e.g. month= and year= are set. They work together, so it's month AND year
+e.g. month= and year= are set. They work together, so it's month AND year
 
-// generally filters of the similar type/category form an OR relationship while filters of different types/topics form AND relationships. aka "when" filters (date/time related) form OR relationships between each other, but "when" filters have an AND relationship with category, company, and featured
-// */
+generally filters of the similar type/category form an OR relationship while filters of different types/topics form AND relationships. aka "when" filters (date/time related) form OR relationships between each other, but "when" filters have an AND relationship with category, company, and featured
+*/
 
-// /* alternative syntax for queries using async/await: 
-//     (https://node-postgres.com)
+/* alternative syntax for queries using async/await: 
+    (https://node-postgres.com)
   
-//   try {
-//     const res = await db.query(...,[]);
-//     res.send(result.rows);
-//   } catch(err) {
-//     return next(err);
-//   }
+  try {
+    const res = await db.query(...,[]);
+    res.send(result.rows);
+  } catch(err) {
+    return next(err);
+  }
 
-//   using promises:
-//   db.query(...,[])
-//     .then(res => {
-//       res.send(result.rows);
-//     })
-//   .catch(return next(err));
-// */
+  using promises:
+  db.query(...,[])
+    .then(res => {
+      res.send(result.rows);
+    })
+  .catch(return next(err));
+*/
 
-// // GET all columns from test table given :id.
-// // TODO: fix filtering logic, convert to knex
-// router.get('/filter', function(req, res, next) {
-//   const date = req.query.date;
-//   const month = req.query.month;
-//   const year = req.query.year;
-//   const quarter = req.query.quarter;
-//   const start_date = req.query.start_date;
-//   const end_date = req.query.end_date;
-//   const category = req.query.category;
-//   const company = req.query.company;
-//   const featured = req.query.featured;
-//   const past = req.query.past;
+/*
+// GET all columns from test table given :id.
+// TODO: fix filtering logic, convert to knex
+router.get('/filter', function(req, res, next) {
+  const date = req.query.date;
+  const month = req.query.month;
+  const year = req.query.year;
+  const quarter = req.query.quarter;
+  const start_date = req.query.start_date;
+  const end_date = req.query.end_date;
+  const category = req.query.category;
+  const company = req.query.company;
+  const featured = req.query.featured;
+  const past = req.query.past;
 
-//   // example: 2018-10-19
-//   if (date != undefined)
-//   {
-//     let query = 'SELECT fb_id FROM event WHERE';
-//     db.query('SELECT fb_id FROM event WHERE date(starts_at) <= \'' + date + '\' AND \'' + date + '\' <= date(ends_at)',[], (err, result) => {
-//       if (err) return next(err);
-//       res.send(result.rows);
-//    	});
-//   } else if (month != undefined) {
-//     db.query('SELECT * FROM event WHERE EXTRACT(MONTH FROM starts_at) = \'' + month +'\' OR EXTRACT(MONTH FROM ends_at) = \'' + month + '\'', [], (err, result) => {
-//       if (err) return next(err);
-//       res.send(result.rows);
-//     });
-//   } else if (year != undefined) {
-//     db.query('SELECT * FROM event WHERE EXTRACT(YEAR FROM starts_at) = \'' + year + '\' OR EXTRACT(YEAR FROM ends_at) = \'' + year + '\'', [], (err, result) => {
-//       if (err) return next(err);
-//       res.send(result.rows);
-//     });
-//   } else if (quarter != undefined) {
-//     db.query('SELECT fb_id FROM event WHERE quarter = \'' + quarter + '\'', [], (err, result) => {
-//       if (err) return next(err);
-//       res.send(result.rows);
-//     });
-//   } else if (start_date != undefined) {
-//     db.query('SELECT fb_id FROM event WHERE date(starts_at) = \'' + start_date + '\'', [], (err, result) => {
-//       if (err) return next(err);
-//       res.send(result.rows);
-//     });
-//   } else if (end_date != undefined) {
-//     db.query('SELECT fb_id FROM event WHERE date(starts_at) = \'' + end_date + '\'', [], (err, result) => {
-//       if (err) return next(err);
-//       res.send(result.rows);
-//     });
-//   } else if (category != undefined) {
-//     db.query('SELECT event_id FROM event_category WHERE category_id = \'' + category_id + '\'', [], (err, result) => {
-//       if (err) return next(err);
-//       res.send(result.rows);
-//     });
-//   } else if (company != undefined) {
-//     db.query('SELECT event_id FROM event_company WHERE company_id = \'' + company + '\'', [], (err, result) => {
-//       if (err) return next(err);
-//       res.send(result.rows);
-//     });
-//   } else if (featured != undefined) {
-//     db.query('SELECT * FROM event WHERE is_featured = \'' + featured + '\'', [], (err, result) => {
-//       if (err) return next(err);
-//       res.send(result.rows);
-//     });
-//   } else if (past != undefined) {
-//     db.query('SELECT fb_id FROM event WHERE ends_at < now()', [], (err, result) => {
-//       if (err) return next(err);
-//       res.send(result.rows);
-//     });
-//   } else {
-//     res.json({result: false}); // error message
-//   }
-// });
+  // example: 2018-10-19
+  if (date)
+  {
+		knex('event').select().where('starts_at', '<=', date).andWhere('ends_at', '>=', date)
+	    .then(result => {
+	      if (result.length) {
+	        res.json(result);
+	      } else {
+	        res.status(404).json('No events found.');
+	      }
+	    });
+  } else if (month) {
+    db.query('SELECT * FROM event WHERE EXTRACT(MONTH FROM starts_at) = \'' + month +'\' OR EXTRACT(MONTH FROM ends_at) = \'' + month + '\'', [], (err, result) => {
+      if (err) return next(err);
+      res.send(result.rows);
+    });
+  } else if (year) {
+    db.query('SELECT * FROM event WHERE EXTRACT(YEAR FROM starts_at) = \'' + year + '\' OR EXTRACT(YEAR FROM ends_at) = \'' + year + '\'', [], (err, result) => {
+      if (err) return next(err);
+      res.send(result.rows);
+    });
+  } else if (quarter) {
+    knex('event').select('fb_id').where('quarter', quarter)
+	    .then(result => {
+	      if (result.length) {
+	        res.json(result);
+	      } else {
+	        res.status(404).json('No events found.');
+	      }
+	    });
+  } else if (start_date) {
+    db.query('SELECT fb_id FROM event WHERE date(starts_at) = \'' + start_date + '\'', [], (err, result) => {
+      if (err) return next(err);
+      res.send(result.rows);
+    });
+  } else if (end_date != undefined) {
+    db.query('SELECT fb_id FROM event WHERE date(starts_at) = \'' + end_date + '\'', [], (err, result) => {
+      if (err) return next(err);
+      res.send(result.rows);
+    });
+  } else if (category != undefined) {
+    knex('event_category').select('event_id').where('category_id', category_id)
+	    .then(result => {
+	      if (result.length) {
+	        res.json(result);
+	      } else {
+	        res.status(404).json('No events found.');
+	      }
+	    });
+  } else if (company != undefined) {
+    knex('event_company').select('event_id').where('company_id', company)
+	    .then(result => {
+	      if (result.length) {
+	        res.json(result);
+	      } else {
+	        res.status(404).json('No events found.');
+	      }
+	    });
+  } else if (featured != undefined) {
+    db.query('SELECT * FROM event WHERE is_featured = \'' + featured + '\'', [], (err, result) => {
+      if (err) return next(err);
+      res.send(result.rows);
+    });
+  } else if (past != undefined) {
+    db.query('SELECT fb_id FROM event WHERE ends_at < now()', [], (err, result) => {
+      if (err) return next(err);
+      res.send(result.rows);
+    });
+  } else {
+    res.json({result: false}); // error message
+  }
+});
+*/
 
 module.exports = router;
