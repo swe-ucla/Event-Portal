@@ -11,7 +11,7 @@ router.get('/ping', function(req, res, next) {
   res.send('pong - Users API');
 });
 
-// GET all users.
+//GET all users.
 router.get('/', function(req, res, next) {
   knex('swe_user').select('id')
     .then(result => {
@@ -72,7 +72,8 @@ router.post('/register', function(req, res, next) {
   let major_ids = req.body.major_id;
   let ranks = req.body.rank;
 
-  values = {
+  values =
+  {
     first_name: req.body.first_name,
     last_name: req.body.last_name,
     password: req.body.password,
@@ -88,49 +89,41 @@ router.post('/register', function(req, res, next) {
   major_values = []
   company_rank_values = []
 
-  if (diet_ids) {
-    if (Array.isArray(diet_ids)) {
-      diet_ids.forEach(function(element) { 
-        diet_values.push({ diet_id : element })
+  if(diet_ids){
+    if (Array.isArray(diet_ids)){
+      diet_ids.forEach(function(diet_id) {
+        diet_values.push({ diet_id : diet_id })
       });
     } else { 
       diet_values.push({ diet_id : diet_ids })
     }
   }
-  if (occupation_ids) {
-    if (Array.isArray(occupation_ids)) {
-      occupation_ids.forEach(function(element) {
-        occupation_values.push({ occupation_id : element })
-      });
+  if(occupation_ids){
+    if (Array.isArray(occupation_ids)){
+      occupation_ids.forEach(function(element) { occupation_values.push({ occupation_id : element}) });
     } else {
       occupation_values.push({ occupation_id : occupation_ids })
     }
   }
-  if (position_ids) {
-    if (Array.isArray(position_ids)) {
-      position_ids.forEach(function(element) {
-        position_values.push({ position_id : element })
-      });
+  if(position_ids){
+    if (Array.isArray(position_ids)){
+      position_ids.forEach(function(element) { position_values.push({ position_id : element}) });
     } else {
       position_values.push({ position_id : position_ids })
     }
   }
-  if (major_ids) {
-    if (Array.isArray(major_ids)) {
-      major_ids.forEach(function(element) {
-        major_values.push({ major_id : element })
-      });
+  if(major_ids){
+    if (Array.isArray(major_ids)){
+      major_ids.forEach(function(element) { major_values.push({ major_id : element}) });
     } else {
       major_values.push({ major_id : major_ids })
     }
   }
-  if (company_ids && ranks) {
-    if (Array.isArray(company_ids) && Array.isArray(ranks)) {
-      company_ids.forEach(function(element, i) { 
-        company_rank_values.push({ company_id : element, rank: ranks[i] })
-      });
+  if(company_ids && ranks){
+    if (Array.isArray(company_ids) && Array.isArray(ranks)){
+      company_ids.forEach(function(element, i) { company_rank_values.push({ company_id : element, rank: ranks[i]}) });
     } else {
-      diet_values.push({ company_id : company_ids, rank : ranks })
+      company_values.push({ company_id : company_ids, rank : ranks })
     }
   }
 
@@ -138,38 +131,39 @@ router.post('/register', function(req, res, next) {
   knex.transaction(function(trx) { 
     return query_user.transacting(trx)
       .returning('id')
-      .then(async function(ids) {
-        let user_id = ids[0];
-        
-        if (diet_ids) {
-          diet_values.forEach(function(element) { element.user_id = user_id; })
-          var query_diet = knex('user_diet').insert(diet_values)
-          await query_diet.transacting(trx);
-        }
-        if (occupation_ids) {
-          occupation_values.forEach(function(element) { element.user_id = user_id; })
-          var query_occupation = knex('user_occupation').insert(occupation_values)
-          await query_occupation.transacting(trx);
-        }
-        if (position_ids) {
-          position_values.forEach(function(element) { element.user_id = user_id; })
-          var query_position = knex('user_position').insert(position_values)
-          await query_position.transacting(trx);
-        }
-        if (major_ids) {
-          major_values.forEach(function(element) { element.user_id = user_id; })
-          var query_major = knex('user_major').insert(major_values)
-          await query_major.transacting(trx);
-        }
-        if (company_ids && ranks) {
-          company_rank_values.forEach(function(element) { element.user_id = user_id; })
-          var query_company = knex('user_company_rank').insert(company_rank_values)
-          await query_company.transacting(trx);
-        }
-        return trx.commit;
-      })
+      .then(async function(ids){
+
+      let user_id = ids[0];
+
+      if(diet_ids){
+        diet_values.forEach(function(element) { element.user_id = user_id; })
+        var query_diet = knex('user_diet').insert(diet_values)
+        await query_diet.transacting(trx);
+      }
+      if(occupation_ids){
+        occupation_values.forEach(function(element) { element.user_id = user_id; })
+        var query_occupation = knex('user_occupation').insert(occupation_values)
+        await query_occupation.transacting(trx);
+      }
+      if(position_ids){
+        position_values.forEach(function(element) { element.user_id = user_id; })
+        var query_position = knex('user_position').insert(position_values)
+        await query_position.transacting(trx);
+      }
+      if(major_ids){
+        major_values.forEach(function(element) { element.user_id = user_id; })
+        var query_major = knex('user_major').insert(major_values)
+        await query_major.transacting(trx);
+      }
+      if(company_ids && ranks){
+        company_rank_values.forEach(function(element) { element.user_id = user_id; })
+        var query_company = knex('user_company_rank').insert(company_rank_values)
+        await query_company.transacting(trx);
+      }
+      return trx.commit;
+    })
   })
-  .then(function() {
+  .then(function(){
     res.send(util.message('Successfully inserted user'));
   })
   .catch(err => {return next(err) });
@@ -222,7 +216,8 @@ router.put('/:user_id', function(req, res, next) {
   if (isNaN(req.params.user_id)) {
     util.throwError(400, 'User ID is invalid');
   }
-  values = {
+  values =
+  {
     first_name: req.body.first_name,
     last_name: req.body.last_name,
     password: req.body.password,
@@ -233,33 +228,27 @@ router.put('/:user_id', function(req, res, next) {
   }
 
   let user_id = req.params.user_id;
-  let diet_ids = req.body.diet_ids;
-  let occupation_ids = req.body.occupation_ids;
-  let position_ids = req.body.position_ids;
-  let major_ids = req.body.major_ids;
-  let company_ids = req.body.company_ids;
-  let ranks = req.body.ranks;
 
+  let diet_ids = req.body.diet_ids;
   let remove_diet_ids = req.body.remove_diet_ids;
+
+  let occupation_ids = req.body.occupation_ids;
   let remove_occupation_ids = req.body.remove_occupation_ids;
+
+  let position_ids = req.body.position_ids;
   let remove_position_ids = req.body.remove_position_ids;
+
+  let major_ids = req.body.major_ids;
   let remove_major_ids = req.body.remove_major_ids;
+
+  let company_ids = req.body.company_ids;
   let remove_company_ids = req.body.remove_company_ids;
 
+  let ranks = req.body.ranks;
+
   let diet_values = [];
-  let occupation_values = [];
-  let position_values = [];
-  let major_values = [];
-  let company_values = [];
-
-  let diet_removes = [];
-  let occupation_removes = [];
-  let position_removes = [];
-  let major_removes = [];
-  let company_removes = [];
-
-  if (diet_ids) {
-    if (Array.isArray(diet_ids)) {
+  if(diet_ids){
+    if (Array.isArray(diet_ids)){
       diet_ids.forEach(function(element) {
         diet_values.push({ user_id : user_id, diet_id: element })
       });
@@ -268,8 +257,9 @@ router.put('/:user_id', function(req, res, next) {
     }
     var query_diet = knex('user_diet').insert(diet_values);
   }
-  if (occupation_ids) {
-    if (Array.isArray(occupation_ids)) {
+  let occupation_values = [];
+  if(occupation_ids){
+    if (Array.isArray(occupation_ids)){
       occupation_ids.forEach(function(element) { 
         occupation_values.push({ user_id : user_id, occupation_id: element })
       });
@@ -278,8 +268,9 @@ router.put('/:user_id', function(req, res, next) {
     }
     var query_occupation = knex('user_occupation').insert(occupation_values);
   }
-  if (position_ids) {
-    if (Array.isArray(position_ids)) {
+  let position_values = [];
+  if(position_ids){
+    if (Array.isArray(position_ids)){
       position_ids.forEach(function(element) {
         position_values.push({ user_id : user_id, position_id: element })
       });
@@ -288,8 +279,9 @@ router.put('/:user_id', function(req, res, next) {
     }
     var query_position = knex('user_position').insert(position_values);
   }
-  if (major_ids) {
-    if (Array.isArray(major_ids)) {
+  let major_values = [];
+  if(major_ids){
+    if (Array.isArray(major_ids)){
       major_ids.forEach(function(element) {
         major_values.push({ user_id : user_id, major_id: element})
       });
@@ -298,8 +290,9 @@ router.put('/:user_id', function(req, res, next) {
     }
     var query_major = knex('user_major').insert(major_values);
   }
-  if (company_ids && ranks) {
-    if (Array.isArray(company_ids)) {
+  let company_values = [];
+  if(company_ids && ranks){
+    if (Array.isArray(company_ids)){
       company_ids.forEach(function(element, i) {
         company_values.push({ user_id : user_id, company_id: element, rank: ranks[i] })
       });
@@ -308,8 +301,9 @@ router.put('/:user_id', function(req, res, next) {
     }
     var query_company = knex('user_company_rank').insert(company_values);
   }
-  if (remove_diet_ids) {
-    if (Array.isArray(remove_diet_ids)) {
+  let diet_removes = [];
+  if(remove_diet_ids){
+    if (Array.isArray(remove_diet_ids)){
       remove_diet_ids.forEach(function(element) {
         diet_removes.push([ user_id, element ]);
       });
@@ -318,8 +312,9 @@ router.put('/:user_id', function(req, res, next) {
     }
     var query_remove_diet = knex('user_diet').del().whereIn(['user_id', 'diet_id'], diet_removes);
   }
-  if (remove_occupation_ids) {
-    if (Array.isArray(remove_occupation_ids)) {
+  let occupation_removes = [];
+  if(remove_occupation_ids){
+    if (Array.isArray(remove_occupation_ids)){
       remove_occupation_ids.forEach(function(element) {
         occupation_removes.push([ user_id, element ]);
       });
@@ -328,8 +323,9 @@ router.put('/:user_id', function(req, res, next) {
     }
     var query_remove_occupation = knex('user_occupation').del().whereIn(['user_id', 'occupation_id'], occupation_removes);
   }
-  if (remove_position_ids) {
-    if (Array.isArray(remove_position_ids)) {
+  let position_removes = [];
+  if(remove_position_ids){
+    if (Array.isArray(remove_position_ids)){
       remove_position_ids.forEach(function(element) {
         position_removes.push([ user_id, element ]);
       });
@@ -338,8 +334,9 @@ router.put('/:user_id', function(req, res, next) {
     }
     var query_remove_position = knex('user_position').del().whereIn(['user_id', 'position_id'], position_removes);
   }
-  if (remove_major_ids) {
-    if (Array.isArray(remove_major_ids)) {
+  let major_removes = [];
+  if(remove_major_ids){
+    if (Array.isArray(remove_major_ids)){
       remove_major_ids.forEach(function(element) {
         major_removes.push([ user_id, element ]);
       });
@@ -348,8 +345,9 @@ router.put('/:user_id', function(req, res, next) {
     }
     var query_remove_major = knex('user_major').del().whereIn(['user_id', 'major_id'], major_removes);
   }
-  if (remove_company_ids) {
-    if (Array.isArray(remove_major_ids)) {
+  let company_removes = [];
+  if(remove_company_ids){
+    if (Array.isArray(remove_major_ids)){
       remove_company_ids.forEach(function(element) {
         company_removes.push([ user_id, element ]);
       });
@@ -361,25 +359,30 @@ router.put('/:user_id', function(req, res, next) {
   
   var query_user = knex('swe_user').update(values).where({ id : user_id})
   knex.transaction(async function(trx) { 
-    if ((req.body.first_name && req.body.last_name) || 
-         req.body.password || 
-         req.body.email || 
-         req.body.phone || 
-         req.body.university_id || 
-         req.body.is_admin) {
+    if ((req.body.first_name && req.body.last_name) || req.body.password || req.body.email || req.body.phone || req.body.university_id || req.body.is_admin) {
       await query_user;
     }
 
     if (query_diet) await query_diet.transacting(trx);
+
     if (query_occupation) await query_occupation.transacting(trx);
+
     if (query_position) await query_position.transacting(trx);
+
     if (query_major) await query_major.transacting(trx);
-    if (query_company) await query_company.transacting(trx);    
+
+    if (query_company) await query_company.transacting(trx);
+    
     if (query_remove_diet) await query_remove_diet.transacting(trx);
+
     if (query_remove_occupation) await query_remove_occupation.transacting(trx);
+
     if (query_remove_position) await query_remove_position.transacting(trx);
-    if (query_remove_major) await query_remove_major.transacting(trx);    
+
+    if (query_remove_major) await query_remove_major.transacting(trx);
+    
     if (query_remove_company) await query_remove_company.transacting(trx);
+
     return trx.commit;
   })
   .then(result => {
@@ -598,7 +601,7 @@ router.get('/filter', function(req, res, next) {
   const pid = req.query.pid;
   const admin = req.query.admin;
   // GET all users interested in a given company.
-  if (cid) {
+  if (cid){
     knex('user_company_rank').select('user_id').where({company_id: cid})
       .then(result => {
         if (result.length) {
@@ -610,7 +613,7 @@ router.get('/filter', function(req, res, next) {
       .catch(err => { return next(err) });
   }
   // GET all users of the given occupation
-  else if (oid) {
+  else if (oid){
     knex('user_occupation').select('user_id').where({occupation_id: oid})
       .then(result => {
         if (result.length) {
@@ -622,7 +625,7 @@ router.get('/filter', function(req, res, next) {
       .catch(err => { return next(err) });
   }
   // GET all users of the given major
-  else if (mid) {
+  else if (mid){
     knex('user_major').select('user_id').where({major_id: mid})
       .then(result => {
         if (result.length) {
@@ -634,7 +637,7 @@ router.get('/filter', function(req, res, next) {
       .catch(err => { return next(err) });
   }
   // GET all users seeking the given position
-  else if (pid) {
+  else if (pid){
     knex('user_position').select('user_id').where({position_id: pid})
       .then(result => {
         if (result.length) {
@@ -646,7 +649,7 @@ router.get('/filter', function(req, res, next) {
       .catch(err => { return next(err) });
   }
   // GET all admin users
-  else if (admin) {
+  else if (admin){
     knex('swe_user').select('id').where({is_admin: admin})
       .then(result => {
         if (result.length) {
