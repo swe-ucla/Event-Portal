@@ -82,21 +82,11 @@ router.post('/', function(req, res, next) {
   	is_featured: req.body.is_featured
   };
   
-  if (!req.body.event_id) {
-  	util.throwError(400, "Missing 'event_id' parameter.");
-  }
-  if (!req.body.name) {
-  	util.throwError(400, "Missing 'name' parameter.");
-  }
-  if (!req.body.starts_at) {
-  	util.throwError(400, "Missing 'starts_at' parameter.");
-  }
-  if (!req.body.ends_at) {
-  	util.throwError(400, "Missing 'ends_at' parameter.");
-  }
-  if (!req.body.quarter) {
-  	util.throwError(400, "Missing 'quarter' parameter.");
-  }
+  if (!req.body.event_id) util.throwError(400, "Missing 'event_id' parameter.");
+  if (!req.body.name) util.throwError(400, "Missing 'name' parameter.");
+  if (!req.body.starts_at) util.throwError(400, "Missing 'starts_at' parameter.");
+  if (!req.body.ends_at) util.throwError(400, "Missing 'ends_at' parameter.");
+  if (!req.body.quarter) util.throwError(400, "Missing 'quarter' parameter.");
 
   let category_ids = req.body.categories;
   let category_values = [];
@@ -143,15 +133,9 @@ router.post('/', function(req, res, next) {
 	knex.transaction(function(trx) {
 		return events_query.transacting(trx)
 			.then(async function() {
-				if (category_ids) {
-					await category_query.transacting(trx);
-				}
-				if (company_ids) {
-					await company_query.transacting(trx);
-				}
-				if (host_ids) {
-					await host_query.transacting(trx);
-				}
+				if (category_ids) await category_query.transacting(trx);
+				if (company_ids) await company_query.transacting(trx);
+				if (host_ids) await host_query.transacting(trx);
 				return trx.commit;
 			})
 	})
@@ -247,29 +231,13 @@ router.put('/:event_id', function(req, res, next) {
 	var company_query = knex('event_company').insert(company_values);
 
 	knex.transaction(async function (trx) {
-		if (validReqForEvent){
-			await event_query.transacting(trx);
-		}
-
-		if (category_ids) {
-			await category_query.transacting(trx);
-		}
-		if (remove_company_ids) {
-			await remove_category_query.transacting(trx);
-		}
-		if (host_ids) {
-			await host_query.transacting(trx);
-		}
-		if (remove_host_ids) {
-			await remove_host_query.transacting(trx);
-		}
-		if (company_ids) {
-			await company_query.transacting(trx);
-		}
-		if (remove_company_ids) {
-			await remove_company_query.transacting(trx);
-		}
-
+		if (validReqForEvent) await event_query.transacting(trx);
+		if (category_ids) await category_query.transacting(trx);
+		if (remove_company_ids) await remove_category_query.transacting(trx);
+		if (host_ids) await host_query.transacting(trx);
+		if (remove_host_ids) await remove_host_query.transacting(trx);
+		if (company_ids) await company_query.transacting(trx);
+		if (remove_company_ids) await remove_company_query.transacting(trx);
 		return trx.commit;
 	})
 	.then(function() {
@@ -465,7 +433,7 @@ router.get('/:event_id/categories', function(req, res, next) {
 // GET all events containing term substring
 router.get('/search', function(req, res, next) {
   const term = req.query.term;
-  if (!term){
+  if (!term) {
     util.throwError(400, 'Term parameter is undefined');
   } else {
     knex('event').select().where('name', 'ilike', `%${term}%`)
