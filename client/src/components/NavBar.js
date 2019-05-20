@@ -24,6 +24,7 @@ const NavBar = (props) => {
         <Button component={Link} to="/post">POST</Button>
         <Button component={Link} to="/put">PUT</Button>
         <Button component={Link} to="/delete">DELETE</Button>
+        <Button component={Link} to="/companies">Companies</Button>
         <Button color="primary" variant="outlined">
           Login
         </Button>
