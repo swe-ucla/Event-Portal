@@ -9,7 +9,7 @@ import Select from '@material-ui/core/Select';
 import Button from '@material-ui/core/Button';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import Paper from '@material-ui/core/Paper';
-import CardMedia from './CardMedia.js'
+import MediaCard from './MediaCard.js'
 
 import ExampleDeleteFormStyles from '../styles/ExampleDeleteForm.js';
 import ExampleGet from '../components/ExampleGet.js';
@@ -37,9 +37,9 @@ class Events extends Component {
 	render() {
 		return (
 			<div>
-				<CardMedia/>
-				<CardMedia/>
-				<CardMedia/>
+				<MediaCard/>
+				<MediaCard/>
+				<MediaCard/>
 			</div>
 		);
 	}
