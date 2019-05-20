@@ -37,10 +37,8 @@ class Events extends Component {
 	render() {
 		return (
 			<div>
-				<p>
-					test
-				</p>
-
+				<CardMedia/>
+				<CardMedia/>
 				<CardMedia/>
 			</div>
 		);

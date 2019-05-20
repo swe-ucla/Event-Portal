@@ -20,12 +20,12 @@ const styles = {
 
 function MediaCard(props) {
   const { classes } = props;
-  return (
+  return ( 
     <Card className={classes.card}>
       <CardActionArea>
         <CardMedia
           className={classes.media}
-          image="./amy.jpg"
+          image={require("./amy.jpg")}
           title="Contemplative Reptile"
         />
         <CardContent>
