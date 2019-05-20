@@ -130,7 +130,7 @@ router.post('/register', function(req, res, next) {
         company_rank_values.push({ company_id : element, rank: ranks[i] })
       });
     } else {
-      diet_values.push({ company_id : company_ids, rank : ranks })
+      company_rank_values.push({ company_id : company_ids, rank : ranks })
     }
   }
 
