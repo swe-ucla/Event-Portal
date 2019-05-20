@@ -8,14 +8,17 @@ import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
+import '../css/MediaCard.css'
 
 const styles = {
   card: {
-    maxWidth: 345,
+    width: 300,
+    padding: 10,
   },
   media: {
-    height: 140,
-  },
+    height: 100,
+    width: 300,
+  }
 };
 
 function MediaCard(props) {
@@ -29,12 +32,12 @@ function MediaCard(props) {
           title="Contemplative Reptile"
         />
         <CardContent>
-          <Typography gutterBottom variant="h5" component="h2">
+          <p className='event-name'>
             AMY'S BABY SHOWER
-          </Typography>
-          <Typography component="p">
+          </p>
+          <p className='description'>
             have a swell time at amy's baby shower! celebrating her expansion of the waist
-          </Typography>
+          </p>
         </CardContent>
       </CardActionArea>
       <CardActions>
