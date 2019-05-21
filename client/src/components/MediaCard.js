@@ -8,6 +8,7 @@ import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
+import Grid from '@material-ui/core/Grid';
 import MediaCardStyles from '../styles/MediaCard.js'
 
 function MediaCard(props) {
@@ -20,14 +21,26 @@ function MediaCard(props) {
           image={require("./amy.jpg")}
           title="Contemplative Reptile"
         />
-        <CardContent>
-          <p className={classes.eventName}>
-            AMY'S BABY SHOWER
-          </p>
-          <p className={classes.description}>
-            have a swell time at amy's baby shower! celebrating her expansion of the waist
-          </p>
-        </CardContent>
+        <Grid container alignItems="center">
+          <Grid item xs={3} style={{textAlign: "center"}}>
+              <Typography component="h2" variant="body1">
+                JUNE
+              </Typography>
+              <Typography component="h5" variant="headline">
+                26
+              </Typography>
+          </Grid>
+          <Grid item xs={12} sm container>
+            <CardContent>
+              <Typography gutterBottom variant="h5" component="h2">
+                AMY'S BABY SHOWER
+              </Typography>
+              <Typography component="p">
+                have a swell time at amy's baby shower! celebrating her expansion of the waist
+              </Typography>
+            </CardContent>
+          </Grid>
+        </Grid>
       </CardActionArea>
       <CardActions>
         <Button size="small" color="primary">
