@@ -1,18 +1,21 @@
 import React, { Component } from 'react';
 import MediaCard from './MediaCard.js'
-import '../css/EventRow.css'
+import { withStyles } from '@material-ui/core/styles';
+import EventRowStyles from '../styles/EventRow.js'
 
 class EventRow extends Component {
-	constructor() {
+	constructor(props) {
 		super();
 	}
 	render() {
+		const { classes } = this.props;
+		
 		return (
 			<div>
-				<p className='title'> 
+				<p className={classes.title}> 
 					WEEK 1
 				</p>
-				<div className='row'>
+				<div className={classes.row}>
 					<MediaCard/>
 					<MediaCard/>
 					<MediaCard/>
@@ -23,4 +26,4 @@ class EventRow extends Component {
 	}
 }
 
-export default EventRow;
+export default withStyles(EventRowStyles)(EventRow);
