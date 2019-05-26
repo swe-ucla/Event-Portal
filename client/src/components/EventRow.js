@@ -20,6 +20,19 @@ class EventRow extends Component {
 					<MediaCard/>
 					<MediaCard/>
 					<MediaCard/>
+					<MediaCard/>
+					<MediaCard/>
+				</div>
+				<p className={classes.title}> 
+					WEEK 2
+				</p>
+				<div className={classes.row}>
+					<MediaCard/>
+					<MediaCard/>
+					<MediaCard/>
+					<MediaCard/>
+					<MediaCard/>
+					<MediaCard/>
 				</div>
 			</div>
 		)
