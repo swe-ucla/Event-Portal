@@ -27,10 +27,16 @@ function CompanyCard(props){
       />
       <CardContent className={classes.cardContent}>
         <Typography gutterBottom variant="h5" component="h2">
-          Heading
+          {props.name}
         </Typography>
         <Typography>
-          This is a media card. You can use this section to describe the content.
+          {props.description}
+        </Typography>
+        <Typography>
+          Positions: {props.positions}
+        </Typography>
+        <Typography>
+          Majors: {props.majors}
         </Typography>
       </CardContent>
       <CardActions>
