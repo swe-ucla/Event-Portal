@@ -114,7 +114,7 @@ class ExamplePutForm extends Component {
     axios.put('/users/' + this.state.user_id, diffBody)
       .then(result => {
         // Update displayed major names
-        this.majors.getMajors();
+        this.getUsers();
       })
       .catch(err => {
         // TODO: use user-friendly error message
@@ -124,7 +124,7 @@ class ExamplePutForm extends Component {
         })
       });
 
-      this.getUsers();
+      //this.getUsers();
   }
 
   // On submit, update major in database
@@ -143,6 +143,7 @@ class ExamplePutForm extends Component {
     }
   };
 
+  //EMAIL etc
   render() {
     const { classes } = this.props;
     var mids = this.state.mids.map(mid => {
@@ -153,9 +154,11 @@ class ExamplePutForm extends Component {
       <main className={classes.main}>
         <Paper className={classes.paper}>
           <Typography component="h1" variant="h5">
-            Update Major
+            Edit Profile
           </Typography>
           <form className={classes.form} onSubmit={this.handleSubmit}>
+
+
             <Grid container spacing={24}>
               <Grid item xs={12} sm={6}>
                 <TextField
@@ -168,6 +171,20 @@ class ExamplePutForm extends Component {
                   margin='normal'
                 />
               </Grid>
+
+
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  fullWidth
+                  id='ucla_id'
+                  label='UCLA ID'
+                  className={classes.textField}
+                  value={this.state.ucla_id || ''}
+                  onChange={this.handleChange('ucla_id')}
+                  margin='normal'
+                />
+              </Grid>
+
             </Grid>
             <FormHelperText error className={classes.formHelperText}>
               {this.state.errorMessage}
@@ -179,7 +196,7 @@ class ExamplePutForm extends Component {
               color="primary"
               className={classes.submit}
             >
-              Update Major
+              Update Profile
             </Button>
           </form>
         </Paper>

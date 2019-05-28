@@ -12,6 +12,9 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import Checkbox from '@material-ui/core/Checkbox';
 import Paper from '@material-ui/core/Paper';
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
+
 
 import ExamplePostFormStyles from '../styles/ExamplePostForm.js';
 import ExampleGet from '../components/ExampleGet.js';
@@ -44,6 +47,8 @@ class Register extends Component {
   }
 
   componentDidMount() {
+    this.getMajors();
+
     window.gapi.load('auth2', function() {
         window.auth2 = window.gapi.auth2.init({
           client_id: '*****',
@@ -55,7 +60,7 @@ class Register extends Component {
       GOOGLE_BUTTON_ID,
       {
         scope: 'email',
-        width: 400,
+        width: 350,
         height: 50,
         longtitle: true,
         theme: 'dark',
@@ -74,13 +79,25 @@ class Register extends Component {
 
     // Initiate state
     this.state = { 
+      mids: [],
       phone_number: '',
+      major_name: '',
+      major_id: '',
       ucla_id: null,
       check1: true,
       check2: false,
       check3: false,
       errorMessage: ''
     };
+  }
+
+  getMajors = () => {
+    axios.get('/majors')
+      .then(result => {
+        let mids = result.data.map(function(major) { return major.name });
+        this.setState({ mids: mids });
+      })
+      .catch(err => console.log(err));
   }
 
 
@@ -93,6 +110,15 @@ class Register extends Component {
       return;
     }
 
+    console.log(this.state.mids)
+
+    this.state.mids.forEach(function(mid){ 
+      if (mid.name == this.state.major_name){
+        this.state.major_id = mid.major_id
+      }
+    })
+
+
     let body = {
       first_name: first_name,
       last_name: last_name,
@@ -100,7 +126,8 @@ class Register extends Component {
       email: email,
       phone: this.state.phone_number,
       university_id: this.state.ucla_id ? this.state.ucla_id : null,
-      is_admin: false
+      is_admin: false,
+      major_id: this.state.major_id
     };
 
     // Make POST request to add major
@@ -135,27 +162,38 @@ class Register extends Component {
     event.preventDefault();
   }
 
-  handleChange = phone_number => event => {
+/*
+  handleChange = name => event => {
     this.setState({
-      [phone_number]: event.target.value,
+      [name]: event.target.value,
+    });
+    if (name === 'major_id') {
+      this.getMajorByID(event.target.value);
+    }
+  };
+  */
+
+  handleChange = name => event => {
+    this.setState({
+      [name]: event.target.value,
     });
   };
 
-  handleCheckChange = phone_number => event => {
-    this.setState({ [phone_number]: event.target.checked });
-  };
-
+  
   render() {
     const { classes } = this.props;
     const { check1, check2, check3 } = this.state;
     const error = [check1, check2, check3].filter(v => v).length !== 2;
+    var mids = this.state.mids.map(mid => {
+      return <MenuItem key={mid} value={mid}>{mid}</MenuItem>
+    })
 
     return (
       
       <main className={classes.main}>
         <Paper className={classes.paper}>
           <Typography component="h1" variant="h5">
-            Add User
+            Register
           </Typography>
           <form className={classes.form} onSubmit={this.handleSubmit}>
             <div id={GOOGLE_BUTTON_ID}/>
@@ -179,41 +217,23 @@ class Register extends Component {
               onChange={this.handleChange('ucla_id')}
               margin='normal'
             />
-            <FormControl required error={error} component="fieldset" className={classes.formControl}>
-              <FormLabel component="legend">Pick Two Options</FormLabel>
-              <FormGroup>
-                <FormControlLabel
-                  control={
-                    <Checkbox 
-                      checked={check1} 
-                      onChange={this.handleCheckChange('check1')} 
-                      value="check1" 
-                    />
-                  }
-                  label="Check 1"
-                />
-                <FormControlLabel
-                  control={
-                    <Checkbox 
-                      checked={check2} 
-                      onChange={this.handleCheckChange('check2')} 
-                      value="check2" 
-                    />
-                  }
-                  label="Check 2"
-                />
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={check3}
-                      onChange={this.handleCheckChange('check3')}
-                      value="check3"
-                    />
-                  }
-                  label="Check 3"
-                />
-              </FormGroup>
-            </FormControl>
+            <FormLabel component="legend">Enter your major</FormLabel>
+            <Select
+              required fullWidth
+              className={classes.select}
+              value={this.state.major_name || ''}
+              onChange={this.handleChange('major_name')}
+              inputProps={{
+                    name: 'Major ID',
+                    id: 'major_id',
+              }}
+              margin='normal'
+            >
+              <MenuItem value="">
+                <em>None</em>
+              </MenuItem>
+              {mids}
+            </Select>
             <FormHelperText error className={classes.formHelperText}>
               {this.state.errorMessage}
             </FormHelperText>
@@ -224,7 +244,7 @@ class Register extends Component {
               color="primary"
               className={classes.submit}
             >
-              Add Major
+              Create Your Account
             </Button>
           </form>
         </Paper>
