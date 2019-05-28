@@ -7,11 +7,10 @@ const MediaCardStyles = theme => ({
 		fontSize: '20px',
 	},
 	card: {
-    	width: '300px',
-    	padding: '10px',
+    	width: '300px'
   	},
   	media: {
-    	height: '100px',
+    	height: '200px',
     	width: '300px',
   	}
 })

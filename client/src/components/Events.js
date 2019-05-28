@@ -9,6 +9,7 @@ class Events extends Component {
 		return (
 			<div>
 				<EventRow />
+				<EventRow />
 			</div>
 		);
 	}
