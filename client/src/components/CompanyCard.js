@@ -25,12 +25,10 @@ class CompanyCard extends Component{
     this.getMajors = this.getMajors.bind(this);
     this.arrayToHTML = this.arrayToHTML.bind(this);
     this.mapIDToName = this.mapIDToName.bind(this);
-    this.state = {allMajors: [], majors: [], allPositions: [], positions: []}
+    this.state = {majors: [], positions: []}
   }
 
   componentDidMount() {
-    this.getAllPositions();
-    this.getAllMajors();
     this.getPositions();
     this.getMajors();
   }
@@ -74,46 +72,6 @@ class CompanyCard extends Component{
   }
 
   //don't need to make this call for each card... extract out to row/company!
-  getAllMajors = () => {
-    var options = {
-      params: {
-        sort: 'id'
-      }
-    }
-    axios.get('/majors', options)
-      .then(result => {
-        let majors = {};
-        result.data.forEach(function(major) { 
-          majors[major.id] = major.name;
-        });
-
-        this.setState({ 
-          allMajors: majors,
-        });
-      })
-      .catch(err => console.log(err));
-  }
-
-  getAllPositions = () => {
-    var options = {
-      params: {
-        sort: 'id'
-      }
-    }
-    axios.get('/positions', options)
-      .then(result => {
-        let positions = {};
-        result.data.forEach(function(position) { 
-          positions[position.id] = position.role;
-        });
-
-
-        this.setState({ 
-          allPositions: positions,
-        });
-      })
-      .catch(err => console.log(err));
-  }
 
   mapIDToName = (idarray, namearray) => {
     //console.log(namearray)
@@ -137,10 +95,13 @@ class CompanyCard extends Component{
   render(){
     const { classes } = this.props;
     let majors = this.state.majors;
-    let allMajors = this.state.allMajors;
+    let allMajors = this.props.allMajors;
+
+    let positions = this.state.positions;
+    let allPositions = this.props.allPositions
 
     let positionsDisplay = (<Typography>
-            Positions: {this.mapIDToName(this.state.positions, this.state.allPositions)}
+            Positions: {this.mapIDToName(positions, allPositions)}
           </Typography>)
     let majorsDisplay = (<Typography>
             Majors: {this.mapIDToName(majors, allMajors)}

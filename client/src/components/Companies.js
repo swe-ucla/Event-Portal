@@ -15,46 +15,26 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
 import CompanyCard from './CompanyCard.js';
-import CompaniesList from './CompaniesList.js';
+import CompaniesCardList from './CompaniesCardList.js';
 import CompaniesStyles from '../styles/Companies.js';
-import axios from 'axios';
+
 
 const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 //const app = express();
 class Companies extends Component {
 	constructor(props) {
-		super(props);
-
-		this.getCompanies = this.getCompanies.bind(this);
-		this.state = {companies: []}
+		super(props)
 	}
 
+	/*
 	componentDidMount() {
-		//this.props.onRef(this); ??
-		this.getCompanies();
+		this.props.onRef(this); 
 	}
 	
-	/* ??
 	componentWillUnmount() {
     	this.props.onRef(null);
   	}
   	*/
-
-  	getCompanies = () => {
-  		var options = {
-  			params: {
-  				sort: 'name'
-  			}
-  		}
-  		var companiesData = [];
-  		axios.get('/companies/', options)
-			.then(result => {
-				let companiesData = result.data;
-				this.setState({companies: companiesData});
-				console.log(companiesData);
-			})
-			.catch(err => console.log(err));
-	}
 
 	render() {
 	    const { classes } = this.props;
@@ -82,7 +62,7 @@ class Companies extends Component {
 		        <div className={classNames(classes.layout, classes.cardGrid)}>
 		          {/* End hero unit */}
 		          <Grid container spacing={40}>
-		            <CompaniesList company={this.state.companies}/>
+		            <CompaniesCardList/>
 		          </Grid>
 		        </div>
 		      </main>
