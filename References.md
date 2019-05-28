@@ -171,3 +171,10 @@
   - https://stackoverflow.com/questions/14551194/how-are-parameters-sent-in-an-http-post-request
   - https://stackoverflow.com/questions/26723467/what-is-the-difference-between-form-data-x-www-form-urlencoded-and-raw-in-the-p
   - https://stackoverflow.com/questions/15694120/why-does-http-post-request-body-need-to-be-json-enconded-in-python
+  - https://stackoverflow.com/questions/34751814/build-postgres-docker-container-with-initial-schema
+  - https://stackoverflow.com/questions/4922943/test-if-remote-tcp-port-is-open-from-a-shell-script
+  - https://stackoverflow.com/questions/42407769/elasticbeanstalk-multicontainer-docker-with-nginx
+  - https://github.com/davidainslie/multi-docker
+  - https://blog.eq8.eu/article/common-aws-elasticbeansalk-docker-issues-and-solutions.html
+  - https://stackoverflow.com/questions/48069600/aws-elastic-beanstalk-container-link-not-working
+  - https://kylewbanks.com/blog/debugging-docker-containers-on-elastic-beanstalk
