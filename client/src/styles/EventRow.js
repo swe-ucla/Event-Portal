@@ -9,8 +9,13 @@ const EventRowStyles = theme => ({
 	row: {
 		display: 'flex',
 		flexDirection: 'row',
-		justifyContent: 'space-around',
+		justifyContent: 'flex-start',
 		overflowX: 'auto',
+		minWidth: '100%',
+  	minHeight: '330px',
+	},
+	'&::-webkit-scrollbar': {
+		display: 'none',
 	}
 });
 
