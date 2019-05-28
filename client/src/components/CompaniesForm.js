@@ -29,10 +29,19 @@ class CompaniesForm extends Component {
       description: '',
       website: '',
       citizenship: '',
-      errorMessage: ''
+      errorMessage: '',
+      majors: [],
+      positions: [],
+      allMajors: {},
+      allPositions: {}
     };
 
     this.handleChange = this.handleChange.bind(this);
+  }
+
+  componentDidMount(){
+    this.getAllMajors();
+    this.getAllPositions();
   }
 
   addCompany = () => {
@@ -48,6 +57,9 @@ class CompaniesForm extends Component {
       website: this.state.website,
       citizenship_requirement: this.state.citizenship ? 'Y' : 'N'
     };
+
+    console.log(body)
+    return;
 
     // Make POST request to add major
     axios.post('/companies', body)
@@ -70,6 +82,47 @@ class CompaniesForm extends Component {
       });
   }
 
+  getAllMajors = () => {
+    var options = {
+      params: {
+        sort: 'id'
+      }
+    }
+    axios.get('/majors', options)
+      .then(result => {
+        let majors = {};
+        result.data.forEach(function(major) { 
+          majors[major.name] = major.id;
+        });
+
+        this.setState({ 
+          allMajors: majors,
+        });
+      })
+      .catch(err => console.log(err));
+  }
+
+  getAllPositions = () => {
+      var options = {
+        params: {
+          sort: 'id'
+        }
+      }
+      axios.get('/positions', options)
+        .then(result => {
+          let positions = {};
+          result.data.forEach(function(position) { 
+            positions[position.role] = position.id;
+          });
+
+
+          this.setState({ 
+            allPositions: positions,
+          });
+        })
+        .catch(err => console.log(err));
+    }
+
   handleSubmit = (event) => {
     this.addCompany();
     // Prevent site refresh after submission
@@ -83,13 +136,42 @@ class CompaniesForm extends Component {
   };
 
   handleCheckChange = name => event => {
-    this.setState({ [name]: event.target.checked });
+    let temp = this.state[name];
+    temp.push(event.target.value);
+    this.setState({[name]: temp});
   };
 
   render() {
     const { classes } = this.props;
     const { citizenship_requirement } = this.state;
     //const error = [check1, check2, check3].filter(v => v).length !== 2;
+    const allMajors = this.state.allMajors;
+    const allPositions = this.state.allPositions;
+    
+    const majorChecks = Object.getOwnPropertyNames(allMajors).map(elem => {
+      return (<FormControlLabel
+                  control={
+                    <Checkbox 
+                      onChange={this.handleCheckChange('majors')} 
+                      value={elem}
+                    />
+                  }
+                  label={elem}
+                />)
+    })
+
+    const positionChecks = Object.getOwnPropertyNames(allPositions).map(elem => {
+      return (<FormControlLabel
+                  control={
+                    <Checkbox 
+                      onChange={this.handleCheckChange('positions')} 
+                      value={elem}
+                    />
+                  }
+                  label={elem}
+                />)
+    })
+
 
     return (
       <main className={classes.main}>
@@ -127,19 +209,14 @@ class CompaniesForm extends Component {
               onChange={this.handleChange('website')}
               margin='normal'
             />
-            <FormControl component="fieldset" className={classes.formControl}>
-              <FormLabel component="legend">Citizenship Required?</FormLabel>
-              <RadioGroup
-                aria-label="citizenship"
-                name="gender1"
-                className={classes.group}
-                value={citizenship_requirement}
-                onChange={this.handleCheckChange(citizenship_requirement)}
-              >
-                <FormControlLabel value="Y" control={<Radio />} label="Yes" />
-                <FormControlLabel value="N" control={<Radio />} label="No" />
-              </RadioGroup>
-            </FormControl>
+            <FormLabel>Majors Hiring:</FormLabel>
+            <FormGroup>
+              {majorChecks}
+            </FormGroup>
+            <FormLabel>Positions Hiring:</FormLabel>
+            <FormGroup>
+              {positionChecks}
+            </FormGroup>
             <FormHelperText error className={classes.formHelperText}>
               {this.state.errorMessage}
             </FormHelperText>
