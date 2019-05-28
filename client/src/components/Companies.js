@@ -19,6 +19,7 @@ import CompaniesList from './CompaniesList.js';
 import CompaniesStyles from '../styles/Companies.js';
 import axios from 'axios';
 
+const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 //const app = express();
 class Companies extends Component {
 	constructor(props) {
@@ -45,6 +46,7 @@ class Companies extends Component {
   				sort: 'name'
   			}
   		}
+  		var companiesData = [];
   		axios.get('/companies/', options)
 			.then(result => {
 				let companiesData = result.data;
@@ -52,7 +54,7 @@ class Companies extends Component {
 				console.log(companiesData);
 			})
 			.catch(err => console.log(err));
-  	}
+	}
 
 	render() {
 	    const { classes } = this.props;
@@ -73,22 +75,8 @@ class Companies extends Component {
 		        <div className={classes.heroUnit}>
 		          <div className={classes.heroContent}>
 		            <Typography component="h1" variant="h2" align="center" color="textPrimary" gutterBottom>
-		              Album layout
+		              Companies
 		            </Typography>
-		            <div className={classes.heroButtons}>
-		              <Grid container spacing={16} justify="center">
-		                <Grid item>
-		                  <Button variant="contained" color="primary">
-		                    Main call to action
-		                  </Button>
-		                </Grid>
-		                <Grid item>
-		                  <Button variant="outlined" color="primary">
-		                    Secondary action
-		                  </Button>
-		                </Grid>
-		              </Grid>
-		            </div>
 		          </div>
 		        </div>
 		        <div className={classNames(classes.layout, classes.cardGrid)}>
@@ -98,16 +86,6 @@ class Companies extends Component {
 		          </Grid>
 		        </div>
 		      </main>
-		      {/* Footer */}
-		      <footer className={classes.footer}>
-		        <Typography variant="h6" align="center" gutterBottom>
-		          Footer
-		        </Typography>
-		        <Typography variant="subtitle1" align="center" color="textSecondary" component="p">
-		          Something here to give the footer a purpose!
-		        </Typography>
-		      </footer>
-		      {/* End footer */}
 		    </React.Fragment>
 		  );
 		}

@@ -21,8 +21,7 @@ function CompaniesList(props){
 	let list = [];
 	props.company.map(companyCard =>{
 
-		list.push(<Grid item key={companyCard.name} sm={6} md={4} lg={3}><CompanyCard name={companyCard.name} 
-		description={companyCard.description}/> </Grid>)
+		list.push(<Grid item key={companyCard.name} sm={6} md={4} lg={3}><CompanyCard company={companyCard}/> </Grid>)
 	})
 
 	return(
