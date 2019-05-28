@@ -5,7 +5,7 @@ import EventRowStyles from '../styles/EventRow.js'
 
 class EventRow extends Component {
 	constructor(props) {
-		super();
+		super(props);
 	}
 	render() {
 		const { classes } = this.props;
