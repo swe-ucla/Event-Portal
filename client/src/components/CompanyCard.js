@@ -24,6 +24,7 @@ class CompanyCard extends Component{
     this.getPositions = this.getPositions.bind(this);
     this.getMajors = this.getMajors.bind(this);
     this.arrayToHTML = this.arrayToHTML.bind(this);
+    this.mapIDToName = this.mapIDToName.bind(this);
     this.state = {allMajors: [], majors: [], allPositions: [], positions: []}
   }
 
@@ -43,9 +44,7 @@ class CompanyCard extends Component{
     axios.get('/companies/' + this.props.company.id + '/positions', options)
       .then(result => {
         let positionData = result.data.map(function(position) { 
-          return { 
-            id: position.position_id, 
-          }
+          return position.position_id
         });
 
         this.setState({ 
@@ -64,9 +63,7 @@ class CompanyCard extends Component{
     axios.get('/companies/' + this.props.company.id + '/majors')
       .then(result => {
         let majorData = result.data.map(function(majors) { 
-          return { 
-            id: majors.major_id, 
-          }
+          return majors.major_id
         });
 
         this.setState({ 
@@ -76,6 +73,7 @@ class CompanyCard extends Component{
       .catch(err => console.log(err));
   }
 
+  //don't need to make this call for each card... extract out to row/company!
   getAllMajors = () => {
     var options = {
       params: {
@@ -84,12 +82,9 @@ class CompanyCard extends Component{
     }
     axios.get('/majors', options)
       .then(result => {
-        let majors = result.data.map(function(major) { 
-          return { 
-            id: major.id, 
-            name: major.name, 
-            ucla_id: major.ucla_id
-          }
+        let majors = {};
+        result.data.forEach(function(major) { 
+          majors[major.id] = major.name;
         });
 
         this.setState({ 
@@ -107,12 +102,11 @@ class CompanyCard extends Component{
     }
     axios.get('/positions', options)
       .then(result => {
-        let positions = result.data.map(function(position) { 
-          return { 
-            id: position.id, 
-            name: position.name
-          }
+        let positions = {};
+        result.data.forEach(function(position) { 
+          positions[position.id] = position.role;
         });
+
 
         this.setState({ 
           allPositions: positions,
@@ -121,16 +115,36 @@ class CompanyCard extends Component{
       .catch(err => console.log(err));
   }
 
+  mapIDToName = (idarray, namearray) => {
+    //console.log(namearray)
+    let elements = idarray.map(elem => {
+      return namearray[elem];
+    })
+    return this.arrayToHTML(elements);
+  }
+
   arrayToHTML = (array) => {
     let elements = array.map(elem => {
-      return (<li> {elem.id} </li>);
-    })
+      //console.log(elem)
+      if(elem){
+        return (<li> {elem} </li>);
+      }
+  })
     return elements;
   }
 
 //extract js into var out of html ...
   render(){
     const { classes } = this.props;
+    let majors = this.state.majors;
+    let allMajors = this.state.allMajors;
+
+    let positionsDisplay = (<Typography>
+            Positions: {this.mapIDToName(this.state.positions, this.state.allPositions)}
+          </Typography>)
+    let majorsDisplay = (<Typography>
+            Majors: {this.mapIDToName(majors, allMajors)}
+          </Typography>)
 
     return (
         <Card className={classes.card}>
@@ -149,12 +163,8 @@ class CompanyCard extends Component{
           <Typography>
             Description: {this.props.company.description}
           </Typography>
-          <Typography>
-            Positions: {this.arrayToHTML(this.state.positions)}
-          </Typography>
-          <Typography>
-            Majors: {this.arrayToHTML(this.state.majors)}
-          </Typography>
+          {majorsDisplay}
+          {positionsDisplay}
         </CardContent>
       </Card>
     );
