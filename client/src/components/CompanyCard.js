@@ -126,6 +126,9 @@ class CompanyCard extends Component{
           </Typography>
           {majorsDisplay}
           {positionsDisplay}
+          <Typography>
+            Citizenship Requirement: {this.props.company.citizenship_requirement}
+          </Typography>
         </CardContent>
       </Card>
     );
