@@ -16,13 +16,14 @@ import Select from '@material-ui/core/Select';
 import ExamplePutFormStyles from '../styles/ExamplePutForm.js';
 import ExampleGet from '../components/ExampleGet.js';
 
-class EditProfile extends Component {
+class ExamplePutForm extends Component {
   constructor() {
     super();
 
     // Initiate state
     this.state = { 
       mids: [],
+      user_id: 1,
       major_id: null,
       name: '',
       ucla_id: null,
@@ -34,16 +35,31 @@ class EditProfile extends Component {
 
   // Called when component has been initialized
   componentDidMount() {
-    this.getMajorIDs();
+    this.getUsers();
   }
 
-  getMajorIDs = () => {
+  getUsers = () => {
+    var options = {
+      
+    }
+    axios.get('/users/'+ this.state.user_id + '/id', options)
+      .then(result => {
+        let user_university_id = result.data.map(function(user) {return user.university_id })
+        this.setState(
+        {
+          ucla_id : user_university_id,
+          initial_ucla_id : user_university_id
+        })
+      })
+      .catch(err => console.log(err));
+    /*
     axios.get('/majors/ids')
       .then(result => {
         let mids = result.data.map(function(major) { return major.id });
         this.setState({ mids: mids });
       })
       .catch(err => console.log(err));
+      */
   }
 
   getMajorByID = (mid) => {
@@ -73,23 +89,18 @@ class EditProfile extends Component {
 
   // Update major of specified ID
   updateMajor = () => {
-    if (!this.state.major_id) {
-      console.log('ERROR: fill out Major ID field.');
-      this.setState({
-        errorMessage: 'ERROR: fill out Major ID field.',
-      })
-      return;
-    }
+  
 
     let initialBody = {
-      name: this.state.initial_name,
-      ucla_id: this.state.initial_ucla_id
+      //name: this.state.initial_name,
+      university_id: this.state.initial_ucla_id
     }
     let newBody = {
-      name: this.state.name ? this.state.name : null,
-      ucla_id: this.state.ucla_id ? this.state.ucla_id : null
+      //name: this.state.name ? this.state.name : null,
+      university_id: this.state.ucla_id ? this.state.ucla_id : null
     };
     const diffBody = diff(initialBody, newBody);
+    console.log(diffBody)
 
     if (!Object.keys(diffBody).length) {
       console.log('ERROR: no values to update.');
@@ -100,20 +111,10 @@ class EditProfile extends Component {
     }
 
     // Make PUT request to update major
-    axios.put('/majors/' + this.state.major_id, diffBody)
+    axios.put('/users/' + this.state.user_id, diffBody)
       .then(result => {
         // Update displayed major names
-        //this.majors.getMajors();
-
-        // Clear form values 
-        this.setState({
-          major_id: null,
-          name: '',
-          ucla_id: null,
-          initial_name: '',
-          initial_ucla_id: null,
-          errorMessage: '',
-        });
+        this.majors.getMajors();
       })
       .catch(err => {
         // TODO: use user-friendly error message
@@ -122,6 +123,8 @@ class EditProfile extends Component {
           errorMessage: err.response.data.message,
         })
       });
+
+      this.getUsers();
   }
 
   // On submit, update major in database
@@ -155,44 +158,13 @@ class EditProfile extends Component {
           <form className={classes.form} onSubmit={this.handleSubmit}>
             <Grid container spacing={24}>
               <Grid item xs={12} sm={6}>
-                <InputLabel required error={!this.state.major_id} htmlFor="major_id">Major ID</InputLabel>
-                <Select
-                  fullWidth
-                  className={classes.select}
-                  value={this.state.major_id || ''}
-                  onChange={this.handleChange('major_id')}
-                  inputProps={{
-                    name: 'Major ID',
-                    id: 'major_id',
-                  }}
-                >
-                  <MenuItem value="">
-                    <em>None</em>
-                  </MenuItem>
-                  {mids}
-                </Select>
-              </Grid>
-              <Grid item xs={12} sm={6}>
                 <TextField
                   fullWidth
                   id='ucla_id'
                   label='UCLA ID'
                   className={classes.textField}
-                  placeholder='Add UCLA ID'
                   value={this.state.ucla_id || ''}
                   onChange={this.handleChange('ucla_id')}
-                  margin='normal'
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  id='put_major_name'
-                  label='Major Name'
-                  className={classes.textField}
-                  placeholder='Add Major Name'
-                  value={this.state.name || ''}
-                  onChange={this.handleChange('name')}
                   margin='normal'
                 />
               </Grid>

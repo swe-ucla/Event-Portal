@@ -14,7 +14,8 @@ class Profile extends Component {
 
     // Initiate state
     this.state = { 
-      users: []
+      users: [],
+      user_id : 1
     };
   }
 
@@ -26,7 +27,7 @@ class Profile extends Component {
 
   // Called when a component is being removed from the DOM
   componentWillUnmount() {
-    //this.props.onRef(null); removed this
+    //this.props.onRef(null); //removed this
   }
 
   // Call GET function for current user
@@ -42,7 +43,8 @@ class Profile extends Component {
       }
       */
     }
-    axios.get('/users/1/id', options)
+    console.log(this.props.user_id);
+    axios.get('/users/'+ this.state.user_id + '/id', options)
       .then(result => {
         let user = result.data.map(function(user) { 
           return { 
@@ -53,6 +55,7 @@ class Profile extends Component {
             university_id: user.university_id,
           }
         })
+
         this.setState({ 
           users: user,
         })
@@ -62,6 +65,8 @@ class Profile extends Component {
         console.log('hello');
       })
       .catch(err => console.log(err));
+
+
   }
   render() {
     const { classes } = this.props;

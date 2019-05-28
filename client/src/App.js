@@ -11,6 +11,8 @@ import ExamplePutForm from './components/ExamplePutForm.js'
 import ExampleDeleteForm from './components/ExampleDeleteForm.js'
 import Register from './components/Register.js'
 import Profile from './components/Profile.js'
+import EditProfile from './components/EditProfile.js'
+
 
 require('typeface-roboto');
 
@@ -46,6 +48,7 @@ class App extends Component {
         <Route path="/delete" component={ExampleDeleteForm} />
         <Route path="/register" component={Register} />
         <Route path="/profile" component={Profile} />
+        <Route path="/editprofile" component={EditProfile} />
       </Router>
     )
   }
