@@ -57,7 +57,8 @@ class Events extends Component {
     });
 		return (
 			<div>
-				{names}
+				<EventRow />
+				<EventRow />
 			</div>
 		);
 	}
