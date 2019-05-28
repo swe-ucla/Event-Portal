@@ -9,6 +9,8 @@ import Checkout from './components/Checkout.js';
 import ExamplePostForm from './components/ExamplePostForm.js'
 import ExamplePutForm from './components/ExamplePutForm.js'
 import ExampleDeleteForm from './components/ExampleDeleteForm.js'
+import Register from './components/Register.js'
+import Profile from './components/Profile.js'
 
 require('typeface-roboto');
 
@@ -42,6 +44,8 @@ class App extends Component {
         <Route path="/post" component={ExamplePostForm} />
         <Route path="/put" component={ExamplePutForm} />
         <Route path="/delete" component={ExampleDeleteForm} />
+        <Route path="/register" component={Register} />
+        <Route path="/profile" component={Profile} />
       </Router>
     )
   }
