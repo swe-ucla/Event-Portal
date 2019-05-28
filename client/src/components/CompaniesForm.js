@@ -30,8 +30,8 @@ class CompaniesForm extends Component {
       website: '',
       citizenship: '',
       errorMessage: '',
-      majors: [],
-      positions: [],
+      majors: {},
+      positions: {},
       allMajors: {},
       allPositions: {}
     };
@@ -51,15 +51,27 @@ class CompaniesForm extends Component {
       return;
     }
 
+    /*
+    let allMajors = this.state.allMajors;
+    let majors = this.state.majors.map(name => {
+      return (allMajors[name])
+    })
+
+    let allPositions = this.state.allPositions;
+    let positions = this.state.positions.map(role => {
+      return (allPositions[role])
+    })
+    */
+
     let body = {
       name: this.state.name,
       description: this.state.description,
       website: this.state.website,
-      citizenship_requirement: this.state.citizenship ? 'Y' : 'N'
+      citizenship_requirement: this.state.citizenship ? 'Y' : 'N', //change
+      //majors: majors,
+      //positions: positions
     };
 
-    console.log(body)
-    return;
 
     // Make POST request to add major
     axios.post('/companies', body)
@@ -90,14 +102,18 @@ class CompaniesForm extends Component {
     }
     axios.get('/majors', options)
       .then(result => {
-        let majors = {};
+        let majorsEnum = {};
+        let majorsChecked = {};
         result.data.forEach(function(major) { 
-          majors[major.name] = major.id;
+          majorsEnum[major.name] = major.id;
+          majorsChecked[major.name] = false;
         });
 
         this.setState({ 
-          allMajors: majors,
+          allMajors: majorsEnum,
+          majors: majorsChecked
         });
+        //console.log(this.state.allMajors)
       })
       .catch(err => console.log(err));
   }
@@ -110,14 +126,17 @@ class CompaniesForm extends Component {
       }
       axios.get('/positions', options)
         .then(result => {
-          let positions = {};
+          let positionsEnum = {};
+          let positionsChecked = {};
           result.data.forEach(function(position) { 
-            positions[position.role] = position.id;
+            positionsEnum[position.role] = position.id;
+            positionsChecked[position.role] = false;
           });
 
 
           this.setState({ 
-            allPositions: positions,
+            allPositions: positionsEnum,
+            positions: positionsChecked
           });
         })
         .catch(err => console.log(err));
@@ -135,10 +154,13 @@ class CompaniesForm extends Component {
     });
   };
 
+  //implement with check boxes
   handleCheckChange = name => event => {
-    let temp = this.state[name];
-    temp.push(event.target.value);
-    this.setState({[name]: temp});
+    let value = event.target.value;
+    let obj = this.state[name];
+    obj[value] = event.target.checked;
+    this.setState(obj);
+    console.log(this.state[name]);
   };
 
   render() {
@@ -146,12 +168,15 @@ class CompaniesForm extends Component {
     const { citizenship_requirement } = this.state;
     //const error = [check1, check2, check3].filter(v => v).length !== 2;
     const allMajors = this.state.allMajors;
+    const majors = this.state.majors;
     const allPositions = this.state.allPositions;
+    const positions = this.state.positions;
     
-    const majorChecks = Object.getOwnPropertyNames(allMajors).map(elem => {
+    const majorChecks = Object.getOwnPropertyNames(majors).map(elem => {
       return (<FormControlLabel
                   control={
                     <Checkbox 
+                      checked={majors[elem]}
                       onChange={this.handleCheckChange('majors')} 
                       value={elem}
                     />
@@ -160,10 +185,11 @@ class CompaniesForm extends Component {
                 />)
     })
 
-    const positionChecks = Object.getOwnPropertyNames(allPositions).map(elem => {
+    const positionChecks = Object.getOwnPropertyNames(positions).map(elem => {
       return (<FormControlLabel
                   control={
                     <Checkbox 
+                      checked={positions[elem]}
                       onChange={this.handleCheckChange('positions')} 
                       value={elem}
                     />
@@ -204,7 +230,7 @@ class CompaniesForm extends Component {
               id='website'
               label='Company Website'
               className={classes.textField}
-              placeholder='e.g. 42'
+              placeholder='e.g. www.company.com'
               value={this.state.website || ''}
               onChange={this.handleChange('website')}
               margin='normal'
