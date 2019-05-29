@@ -55,25 +55,21 @@ UCLA SWE's event portal. Coming Soon!
   - Node [install](https://nodejs.org/en/)
     - Create React App [docs](https://github.com/facebookincubator/create-react-app)
   - Postgres [install](https://postgresapp.com/downloads.html)
-- Get sample test data and run sql files to populate running Postgres container with sample data
-  - **NOTE**: dev stack must be running with `make dev` before database can be populated
+- Store initial sample test data in order to restore data if modified
+  - Sample data will be initially populated with `make dev` 
+  - Once generated, store it in a zip file with `make store`
   - **NOTE**: if there is some bug with the database, try resetting it by deleting the folder `database/postgres/` then running `make dev` again
     - Following the below commands will be necessary to repopulate with sample data
 
 ```bash
-# Unzip sample data and move to proper folder within postgres data. 
-# Only needs to be run once and then will persist unless database/postgres/ or database/postgres/pgdata/ are deleted.
-$ make db-data
+# If database/postgres does not exist, will create postgres container and populate with sample data.
+$ make dev
 
-# Connect to postgres shell to interact with database
-$ make pg
+# Only needs to be run once and then will be able to restore initial sample data from the generated zip.
+$ make store
 
-# Drops tables, creates tables, creates triggers, and populates from CSVs
-swetest=# \i /var/lib/postgresql/data/pgdata/load.sql;
-
-# Empties tables, populates from CSVs
-# NOTE: use this if you modify data when testing APIs and want to restore original sample data
-swetest=# \i /var/lib/postgresql/data/pgdata/restore.sql;
+# Unzip sample data and move to proper folder within database/. Can also overwrite current database data with this command.
+$ make restore
 ```
 
 
