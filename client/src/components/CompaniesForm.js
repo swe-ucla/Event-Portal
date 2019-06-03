@@ -45,6 +45,8 @@ class CompaniesForm extends Component {
   }
 
   addCompany = () => {
+    //need error handling!
+
     if (!this.state.name) {
       // Do not add major if no name specified
       console.log('ERROR: fill out Company Name field.');
@@ -63,15 +65,38 @@ class CompaniesForm extends Component {
     })
     */
 
+    let majorIDs = [];
+    let majors = this.state.majors;
+    let allMajors = this.state.allMajors;
+    for (let property in majors) {
+      if (majors.hasOwnProperty(property)) {
+        if(majors[property] === true){
+          majorIDs.push(allMajors[property]);
+        }
+      }
+    }
+
+    let positionIDs = [];
+    let allPositions = this.state.allPositions;
+    let positions = this.state.positions;
+    for (let property in positions) {
+      if (positions.hasOwnProperty(property)) {
+        console.log(property)
+        if(positions[property] === true){
+          positionIDs.push(allPositions[property]);
+        }
+      }
+    }
+    console.log(majorIDs);
+
     let body = {
       name: this.state.name,
       description: this.state.description,
       website: this.state.website,
       citizenship_requirement: this.state.citizenship ? 'Y' : 'N', //change
-      //majors: majors,
-      //positions: positions
+      major_id: majorIDs,
+      position_id: positionIDs
     };
-
 
     // Make POST request to add major
     axios.post('/companies', body)
@@ -93,6 +118,9 @@ class CompaniesForm extends Component {
         })
       });
   }
+
+  //ideally extract similar allMajors calls out and then format for specific
+  //components
 
   getAllMajors = () => {
     var options = {
