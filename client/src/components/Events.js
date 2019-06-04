@@ -76,12 +76,12 @@ class Events extends Component {
 		return (
 			<div>
 				{/* We want to have a new row for each week within a period, which means that for each array we need to parse through by date to create a new event row and then within that row, organize by data. Note that arrays are already arranged by date. */}
-				<EventRow events={this.state.fall}/>
-				<EventRow events={this.state.winter}/>
-				<EventRow events={this.state.spring}/>
-				<EventRow events={this.state.summer}/>
-				<EventRow events={this.state.springBreak}/>
-				<EventRow events={this.state.winterBreak}/>
+				<EventRow events={this.state.fall} name="Fall"/>
+				<EventRow events={this.state.winter} name="Winter"/>
+				<EventRow events={this.state.spring} name="Spring"/>
+				<EventRow events={this.state.summer} name="Summer"/>
+				<EventRow events={this.state.springBreak} name="Spring Break"/>
+				<EventRow events={this.state.winterBreak} name="Winter Break"/>
 			</div>
 		);
 	}

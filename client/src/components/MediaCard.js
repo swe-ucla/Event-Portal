@@ -13,7 +13,6 @@ import MediaCardStyles from '../styles/MediaCard.js'
 
 function MediaCard(props) {
   const { classes } = props;
-  console.log(props.event.fb_id);
   return ( 
     <Card className={classes.card}>
       <CardActionArea>

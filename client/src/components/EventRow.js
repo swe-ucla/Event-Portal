@@ -16,7 +16,7 @@ class EventRow extends Component {
 		return (
 			<div>
 				<p className={classes.title}> 
-					period
+					{this.props.name}
 				</p>
 				<div className={classes.row}>
 					{cards}
