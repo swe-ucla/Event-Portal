@@ -62,7 +62,7 @@ class Events extends Component {
 			  this.setState({ 
 			  	fall: periodsArray["Fall Quarter"],
 			  	winter: periodsArray["Winter Quarter"],
-			  	spring: periodsArray["Winter Quarter"],
+			  	spring: periodsArray["Spring Quarter"],
 			  	summer: periodsArray["Summer Quarter"],
 			  	winterBreak: periodsArray["Winter Break"],
 			  	springBreak: periodsArray["Spring Break"],
