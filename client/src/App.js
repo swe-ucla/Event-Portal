@@ -48,7 +48,7 @@ class App extends Component {
         <Route path="/delete" component={ExampleDeleteForm} />
         <Route path="/register" component={Register} />
         <Route path="/profile" component={Profile} />
-        <Route path="/editprofile" component={EditProfile} />
+        <Route path="/register" component={EditProfile} />
       </Router>
     )
   }

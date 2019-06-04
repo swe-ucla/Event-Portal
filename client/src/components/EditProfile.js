@@ -26,9 +26,23 @@ class ExamplePutForm extends Component {
       user_id: 1,
       major_id: null,
       name: '',
-      ucla_id: null,
+      
       initial_name: '',
+
+      ucla_id: null,
       initial_ucla_id: null,
+
+      initial_first_name: null,
+      first_name: null,
+
+      initial_last_name: null,
+      last_name: null,
+
+      initial_phone_number: null,
+      phone_number: null,
+
+      //can't change the email
+
       errorMessage: ''
     };
   }
@@ -49,6 +63,28 @@ class ExamplePutForm extends Component {
         {
           ucla_id : user_university_id,
           initial_ucla_id : user_university_id
+
+        })
+        let user_first_name = result.data.map(function(user) {return user.first_name })
+        this.setState(
+        {
+          first_name : user_first_name,
+          initial_first_name : user_first_name
+          
+        })
+        let user_last_name = result.data.map(function(user) {return user.last_name })
+        this.setState(
+        {
+          last_name : user_last_name,
+          initial_last_name : user_last_name
+          
+        })
+        let user_phone_number = result.data.map(function(user) {return user.phone })
+        this.setState(
+        {
+          phone_number : user_phone_number,
+          initial_phone_number : user_phone_number
+          
         })
       })
       .catch(err => console.log(err));
@@ -93,12 +129,18 @@ class ExamplePutForm extends Component {
 
     let initialBody = {
       //name: this.state.initial_name,
-      university_id: this.state.initial_ucla_id
+      university_id: this.state.initial_ucla_id,
+      first_name: this.state.initial_first_name,
+      last_name: this.state.initial_last_name,
+      phone: this.state.initial_phone_number
     }
     let newBody = {
-      //name: this.state.name ? this.state.name : null,
-      university_id: this.state.ucla_id ? this.state.ucla_id : null
+      university_id: this.state.ucla_id ? this.state.ucla_id : null,
+      first_name: this.state.first_name ? this.state.first_name : null,
+      last_name: this.state.last_name ? this.state.last_name : null,
+      phone: this.state.phone_number ? this.state.phone_number : null
     };
+
     const diffBody = diff(initialBody, newBody);
     console.log(diffBody)
 
@@ -172,15 +214,38 @@ class ExamplePutForm extends Component {
                 />
               </Grid>
 
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  fullWidth
+                  id='first_name'
+                  label='First Name'
+                  className={classes.textField}
+                  value={this.state.first_name || ''}
+                  onChange={this.handleChange('first_name')}
+                  margin='normal'
+                />
+              </Grid>
 
               <Grid item xs={12} sm={6}>
                 <TextField
                   fullWidth
-                  id='ucla_id'
-                  label='UCLA ID'
+                  id='last_name'
+                  label='Last Name'
                   className={classes.textField}
-                  value={this.state.ucla_id || ''}
-                  onChange={this.handleChange('ucla_id')}
+                  value={this.state.last_name || ''}
+                  onChange={this.handleChange('last_name')}
+                  margin='normal'
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  fullWidth
+                  id='phone_number'
+                  label='Phone Number'
+                  className={classes.textField}
+                  value={this.state.phone_number || ''}
+                  onChange={this.handleChange('phone_number')}
                   margin='normal'
                 />
               </Grid>
@@ -200,7 +265,7 @@ class ExamplePutForm extends Component {
             </Button>
           </form>
         </Paper>
-        <ExampleGet onRef={ref => (this.majors = ref)}/>
+        
       </main>
     );
   }

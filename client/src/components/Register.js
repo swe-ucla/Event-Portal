@@ -1,3 +1,4 @@
+
 import React, { Component } from 'react';
 import axios from 'axios';
 
@@ -26,6 +27,19 @@ let first_name = '';
 let last_name = '';
 let email = '';
 
+/*
+see if email is already there
+axios.get('/users/emails'+ this.state.user_id + '/id')
+      .then(result => {
+        result.data.forEach(function(email_data) {
+          if (email_data['email'] == email)
+          {
+            console.log('found email')//redirect
+          }
+        })
+      })
+*/
+
 
 class Register extends Component {
 
@@ -51,7 +65,7 @@ class Register extends Component {
 
     window.gapi.load('auth2', function() {
         window.auth2 = window.gapi.auth2.init({
-          client_id: '*****',
+          client_id: '******',
           // Scopes to request in addition to 'profile' and 'email'
           //scope: 'additional_scope'
         });
@@ -59,6 +73,7 @@ class Register extends Component {
     window.gapi.signin2.render(
       GOOGLE_BUTTON_ID,
       {
+        ux_mode: 'redirect',
         scope: 'email',
         width: 350,
         height: 50,
@@ -255,3 +270,5 @@ class Register extends Component {
 }
 
 export default withStyles(ExamplePostFormStyles)(Register);
+
+
