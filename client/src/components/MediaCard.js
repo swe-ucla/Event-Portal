@@ -28,7 +28,7 @@ function MediaCard(props) {
           image={props.event.picture}
           title="Contemplative Reptile"
         />
-        <Grid container alignItems="center">
+        <Grid container alignItems="top">
           <Grid item xs={3} style={{textAlign: "center"}}>
               <Typography component="h2" variant="body1">
                 {month}

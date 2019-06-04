@@ -7,15 +7,15 @@ const MediaCardStyles = theme => ({
 		fontSize: '20px',
 	},
 	card: {
-    	width: '300px',
-    	minWidth: '300px',
-    	height: '420px',
+    	width: '500px',
+    	minWidth: '500px',
+    	height: '500px',
     	margin: '10px',
   	},
-  	media: {
-    	height: '200px',
-    	minWidth: '300px',
-  	}
+  media: {
+    height: '262px',
+    width: '500px',
+  }
 })
 
 export default MediaCardStyles;
