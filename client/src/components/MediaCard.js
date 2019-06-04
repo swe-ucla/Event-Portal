@@ -13,6 +13,7 @@ import MediaCardStyles from '../styles/MediaCard.js'
 
 function MediaCard(props) {
   const { classes } = props;
+
   return ( 
     <Card className={classes.card}>
       <CardActionArea>

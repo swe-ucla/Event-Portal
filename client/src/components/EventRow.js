@@ -8,15 +8,15 @@ class EventRow extends Component {
 		const { classes } = this.props;
 		let cards;
 		if (this.props.events) {
-			cards = this.props.events.map(cards => {
-    	  return <MediaCard />
+			cards = this.props.events.map((cards, index) => {
+    	  return <MediaCard events={this.props.events[index]}/>
     	});
 		}
 		
 		return (
 			<div>
 				<p className={classes.title}> 
-					period
+					{this.props.name}
 				</p>
 				<div className={classes.row}>
 					{cards}
