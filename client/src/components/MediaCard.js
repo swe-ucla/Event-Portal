@@ -13,6 +13,13 @@ import MediaCardStyles from '../styles/MediaCard.js'
 
 function MediaCard(props) {
   const { classes } = props;
+
+  /* Get month. */
+  const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ];
+  const date = new Date(props.event.starts_at);
+  let month = monthNames[date.getMonth()];
+  let day = date.getDate();
+
   return ( 
     <Card className={classes.card}>
       <CardActionArea>
@@ -24,10 +31,10 @@ function MediaCard(props) {
         <Grid container alignItems="center">
           <Grid item xs={3} style={{textAlign: "center"}}>
               <Typography component="h2" variant="body1">
-                {props.event.starts_at}
+                {month}
               </Typography>
               <Typography component="h5" variant="headline">
-                26
+                {day}
               </Typography>
           </Grid>
           <Grid item xs={12} sm container>
