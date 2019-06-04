@@ -8,8 +8,8 @@ class EventRow extends Component {
 		const { classes } = this.props;
 		let cards;
 		if (this.props.events) {
-			cards = this.props.events.map(cards => {
-    	  return <MediaCard />
+			cards = this.props.events.map((cards, index) => {
+    	  return <MediaCard event={this.props.events[index]} />
     	});
 		}
 		
