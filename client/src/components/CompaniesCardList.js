@@ -17,6 +17,7 @@ import { withStyles } from '@material-ui/core/styles';
 import CompanyCardStyles from '../styles/CompanyCard.js';
 import axios from 'axios';
 
+const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 
 class CompaniesCardList extends Component{
 	constructor(props){
@@ -95,16 +96,19 @@ class CompaniesCardList extends Component{
 	  }
 
 	render() {
-		let list = [];
-		this.state.companies.map(companyCard =>{
-			list.push(<Grid item key={companyCard.name} sm={6} md={4} lg={3}><CompanyCard company={companyCard} allPositions={this.state.allPositions} allMajors={this.state.allMajors}/> </Grid>)
-		})
-		return(
-			<div>
-				{list}
-			</div>
+		const { classes } = this.props;
+		let list = this.state.companies;
+
+		return (
+			<div className={classNames(classes.layout, classes.cardGrid)}>
+	          <Grid container spacing={40}>
+		        	{list.map(companyCard =>{
+						return <Grid item key={companyCard.name} sm={6} md={4} lg={3}><CompanyCard company={companyCard} allPositions={this.state.allPositions} allMajors={this.state.allMajors}/> </Grid>
+		        	})}
+	          </Grid>
+        	</div>
 		)
 	}
 }
 
-export default CompaniesCardList;
+export default withStyles(CompanyCardStyles)(CompaniesCardList);

@@ -59,12 +59,7 @@ class Companies extends Component {
 		            </Typography>
 		          </div>
 		        </div>
-		        <div className={classNames(classes.layout, classes.cardGrid)}>
-		          {/* End hero unit */}
-		          <Grid container spacing={40}>
-		            <CompaniesCardList/>
-		          </Grid>
-		        </div>
+		        <CompaniesCardList/>
 		      </main>
 		    </React.Fragment>
 		  );
