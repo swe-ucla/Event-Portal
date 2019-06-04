@@ -8,7 +8,12 @@ class Events extends Component {
 
 		this.getEvents = this.getEvents.bind(this);
 		this.state = {
-			events: [],
+			fall: [],
+			winter: [],
+			spring: [],
+			summer: [],
+			springBreak: [],
+			winterBreak: [],
 		};
 	}
 
@@ -18,14 +23,14 @@ class Events extends Component {
 
 	getEvents = () => {
 		var options = {
-			params: {
-				sort: 'id',
-			}
-		}
+      params: {
+        sort: 'date'
+      }
+    }
 
 		axios.get('/events', options)
 			.then(result => {
-				let eventsData = result.data.map(function(event) {
+				let eventsData = result.data.map(function(event){
 				  return {
 				  	fb_id: event.fb_id,
 				  	name: event.name,
@@ -38,27 +43,45 @@ class Events extends Component {
 			  		is_featured: event.is_featured,		
 			   		updated_at: event.updated_at,
 			  		created_at: event.created_at,
-			  		quarter: event.quarter,
+			  		period: event.period,
+			  		week: event.week,
 			  	}
 			  });
-			  
-			  this.setState({ events: eventsData });
+
+			  function groupBy(arr, property) {
+  				return arr.reduce(function(memo, x) {
+    			if (!memo[x[property]]) { memo[x[property]] = []; }
+    				memo[x[property]].push(x);
+    				return memo;
+  				}, {});
+				}
+
+				let periodsArray = groupBy(eventsData, 'period');
+
+			  /* Set respective arrays. */
+			  this.setState({ 
+			  	fall: periodsArray["Fall Quarter"],
+			  	winter: periodsArray["Winter Quarter"],
+			  	spring: periodsArray["Winter Quarter"],
+			  	summer: periodsArray["Summer Quarter"],
+			  	winterBreak: periodsArray["Winter Break"],
+			  	springBreak: periodsArray["Spring Break"],
+			  });
 			})
 			.catch(err => console.log(err));
 	}
 
-	// const { classes } = this.props;
- //    var names = this.state.majors.map(major => {
- //      return <p key={major.id}>{major.id}, {major.name}, {major.ucla_id}</p>
 
 	render() {
-    var names = this.state.events.map(event => {
-      return <p key={event.id}>{event.quarter}</p>
-    });
 		return (
 			<div>
-				<EventRow />
-				<EventRow />
+				{/* We want to have a new row for each week within a period, which means that for each array we need to parse through by date to create a new event row and then within that row, organize by data. Note that arrays are already arranged by date. */}
+				<EventRow events={this.state.fall}/>
+				<EventRow events={this.state.winter}/>
+				<EventRow events={this.state.spring}/>
+				<EventRow events={this.state.summer}/>
+				<EventRow events={this.state.springBreak}/>
+				<EventRow events={this.state.winterBreak}/>
 			</div>
 		);
 	}

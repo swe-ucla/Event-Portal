@@ -12,7 +12,7 @@ class ExampleGet extends Component {
 
     // Initiate state
     this.state = { 
-      majors: []
+      majors: [],
     };
   }
 
