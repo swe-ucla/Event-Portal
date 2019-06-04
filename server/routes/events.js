@@ -16,7 +16,7 @@ router.get('/', function(req, res, next) {
   let period = req.query.period;
   var query = knex('event').select();
   if (period){
-    query = knex('event').where('period', period);
+    query = knex('event').where('period', period).orderBy('starts_at', 'asc');
   }
   query
     .then(result => {
