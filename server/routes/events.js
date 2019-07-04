@@ -13,7 +13,12 @@ router.get('/ping', function(req, res, next) {
 
 // GET all events
 router.get('/', function(req, res, next) {
-  knex('event').select()
+  let period = req.query.period;
+  var query = knex('event').select();
+  if (period){
+    query = knex('event').where('period', period).orderBy('starts_at', 'asc');
+  }
+  query
     .then(result => {
       if (result.length) {
         res.json(result);
@@ -74,7 +79,7 @@ router.post('/', function(req, res, next) {
   	name: req.body.name, 
   	starts_at: req.body.starts_at, 
   	ends_at: req.body.ends_at,
-  	quarter: req.body.quarter,
+  	period: req.body.period,
   	location_id: req.body.location_id,
   	description: req.body.description,
   	fb_event: req.body.fb_event,
@@ -86,7 +91,7 @@ router.post('/', function(req, res, next) {
   if (!req.body.name) util.throwError(400, "Missing 'name' parameter.");
   if (!req.body.starts_at) util.throwError(400, "Missing 'starts_at' parameter.");
   if (!req.body.ends_at) util.throwError(400, "Missing 'ends_at' parameter.");
-  if (!req.body.quarter) util.throwError(400, "Missing 'quarter' parameter.");
+  if (!req.body.period) util.throwError(400, "Missing 'period' parameter.");
 
   let category_ids = req.body.categories;
   let category_values = [];
@@ -154,7 +159,7 @@ router.put('/:event_id', function(req, res, next) {
   	name: req.body.name, 
   	starts_at: req.body.starts_at, 
   	ends_at: req.body.ends_at,
-  	quarter: req.body.quarter,
+  	period: req.body.period,
   	location_id: req.body.location_id,
   	description: req.body.description,
   	fb_event: req.body.fb_event,
@@ -162,7 +167,7 @@ router.put('/:event_id', function(req, res, next) {
   	is_featured: req.body.is_featured
   };
 
-  if (!values.name && !values.starts_at && !values.ends_at && !values.quarter 
+  if (!values.name && !values.starts_at && !values.ends_at && !values.period 
 			 && !values.location_id && !values.description && !values.fb_event
 			 && !values.picture && !values.is_featured) {
   	validReqForEvent = false;
