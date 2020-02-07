@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-
+import MenuItem from '@material-ui/core/MenuItem';
 import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
@@ -10,6 +10,8 @@ import FormControl from '@material-ui/core/FormControl';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormHelperText from '@material-ui/core/FormHelperText';
+import InputLabel from '@material-ui/core/InputLabel';
+import Select from '@material-ui/core/Select';
 import Checkbox from '@material-ui/core/Checkbox';
 import Paper from '@material-ui/core/Paper';
 
@@ -28,15 +30,19 @@ class CompaniesForm extends Component {
       name: '',
       description: '',
       website: '',
-      citizenship: '',
       errorMessage: '',
+      citizenship: '',
       majors: {},
       positions: {},
       allMajors: {},
       allPositions: {}
     };
+ //   const [citizenship, setCitizen] = React.useState(''),
 
     this.handleChange = this.handleChange.bind(this);
+    // this.handleChange = event => {
+    //   setCitizen(event.target.value);
+    // };
   }
 
   componentDidMount(){
@@ -274,6 +280,18 @@ class CompaniesForm extends Component {
             <FormHelperText error className={classes.formHelperText}>
               {this.state.errorMessage}
             </FormHelperText>
+            <FormControl className={classes.formControl}>
+              <InputLabel id="demo-simple-select-label">Citizenship</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={'Y'}
+                onChange={this.handleChange('citizenship')}
+              >
+                <MenuItem value={'Y'}>Yes</MenuItem>
+                <MenuItem value={'N'}>No</MenuItem>
+              </Select>
+            </FormControl>
             <Button
               type="submit"
               fullWidth
