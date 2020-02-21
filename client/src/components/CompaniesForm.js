@@ -32,7 +32,7 @@ class CompaniesForm extends Component {
       description: '',
       website: '',
       errorMessage: '',
-      citizenship: '',
+      citizenship: 'N',
       majors: {},
       positions: {},
       allMajors: {},
@@ -252,16 +252,6 @@ class CompaniesForm extends Component {
               onChange={this.handleChange('name')}
               margin='normal'
             />
-            <TextField
-              fullWidth
-              id='description'
-              label='Company Description'
-              className={classes.textField}
-              placeholder=''
-              value={this.state.description || ''}
-              onChange={this.handleChange('description')}
-              margin='normal'
-            />
             <TextField fullWidth
               id='website'
               label='Company Website'
@@ -294,6 +284,16 @@ class CompaniesForm extends Component {
                 <MenuItem value={'N'}>No</MenuItem>
               </Select>
             </FormControl>
+            <TextField
+              fullWidth
+              id='description'
+              label='Company Description'
+              className={classes.textField}
+              placeholder=''
+              value={this.state.description || ''}
+              onChange={this.handleChange('description')}
+              margin='normal'
+            />
             <Button
               type="submit"
               fullWidth
