@@ -19,6 +19,7 @@ import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 
 import ExamplePostFormStyles from '../styles/ExamplePostForm.js';
+import CompaniesStyles from '../styles/CompaniesForm.js';
 import ExampleGet from '../components/ExampleGet.js';
 
 class CompaniesForm extends Component {
@@ -183,6 +184,7 @@ class CompaniesForm extends Component {
   }
 
   handleChange = name => event => {
+    console.log("Tried")
     this.setState({
       [name]: event.target.value,
     });
@@ -285,7 +287,7 @@ class CompaniesForm extends Component {
               <Select
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"
-                value={'Y'}
+                value={this.state.citizenship}
                 onChange={this.handleChange('citizenship')}
               >
                 <MenuItem value={'Y'}>Yes</MenuItem>
@@ -308,4 +310,4 @@ class CompaniesForm extends Component {
   }
 }
 
-export default withStyles(ExamplePostFormStyles)(CompaniesForm);
+export default withStyles(CompaniesStyles)(CompaniesForm);

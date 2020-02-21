@@ -38,14 +38,13 @@ class App extends Component {
     return (
       <Router history={history}>
         <NavBar />
-        <Footer />
-        
         <Route path="/checkout" component={Checkout} />
         <Route path="/post" component={ExamplePostForm} />
         <Route path="/put" component={ExamplePutForm} />
         <Route path="/delete" component={ExampleDeleteForm} />
         <Route path="/companies" component={Companies} />
         <Route path="/companiesform" component={CompaniesForm} />
+        <Footer />
       </Router>
     )
   }

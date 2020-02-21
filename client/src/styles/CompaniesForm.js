@@ -4,9 +4,9 @@ const CompaniesFormStyles = theme => ({
   },
   layout: {
     width: 'auto',
-    marginLeft: theme.spacing.unit * 2,
-    marginRight: theme.spacing.unit * 2,
-    [theme.breakpoints.up(600 + /*theme.spacing.unit * 2 * 2*/)]: {
+    marginLeft: theme.spacing.unit * 3,
+    marginRight: theme.spacing.unit * 3,
+    [theme.breakpoints.up(600 *theme.spacing.unit * 2 * 2)]: {
       width: 600,
       marginLeft: 'auto',
       marginRight: 'auto',
@@ -33,6 +33,9 @@ const CompaniesFormStyles = theme => ({
     marginTop: theme.spacing.unit * 3,
     marginLeft: theme.spacing.unit,
   },
+  textField: {
+    backgroundColor: '#F3F2F6'
+  }
 });
 
 export default CompaniesFormStyles;
