@@ -10,12 +10,12 @@ class Events extends Component {
 		this.state = {
 			eventsByDayArray: [],
 			//allEvents: [],
-			fall: [],
-			winter: [],
-			spring: [],
-			summer: [],
-			springBreak: [],
-			winterBreak: [],
+			//fall: [],
+			//winter: [],
+			//spring: [],
+			//summer: [],
+			//springBreak: [],
+			//winterBreak: [],
 		};
 	}
 
@@ -64,18 +64,22 @@ class Events extends Component {
 				function groupByDate(arr, date) {
   				return arr.reduce(function(memo, event) {
   					let startOfDate = (new Date(event[date])).setHours(0,0,0,0);
-	    			if (!memo[new Date(startOfDate)]) { memo[new Date(startOfDate)] = []; }
-	    				memo[new Date(startOfDate)].push(event);
-	    				return memo;
+  					console.log(new Date().setHours(0,0,0,0));
+  					console.log(startOfDate);
+  					//if (new Date().setHours(0,0,0,0) <= startOfDate) {		// TODO: Uncomment when have events in future!
+		    			console.log("hi");
+		    			if (!memo[new Date(startOfDate)]) { memo[new Date(startOfDate)] = []; }
+		    				memo[new Date(startOfDate)].push(event);
+		    				return memo;
+	    			//}
 	  			}, {});
 				}
 
 				let periodsArray = groupByDate(eventsData, 'starts_at');
-				console.log(periodsArray);
+				//console.log(periodsArray);
 			  /* Set respective arrays. */
 			  
 				this.setState({ 
-			  	//allEvents: eventsData,
 					eventsByDayArray: periodsArray,
 			  })
 
@@ -92,25 +96,35 @@ class Events extends Component {
 			.catch(err => console.log(err));
 	}
 
+	getFormattedDate = (date) => {
+		let today = new Date();
+		const month = date.toLocaleString('default', { month: 'long' });
+
+		let tomorrow = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1);
+		if (today.setHours(0,0,0,0) == date.setHours(0,0,0,0))
+			return "Today, " + month + " " + date.getDate();
+		else if (tomorrow.setHours(0,0,0,0) == date.setHours(0,0,0,0))
+			return "Tomorrow, " + month + " " + date.getDate();
+		else {
+			let formattedDate = month + " " + date.getDate();
+			if (today.getFullYear() != date.getFullYear())
+				formattedDate += ", " + date.getFullYear();
+			return formattedDate;
+		}
+			
+	}
+
 	renderEventRows = () => {
-		// loop thru all events, add events to array by date
-		// if new start date, then make that event row
 		let eventRows = [];
 
 		for (var start_date in this.state.eventsByDayArray) {
 	    if (this.state.eventsByDayArray.hasOwnProperty(start_date)) {
-	        eventRows.push(<EventRow key={start_date} events={this.state.eventsByDayArray[start_date]} name={start_date}/>)
+	    		// add logic for formatting name
+	        eventRows.push(<EventRow key={start_date} events={this.state.eventsByDayArray[start_date]} name={this.getFormattedDate(new Date(start_date))}/>)
 	    }
 		}
 
 		return eventRows;
-		/*
-		return this.state.allEvents.map(event => (
-			<EventRow key={eventsOfDay[0]} events={eventsOfDay} name={eventsOfDay[2]}/>
-		));*/
-		/*return this.state.eventsByDayArray.map(eventsOfDay => (
-			<EventRow key={eventsOfDay[fb_id]} events={eventsOfDay} name={eventsOfDay[starts_at]}/>
-		));*/
 	}
 
 
@@ -120,16 +134,6 @@ class Events extends Component {
 				{
 					this.renderEventRows()
 				}
-
-				{/* We want to have a new row for each week within a period, which means that for each array we need to parse through by date to create a new event row and then within that row, organize by data. Note that arrays are already arranged by date. */}
-				{/*
-				<EventRow events={this.state.fall} name="Fall"/>
-				<EventRow events={this.state.winter} name="Winter"/>
-				<EventRow events={this.state.spring} name="Spring"/>
-				<EventRow events={this.state.summer} name="Summer"/>
-				<EventRow events={this.state.springBreak} name="Spring Break"/>
-				<EventRow events={this.state.winterBreak} name="Winter Break"/>
-				*/}
 			</div>
 		);
 	}
