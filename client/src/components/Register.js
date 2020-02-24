@@ -27,74 +27,22 @@ let first_name = '';
 let last_name = '';
 let email = '';
 
-/*
-see if email is already there
-axios.get('/users/emails'+ this.state.user_id + '/id')
-      .then(result => {
-        result.data.forEach(function(email_data) {
-          if (email_data['email'] == email)
-          {
-            console.log('found email')//redirect
-          }
-        })
-      })
-*/
-
 
 class Register extends Component {
-
-  handleSuccess(googleUser) {
-      //console.log();
-      console.log("hello");
-      const profile = googleUser.getBasicProfile();
-      console.log("Email: " + profile.getEmail());
-      console.log("Name: " + profile.getName());
-      
-      let first_and_last = profile.getName();
-      email = profile.getEmail();
-      let namearr = first_and_last.split(" ");
-      first_name = namearr[0];
-      last_name = namearr[1];
-      //if this email can be found then redirect to events page
-      //redirect to register page ok?
-      //axios.put('/majors/' + this.state.major_id, diffBody)
-  }
-
-  componentDidMount() {
-    this.getMajors();
-
-    window.gapi.load('auth2', function() {
-        window.auth2 = window.gapi.auth2.init({
-          client_id: '******',
-          // Scopes to request in addition to 'profile' and 'email'
-          //scope: 'additional_scope'
-        });
-    });
-    window.gapi.signin2.render(
-      GOOGLE_BUTTON_ID,
-      {
-        ux_mode: 'redirect',
-        scope: 'email',
-        width: 350,
-        height: 50,
-        longtitle: true,
-        theme: 'dark',
-        onsuccess: this.handleSuccess,
-        onfailure: this.handleFailure
-      },
-    );
-    //window.auth2.grantOfflineAccess().then(window.signInCallback);
-    /*
-    
-    */
-  }
   
+  componentDidMount ()
+  {
+    this.getMajors();
+    this.getOccupations();
+  }
+
   constructor() {
     super();
 
     // Initiate state
     this.state = { 
-      mids: [],
+      year_mids: [],
+      occupation_mids: [],
       phone_number: '',
       major_name: '',
       major_id: '',
@@ -102,7 +50,9 @@ class Register extends Component {
       check1: true,
       check2: false,
       check3: false,
-      errorMessage: ''
+      errorMessage: '',
+      swe_id: '',
+      email: ''
     };
   }
 
@@ -110,12 +60,19 @@ class Register extends Component {
     axios.get('/majors')
       .then(result => {
         let mids = result.data.map(function(major) { return major.name });
-        this.setState({ mids: mids });
+        this.setState({ occupation_mids: mids });
       })
       .catch(err => console.log(err));
   }
 
-
+  getOccupations = () => {
+    axios.get('/occupations')
+      .then(result => {
+        let mids = result.data.map(function(occupation) { return occupation.name });
+        this.setState({ year_mids : mids });
+      })
+      .catch(err => console.log(err));
+  }
 
 
   addUser = () => {
@@ -199,9 +156,14 @@ class Register extends Component {
     const { classes } = this.props;
     const { check1, check2, check3 } = this.state;
     const error = [check1, check2, check3].filter(v => v).length !== 2;
-    var mids = this.state.mids.map(mid => {
+    var occupation_mids = this.state.occupation_mids.map(mid => {
       return <MenuItem key={mid} value={mid}>{mid}</MenuItem>
     })
+    var year_mids = this.state.year_mids.map(mid => {
+      return <MenuItem key={mid} value={mid}>{mid}</MenuItem>
+    })
+   
+    
 
     return (
       
@@ -213,15 +175,26 @@ class Register extends Component {
           <form className={classes.form} onSubmit={this.handleSubmit}>
             <div id={GOOGLE_BUTTON_ID}/>
             <TextField
-              required fullWidth
-              id='phone_number'
-              label='Phone Number'
+              fullWidth
+              id='first_name'
+              label='First Name'
               className={classes.textField}
               placeholder='e.g. 408900876'
-              value={this.state.phone_number || ''}
-              onChange={this.handleChange('phone_number')}
+              value={this.state.first_name || ''}
+              onChange={this.handleChange('first_name')}
               margin='normal'
             />
+            <TextField
+              required fullWidth
+              id='last_name'
+              label='Last Name'
+              className={classes.textField}
+              placeholder='e.g. 408900876'
+              value={this.state.last_name || ''}
+              onChange={this.handleChange('last_name')}
+              margin='normal'
+            />
+
             <TextField 
               required fullWidth
               id='ucla_id'
@@ -247,11 +220,48 @@ class Register extends Component {
               <MenuItem value="">
                 <em>None</em>
               </MenuItem>
-              {mids}
+              {occupation_mids}
+            </Select>
+            <FormLabel component="legend">Enter your year</FormLabel>
+            <Select
+              required fullWidth
+              className={classes.select}
+              value={this.state.occupation_name || ''}
+              onChange={this.handleChange('occupation_name')}
+              inputProps={{
+                    name: 'Occupation ID',
+                    id: 'occupation_id',
+              }}
+              margin='normal'
+            >
+              <MenuItem value="">
+                <em>None</em>
+              </MenuItem>
+              {year_mids}
             </Select>
             <FormHelperText error className={classes.formHelperText}>
               {this.state.errorMessage}
             </FormHelperText>
+            <TextField
+              fullWidth
+              id='email'
+              label='Email'
+              className={classes.textField}
+              placeholder='e.g. 408900876'
+              value={this.state.email || ''}
+              onChange={this.handleChange('email')}
+              margin='normal'
+            />
+            <TextField
+              fullWidth
+              id='swe_id'
+              label='SWE ID'
+              className={classes.textField}
+              placeholder='e.g. 408900876'
+              value={this.state.swe_id || ''}
+              onChange={this.handleChange('swe_id')}
+              margin='normal'
+            />
             <Button
               type="submit"
               fullWidth
