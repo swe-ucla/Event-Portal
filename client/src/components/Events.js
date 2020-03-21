@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import EventRow from './EventRow.js'
 import axios from 'axios';
+import { withStyles } from '@material-ui/core/styles';
+import EventsStyles from '../styles/Events.js'
+import Divider from '@material-ui/core/Divider';
 
 class Events extends Component {
 	constructor() {
@@ -64,10 +67,9 @@ class Events extends Component {
 				function groupByDate(arr, date) {
   				return arr.reduce(function(memo, event) {
   					let startOfDate = (new Date(event[date])).setHours(0,0,0,0);
-  					console.log(new Date().setHours(0,0,0,0));
-  					console.log(startOfDate);
-  					//if (new Date().setHours(0,0,0,0) <= startOfDate) {		// TODO: Uncomment when have events in future!
-		    			console.log("hi");
+  					console.log(new Date());
+  					console.log(new Date(startOfDate));
+  					//if (new Date() <= new Date(startOfDate)) {		// TODO: Fix this. Uncomment when have events in future!
 		    			if (!memo[new Date(startOfDate)]) { memo[new Date(startOfDate)] = []; }
 		    				memo[new Date(startOfDate)].push(event);
 		    				return memo;
@@ -101,13 +103,13 @@ class Events extends Component {
 		const month = date.toLocaleString('default', { month: 'long' });
 
 		let tomorrow = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1);
-		if (today.setHours(0,0,0,0) == date.setHours(0,0,0,0))
+		if (today.setHours(0,0,0,0) === date.setHours(0,0,0,0))
 			return "Today, " + month + " " + date.getDate();
-		else if (tomorrow.setHours(0,0,0,0) == date.setHours(0,0,0,0))
+		else if (tomorrow.setHours(0,0,0,0) === date.setHours(0,0,0,0))
 			return "Tomorrow, " + month + " " + date.getDate();
 		else {
 			let formattedDate = month + " " + date.getDate();
-			if (today.getFullYear() != date.getFullYear())
+			if (today.getFullYear() !== date.getFullYear())
 				formattedDate += ", " + date.getFullYear();
 			return formattedDate;
 		}
@@ -115,12 +117,14 @@ class Events extends Component {
 	}
 
 	renderEventRows = () => {
+		const { classes } = this.props;
 		let eventRows = [];
 
 		for (var start_date in this.state.eventsByDayArray) {
 	    if (this.state.eventsByDayArray.hasOwnProperty(start_date)) {
-	    		// add logic for formatting name
 	        eventRows.push(<EventRow key={start_date} events={this.state.eventsByDayArray[start_date]} name={this.getFormattedDate(new Date(start_date))}/>)
+	    		
+	    		eventRows.push(<Divider className={classes.line}></Divider>)
 	    }
 		}
 
@@ -129,14 +133,17 @@ class Events extends Component {
 
 
 	render() {
+		const { classes } = this.props;
 		return (
-			<div>
-				{
-					this.renderEventRows()
-				}
+			<div className={classes.container}>
+				<div className={classes.whiteBackground}>
+					<div className={classes.events}>
+						{this.renderEventRows()}
+					</div>
+				</div>
 			</div>
 		);
 	}
 }
 
-export default Events;
+export default withStyles(EventsStyles)(Events);
