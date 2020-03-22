@@ -52,6 +52,8 @@ class Events extends Component {
 			  		week: event.week,
 			  	}
 			  });
+
+			  /*TODO: also incorporate GET request for location to get location name with location_id*/
 				
 				// group by start date
 			  function groupBy(arr, property) {

@@ -7,20 +7,67 @@ const MediaCardStyles = theme => ({
 		fontSize: '20px',
 	},
 	card: {
-  	width: '500px',
-  	minWidth: '500px',
-  	height: '500px',
+  	//width: '500px',
+  	//minWidth: '500px',
+    //width: '400px',
+    //minWidth: '400px',
+    //maxWidth: '400px',
+    width: '350px',
+  	//height: '400px',
+    //maxHeight: '400px',
   	margin: '10px',
+    backgroundColor: '#EBE6FB',
+    borderRadius: '13px',
 	},
   media: {
-    height: '262px',
-    width: '500px',
+    height: '200px',
+    width: '350px',
   },
   info: {
     height: '300px',
   },
   date: {
-    paddingTop: '20px',
+    //paddingTop: '20px',
+  },
+  text: {
+    padding: '18px',
+  },
+  timeText: {
+    color: '#441AEA',
+    fontFamily: 'Helvetica Neue',
+    fontSize: '14px',
+  },
+  nameText: {
+    fontFamily: 'Helvetica Neue',
+    //fontSize: '40px',
+    fontWeight: 'bold',
+    fontSize: '26px',
+    lineHeight: '1.5em',
+    height: '3em',
+    //webKitLineClamp: 2,
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+  },
+  locationText: {
+    fontFamily: 'Helvetica Neue',
+    color: '#726AA3',
+    fontSize: '15px',
+  },
+  line: {
+    marginLeft: '20px',
+    marginRight: '20px',
+  },
+  registerBtn: {
+    backgroundColor: '#817AAE',
+    color: '#FFFFFF',
+    borderRadius: '15px',
+    fontFamily: 'Helvetica Neue',
+    width: '100px',
+    textTransform: 'none',
+    marginTop: '5px',
+    marginBottom: '5px',
+    margin: 'auto',
+
   }
 })
 
