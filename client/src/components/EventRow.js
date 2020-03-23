@@ -9,7 +9,7 @@ class EventRow extends Component {
 		let cards;
 		if (this.props.events) {
 			cards = this.props.events.map((cards, index) => {
-    	  return <MediaCard event={this.props.events[index]} />
+    	  return <MediaCard key={this.props.events[index].fb_id} event={this.props.events[index]} />
     	});
 		}
 		

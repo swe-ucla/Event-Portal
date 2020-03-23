@@ -18,6 +18,22 @@ router.get('/', function(req, res, next) {
     })
     .catch(err => { return next(err) });
 });
+
+router.get('/:location_id', function(req, res, next) {
+   if (isNaN(req.params.location_id)) {
+    util.throwError(400, "Location ID must be a number.");
+  }
+
+  knex('location').select().where({ id: req.params.location_id })
+    .then(result => {
+      if(result.length) {
+        res.json(result);
+      } else {
+        res.status(404).json('No events with matching location ID found.');
+      }
+    })
+    .catch(err => { return next(err) });
+});
   
 // GET all location names
 router.get('/names', function(req, res, next) {

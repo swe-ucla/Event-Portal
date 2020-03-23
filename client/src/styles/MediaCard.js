@@ -53,6 +53,15 @@ const MediaCardStyles = theme => ({
     color: '#726AA3',
     fontSize: '15px',
   },
+  descripText: {
+    marginTop: '5px',
+    fontFamily: 'Helvetica Neue',
+  },
+  descripTextHide: {
+    marginTop: '5px',
+    fontFamily: 'Helvetica Neue',
+    display: 'none',
+  },
   line: {
     marginLeft: '20px',
     marginRight: '20px',
@@ -67,7 +76,17 @@ const MediaCardStyles = theme => ({
     marginTop: '5px',
     marginBottom: '5px',
     margin: 'auto',
-
+  },
+  registeredBtn: {
+    backgroundColor: '#A5A5A5',
+    color: '#FFFFFF',
+    borderRadius: '15px',
+    fontFamily: 'Helvetica Neue',
+    width: '100px',
+    textTransform: 'none',
+    marginTop: '5px',
+    marginBottom: '5px',
+    margin: 'auto',
   }
 })
 

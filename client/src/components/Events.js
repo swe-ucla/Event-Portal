@@ -60,8 +60,6 @@ class Events extends Component {
   				return arr.reduce(function(memo, event) {
 	    			if (!memo[event[property]]) { memo[event[property]] = []; }
 	    				memo[event[property]].push(event);
-	    				console.log(event);
-	    				console.log(event[property]);
 	    				return memo;
 	  			}, {});
 				}
@@ -69,8 +67,6 @@ class Events extends Component {
 				function groupByDate(arr, date) {
   				return arr.reduce(function(memo, event) {
   					let startOfDate = (new Date(event[date])).setHours(0,0,0,0);
-  					console.log(new Date());
-  					console.log(new Date(startOfDate));
   					//if (new Date() <= new Date(startOfDate)) {		// TODO: Fix this. Uncomment when have events in future!
 		    			if (!memo[new Date(startOfDate)]) { memo[new Date(startOfDate)] = []; }
 		    				memo[new Date(startOfDate)].push(event);
@@ -121,12 +117,14 @@ class Events extends Component {
 	renderEventRows = () => {
 		const { classes } = this.props;
 		let eventRows = [];
+		var dividerIndex = 0;
 
 		for (var start_date in this.state.eventsByDayArray) {
 	    if (this.state.eventsByDayArray.hasOwnProperty(start_date)) {
 	        eventRows.push(<EventRow key={start_date} events={this.state.eventsByDayArray[start_date]} name={this.getFormattedDate(new Date(start_date))}/>)
 	    		
-	    		eventRows.push(<Divider className={classes.line}></Divider>)
+	    		eventRows.push(<Divider key={dividerIndex} className={classes.line}></Divider>)
+	    		dividerIndex++;
 	    }
 		}
 

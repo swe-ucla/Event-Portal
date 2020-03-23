@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
@@ -14,8 +14,8 @@ import Divider from '@material-ui/core/Divider';
 
 function MediaCard(props) {
   const { classes } = props;
-
-  
+  const [displayDescription, setDisplayDescription] = useState(false);
+  const [registered, setRegistered] = useState(false);
 
   const getTime = () => {
     /* Get month. */
@@ -31,7 +31,7 @@ function MediaCard(props) {
     var endTime = "";
 
     // ASSUMES event is in same year or something reasonable (for ex: couple days at end of year)
-    if (startMonth != endMonth || startDay != endDay) {
+    if (startMonth !== endMonth || startDay !== endDay) {
       // NOT same day
       startTime += monthNames[startMonth] + " " + startDay + ", ";
       endTime += monthNames[endMonth] + " " + endDay + ", ";
@@ -45,18 +45,18 @@ function MediaCard(props) {
 
     if (startHours >= 13)  startAMPM = "PM";
     let startMinutes = startDate.getUTCMinutes();
-    if (startMinutes != 0)  minutesBool = true;
+    if (startMinutes !== 0)  minutesBool = true;
 
     startHours = startHours % 12;
-    if (startHours == 0) startHours = 12;
+    if (startHours === 0) startHours = 12;
 
     let endHours = endDate.getUTCHours();
     if (endHours >= 13)  endAMPM = "PM";
     let endMinutes = endDate.getUTCMinutes();
-    if (endMinutes != 0)  minutesBool = true;
+    if (endMinutes !== 0)  minutesBool = true;
 
     endHours = endHours % 12;
-    if (endHours == 0) endHours = 12;
+    if (endHours === 0) endHours = 12;
 
     startTime += startHours;
     if (minutesBool)  startTime += ":" + ("0" + startMinutes).slice(-2);
@@ -66,13 +66,19 @@ function MediaCard(props) {
     if (minutesBool)  endTime += ":" + ("0" + endMinutes).slice(-2);
     endTime += endAMPM;
 
-
     return startTime + " - " + endTime;
+  }
+
+  const handleRegisterClick = () => {
+    setRegistered(!registered);
+
+    // TODO: if not logged in, redirect to login page
+    // if logged in, just register
   }
 
   return ( 
     <Card className={classes.card}>
-      <CardActionArea>
+      <CardActionArea onClick={() => setDisplayDescription(!displayDescription)} disableRipple>
         <CardMedia
           className={classes.media}
           //image={props.event.picture}
@@ -84,13 +90,14 @@ function MediaCard(props) {
           <Typography component='p' className={classes.timeText}>{getTime()}</Typography>
           <Typography component='p' className={classes.nameText}>{props.event.name}</Typography>
           <Typography component='p' className={classes.locationText}>{props.event.location_id}</Typography>
+          <Typography component='p' className={displayDescription ? classes.descripText : classes.descripTextHide}>{props.event.description}</Typography>
         </div>
-       
       </CardActionArea>
       <Divider className={classes.line}></Divider>
       <CardActions>
-        <Button className={classes.registerBtn} size="small">
-          Register
+        { /* TODO: change true condition to if user is registered */ }
+        <Button className={registered ? classes.registeredBtn : classes.registerBtn} size="small" onClick={() => handleRegisterClick()}>
+          {registered ? "Registered" : "Register"}
         </Button>
       </CardActions>
     </Card>
