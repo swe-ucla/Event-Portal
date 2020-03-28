@@ -89,13 +89,12 @@ function MediaCard(props) {
         <div className={classes.text}>
           <Typography component='p' className={classes.timeText}>{getTime()}</Typography>
           <Typography component='p' className={classes.nameText}>{props.event.name}</Typography>
-          <Typography component='p' className={classes.locationText}>{props.event.location_id}</Typography>
+          <Typography component='p' className={classes.locationText}>{props.event.location}</Typography>
           <Typography component='p' className={displayDescription ? classes.descripText : classes.descripTextHide}>{props.event.description}</Typography>
         </div>
       </CardActionArea>
       <Divider className={classes.line}></Divider>
       <CardActions>
-        { /* TODO: change true condition to if user is registered */ }
         <Button className={registered ? classes.registeredBtn : classes.registerBtn} size="small" onClick={() => handleRegisterClick()}>
           {registered ? "Registered" : "Register"}
         </Button>

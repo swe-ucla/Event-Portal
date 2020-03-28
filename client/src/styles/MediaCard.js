@@ -1,11 +1,4 @@
 const MediaCardStyles = theme => ({
-	eventName: {
-		fontSize: '40px',
-		fontWeight: 'bold',
-	},
-	description: {
-		fontSize: '20px',
-	},
 	card: {
   	//width: '500px',
   	//minWidth: '500px',
@@ -22,12 +15,6 @@ const MediaCardStyles = theme => ({
   media: {
     height: '200px',
     width: '350px',
-  },
-  info: {
-    height: '300px',
-  },
-  date: {
-    //paddingTop: '20px',
   },
   text: {
     padding: '18px',
