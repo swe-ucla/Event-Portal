@@ -82,7 +82,7 @@ function MediaCard(props) {
         <CardMedia
           className={classes.media}
           //image={props.event.picture}
-          image={require('./amy.jpg')}
+          image={require('../swe-logo.png')}
           title="Event Image"
         />
 

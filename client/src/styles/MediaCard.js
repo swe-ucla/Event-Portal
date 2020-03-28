@@ -15,6 +15,7 @@ const MediaCardStyles = theme => ({
   media: {
     height: '200px',
     width: '350px',
+    backgroundColor: '#FFFFFF',
   },
   text: {
     padding: '18px',
