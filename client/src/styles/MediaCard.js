@@ -1,13 +1,6 @@
 const MediaCardStyles = theme => ({
 	card: {
-  	//width: '500px',
-  	//minWidth: '500px',
-    //width: '400px',
-    //minWidth: '400px',
-    //maxWidth: '400px',
     width: '350px',
-  	//height: '400px',
-    //maxHeight: '400px',
   	margin: '10px',
     backgroundColor: '#EBE6FB',
     borderRadius: '13px',
@@ -27,7 +20,6 @@ const MediaCardStyles = theme => ({
   },
   nameText: {
     fontFamily: 'Helvetica Neue',
-    //fontSize: '40px',
     fontWeight: 'bold',
     fontSize: '26px',
     lineHeight: '1.5em',

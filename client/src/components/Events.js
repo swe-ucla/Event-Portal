@@ -12,13 +12,6 @@ class Events extends Component {
 		this.getEvents = this.getEvents.bind(this);
 		this.state = {
 			eventsByDayArray: [],
-			//allEvents: [],
-			//fall: [],
-			//winter: [],
-			//spring: [],
-			//summer: [],
-			//springBreak: [],
-			//winterBreak: [],
 		};
 	}
 
@@ -29,12 +22,10 @@ class Events extends Component {
 	getEvents = () => {
 		axios.get('/locations')
 			.then(result => {
-				//console.log(result.data);
 				var locationsData = [];
 				result.data.forEach(function(location) { 
 					locationsData[location.id] = location;
 				});
-				//console.log(locationsData);
 
 				var options = {
 			    params: {
@@ -62,10 +53,8 @@ class Events extends Component {
 					  		week: event.week,
 					  	}
 					  });
-
-					  /*TODO: also incorporate GET request for location to get location name with location_id*/
 						
-						// group by start date
+						// group by start date. example function to buil groupByDate
 					  function groupBy(arr, property) {
 		  				return arr.reduce(function(memo, event) {
 			    			if (!memo[event[property]]) { memo[event[property]] = []; }
@@ -74,38 +63,51 @@ class Events extends Component {
 			  			}, {});
 						}
 
-						function groupByDate(arr, date) {
+						function isBeforeToday(date) {
+							var today = new Date();
+							return date.getUTCFullYear() < today.getFullYear() ||
+								date.getUTCMonth() < today.getMonth() ||
+								date.getUTCDate() < today.getDate();
+						}
+
+						function groupByDate(arr) {
 		  				return arr.reduce(function(memo, event) {
-		  					let startOfDate = (new Date(event[date])).setHours(0,0,0,0);
-		  					//if (new Date() <= new Date(startOfDate)) {		// TODO: Fix this. Uncomment when have events in future!
-				    			if (!memo[new Date(startOfDate)]) { memo[new Date(startOfDate)] = []; }
-				    				memo[new Date(startOfDate)].push(event);
-				    				return memo;
-			    			//}
+		  					let startOfDate = new Date((new Date(event['starts_at'])).setUTCHours(0,0,0,0));
+		  					let endOfDate = new Date((new Date(event['ends_at'])).setUTCHours(0,0,0,0));
+
+		  					// if end date has passed, don't display
+		  					if (isBeforeToday(endOfDate)) return memo;
+
+		  					for (var date = new Date(startOfDate); date.getTime() <= endOfDate.getTime(); date.setUTCDate(date.getUTCDate() + 1)) {
+		  						// if event's date < today's date then don't display
+		  						if (!isBeforeToday(date)) {
+			  						if (!memo[new Date(date)]) { memo[new Date(date)] = []; }
+					    				memo[new Date(date)].push(event);
+		  						}
+		  					}
+
+		  					return memo;
 			  			}, {});
 						}
 
-						let eventsArray = groupByDate(eventsData, 'starts_at');
-						//console.log(periodsArray);
-					  /* Set respective arrays. */
+						let eventsArray = groupByDate(eventsData);
 					  
 						this.setState({ 
 							eventsByDayArray: eventsArray,
 					  })
-
-				  /*
-				  	fall: periodsArray["Fall Quarter"],
-				  	winter: periodsArray["Winter Quarter"],
-				  	spring: periodsArray["Spring Quarter"],
-				  	summer: periodsArray["Summer Quarter"],
-				  	winterBreak: periodsArray["Winter Break"],
-				  	springBreak: periodsArray["Spring Break"],
-				  });*/
-					//});
 				})
 				.catch(err => console.log(err));
 			})
 			.catch(err => console.log(err));
+	}
+
+	
+
+	// Little hacky: compares non-UTC to UTC time because new Date() doesn't give UTC time
+  sameDay = (d1, d2) => {
+	  return d1.getFullYear() === d2.getUTCFullYear() &&
+	    d1.getMonth() === d2.getUTCMonth() &&
+	    d1.getDate() === d2.getUTCDate();
 	}
 
 	getFormattedDate = (date) => {
@@ -113,17 +115,17 @@ class Events extends Component {
 		const month = date.toLocaleString('default', { month: 'long' });
 
 		let tomorrow = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1);
-		if (today.setHours(0,0,0,0) === date.setHours(0,0,0,0))
-			return "Today, " + month + " " + date.getDate();
-		else if (tomorrow.setHours(0,0,0,0) === date.setHours(0,0,0,0))
-			return "Tomorrow, " + month + " " + date.getDate();
+
+		if (this.sameDay(today, date))
+			return "Today, " + month + " " + date.getUTCDate();
+		else if (this.sameDay(tomorrow, date))
+			return "Tomorrow, " + month + " " + date.getUTCDate();
 		else {
-			let formattedDate = month + " " + date.getDate();
-			if (today.getFullYear() !== date.getFullYear())
-				formattedDate += ", " + date.getFullYear();
+			let formattedDate = month + " " + date.getUTCDate();
+			if (today.getFullYear() !== date.getUTCFullYear())
+				formattedDate += ", " + date.getUTCFullYear();
 			return formattedDate;
 		}
-			
 	}
 
 	renderEventRows = () => {
