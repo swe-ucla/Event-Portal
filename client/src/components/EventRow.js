@@ -1,7 +1,15 @@
 import React, { Component } from 'react';
 import MediaCard from './MediaCard.js'
 import { withStyles } from '@material-ui/core/styles';
-import EventRowStyles from '../styles/EventRow.js'
+import EventRowStyles from '../styles/EventRow.js';
+import Grid from '@material-ui/core/Grid';
+
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+//import TableContainer from '@material-ui/core/TableContainer';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
 
 class EventRow extends Component {
 	render() {
@@ -9,7 +17,9 @@ class EventRow extends Component {
 		let cards;
 		if (this.props.events) {
 			cards = this.props.events.map((cards, index) => {
-    	  return <MediaCard event={this.props.events[index]} />
+    	  return (<Grid item key={this.props.events[index].fb_id}>
+    	  	<MediaCard event={this.props.events[index]} />
+    	  	</Grid>);
     	});
 		}
 		
@@ -18,9 +28,9 @@ class EventRow extends Component {
 				<p className={classes.title}> 
 					{this.props.name}
 				</p>
-				<div className={classes.row}>
+				<Grid container spacing={32} className={classes.row}>
 					{cards}
-				</div>
+				</Grid>
 			</div>
 		)
 	}
