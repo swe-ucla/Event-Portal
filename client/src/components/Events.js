@@ -76,14 +76,14 @@ class Events extends Component {
 		  					let endOfDate = new Date((new Date(event['ends_at'])).setUTCHours(0,0,0,0));
 
 		  					// if end date has passed, don't display
-		  					if (isBeforeToday(endOfDate)) return memo;
+		  					//if (isBeforeToday(endOfDate)) return memo;
 
 		  					for (var date = new Date(startOfDate); date.getTime() <= endOfDate.getTime(); date.setUTCDate(date.getUTCDate() + 1)) {
 		  						// if event's date < today's date then don't display
-		  						if (!isBeforeToday(date)) {
+		  						//if (!isBeforeToday(date)) {
 			  						if (!memo[new Date(date)]) { memo[new Date(date)] = []; }
 					    				memo[new Date(date)].push(event);
-		  						}
+		  						//}
 		  					}
 
 		  					return memo;

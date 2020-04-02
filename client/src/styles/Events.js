@@ -1,6 +1,6 @@
 const EventsStyles = theme => ({
 	container: {
-		backgroundImage: 'url(' + require('../gears-background.png') + ')'
+		backgroundImage: 'url(' + require('../gears-background.png') + ')',
 	},
 	whiteBackground: {
 		paddingTop: '60px',

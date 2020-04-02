@@ -69,6 +69,10 @@ function MediaCard(props) {
     return startTime + " - " + endTime;
   }
 
+  const handleCardClicked = () => {
+    setDisplayDescription(!displayDescription);
+  }
+
   const handleRegisterClick = () => {
     setRegistered(!registered);
 
@@ -78,7 +82,7 @@ function MediaCard(props) {
 
   return ( 
     <Card className={classes.card}>
-      <CardActionArea onClick={() => setDisplayDescription(!displayDescription)} disableRipple>
+      <CardActionArea onClick={() => handleCardClicked()} disableRipple>
         <CardMedia
           className={classes.media}
           //image={props.event.picture}
