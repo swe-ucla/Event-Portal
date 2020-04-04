@@ -13,10 +13,19 @@ router.get('/ping', function(req, res, next) {
 
 // GET all events
 router.get('/', function(req, res, next) {
-  let period = req.query.period;
+  let limit = req.query.limit;
+  let start_date = req.query.start_date;
   var query = knex('event').select();
-  if (period){
-    query = knex('event').where('period', period).orderBy('starts_at', 'asc');
+  if (limit) {
+    query = knex('event').select().limit(limit);
+  }
+  if (start_date) {
+    console.log('test')
+    // >= to avoid missing events
+    query = knex('event').where('starts_at', '>=', start_date).orderBy('starts_at', 'asc');
+  }
+  if (limit && start_date) {
+    query = knex('event').where('starts_at', '>=', start_date).orderBy('starts_at', 'asc').limit(limit);
   }
   query
     .then(result => {
