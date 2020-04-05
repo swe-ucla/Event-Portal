@@ -11,10 +11,12 @@ import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import MediaCardStyles from '../styles/MediaCard.js'
 import Divider from '@material-ui/core/Divider';
+import Link from '@material-ui/core/Link';
 
 function MediaCard(props) {
   const { classes } = props;
   const [displayDescription, setDisplayDescription] = useState(false);
+  const [displayLink, setDisplayLink] = useState(false);
   const [registered, setRegistered] = useState(false);
 
   const getTime = () => {
@@ -71,6 +73,7 @@ function MediaCard(props) {
 
   const handleCardClicked = () => {
     setDisplayDescription(!displayDescription);
+    setDisplayLink(!displayLink);
   }
 
   const handleRegisterClick = () => {
@@ -80,13 +83,19 @@ function MediaCard(props) {
     // if logged in, just register
   }
 
+  const addDefaultSrc = (ev) => {
+    ev.target.src = require('../swe-logo.png');
+  }
+
   return ( 
     <Card className={classes.card}>
       <CardActionArea onClick={() => handleCardClicked()} disableRipple>
         <CardMedia
           className={classes.media}
-          //image={props.event.picture}
-          image={require('../swe-logo.png')}
+          component="img"
+          onError={addDefaultSrc}
+          //src={require(props.event.picture)}
+          src={require('../swe-logo.png')}
           title="Event Image"
         />
 
@@ -95,6 +104,7 @@ function MediaCard(props) {
           <Typography component='p' className={classes.nameText}>{props.event.name}</Typography>
           <Typography component='p' className={classes.locationText}>{props.event.location}</Typography>
           <Typography component='p' className={displayDescription ? classes.descripText : classes.descripTextHide}>{props.event.description}</Typography>
+          <Link className={displayLink ? classes.link : classes.linkHide} href={props.event.fb_event}>Event page</Link>
         </div>
       </CardActionArea>
       <Divider className={classes.line}></Divider>

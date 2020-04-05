@@ -30,11 +30,22 @@ const MediaCardStyles = theme => ({
   },
   descripText: {
     marginTop: '5px',
+    marginBottom: '5px',
     fontFamily: 'Helvetica Neue',
   },
   descripTextHide: {
     marginTop: '5px',
+    marginBottom: '5px',
     fontFamily: 'Helvetica Neue',
+    display: 'none',
+  },
+  link: {
+    fontFamily: 'Helvetica Neue',
+    fontSize: '15px',
+  },
+  linkHide: {
+    fontFamily: 'Helvetica Neue',
+    fontSize: '15px',
     display: 'none',
   },
   line: {
