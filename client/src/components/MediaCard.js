@@ -71,9 +71,11 @@ function MediaCard(props) {
     return startTime + " - " + endTime;
   }
 
-  const handleCardClicked = () => {
-    setDisplayDescription(!displayDescription);
-    setDisplayLink(!displayLink);
+  const handleCardClicked = (e) => {
+    if (e.target.tagName !== 'A') {  // not a link
+      setDisplayDescription(!displayDescription);
+      setDisplayLink(!displayLink);
+    }
   }
 
   const handleRegisterClick = () => {
@@ -83,19 +85,14 @@ function MediaCard(props) {
     // if logged in, just register
   }
 
-  const addDefaultSrc = (ev) => {
-    ev.target.src = require('../swe-logo.png');
-  }
-
   return ( 
     <Card className={classes.card}>
-      <CardActionArea onClick={() => handleCardClicked()} disableRipple>
+      <CardActionArea onClick={(e) => handleCardClicked(e)} disableRipple>
         <CardMedia
           className={classes.media}
           component="img"
-          onError={addDefaultSrc}
-          //src={require(props.event.picture)}
-          src={require('../swe-logo.png')}
+          onError={(e) => {e.target.src = require('../swe-logo.png')}} // use swe image if picture link is broken
+          src={props.event.picture}
           title="Event Image"
         />
 
