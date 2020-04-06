@@ -23,10 +23,6 @@ import ExampleGet from '../components/ExampleGet.js';
 
 const GOOGLE_BUTTON_ID = 'google-sign-in-button';
 
-let first_name = '';
-let last_name = '';
-let email = '';
-
 
 class Register extends Component {
   
@@ -41,8 +37,8 @@ class Register extends Component {
 
     // Initiate state
     this.state = { 
-      year_mids: [],
-      occupation_mids: [],
+      occupation_ids: [],
+      occupation_names: [],
       phone_number: '',
       major_name: '',
       major_id: '',
@@ -52,7 +48,11 @@ class Register extends Component {
       check3: false,
       errorMessage: '',
       swe_id: '',
-      email: ''
+      email: '',
+
+      //user values
+      occupation_id: null, //occupation name is really year
+      occupation_name: null,
     };
   }
 
@@ -68,45 +68,50 @@ class Register extends Component {
   getOccupations = () => {
     axios.get('/occupations')
       .then(result => {
-        let mids = result.data.map(function(occupation) { return occupation.name });
-        this.setState({ year_mids : mids });
+        let onames = result.data.map(function(occupation) { return occupation.name });
+        this.setState({ occupation_names : onames });
+        let oids = result.data.map(function(occupation) { return occupation.id });
+        this.setState({ occupation_ids : oids });
       })
       .catch(err => console.log(err));
   }
 
+  handleCheckChange = name => event => {
+    this.setState({ [name]: event.target.checked });
+  };
 
   addUser = () => {
     if (!this.state.phone_number) {
       // Do not add major if no name specified
       console.log('ERROR: fill out phone number field.');
-      return;
+      //return;
     }
 
-    console.log(this.state.mids)
-
-    this.state.mids.forEach(function(mid){ 
-      if (mid.name == this.state.major_name){
-        this.state.major_id = mid.major_id
-      }
-    })
 
 
+    if (this.state.occupation_name) {
+      let index = this.state.occupation_names.indexOf(this.state.occupation_name)
+      this.state.occupation_id = this.state.occupation_ids[index]
+      console.log(this.state.occupation_id)
+    }
+    
     let body = {
-      first_name: first_name,
-      last_name: last_name,
+      first_name: this.state.first_name,
+      last_name: this.state.last_name,
       password: "",
-      email: email,
-      phone: this.state.phone_number,
-      university_id: this.state.ucla_id ? this.state.ucla_id : null,
+      email: this.state.email,
+      phone: this.state.phone_number ? this.state.phone_number : null,
+      university_id: this.state.ucla_id,
       is_admin: false,
-      major_id: this.state.major_id
+      major_id: this.state.major_id,
+      swe_id: this.state.swe_id ? this.state.swe_id : null,
+      gpa: this.state.gpa ? this.state.gpa : null,
+      occupation_id: this.state.occupation_id
     };
 
     // Make POST request to add major
     axios.post('/users/register', body)
       .then(result => {
-        // Update displayed major names
-        //this.users.getUsers();
 
         
         // Clear form values 
@@ -134,48 +139,34 @@ class Register extends Component {
     event.preventDefault();
   }
 
-/*
+  
   handleChange = name => event => {
-    this.setState({
-      [name]: event.target.value,
-    });
-    if (name === 'major_id') {
-      this.getMajorByID(event.target.value);
-    }
-  };
-  */
-
-  handleChange = name => event => {
-    this.setState({
-      [name]: event.target.value,
-    });
+      this.setState({
+        [name]: event.target.value,
+      });
   };
 
   
   render() {
     const { classes } = this.props;
     const { check1, check2, check3 } = this.state;
-    const error = [check1, check2, check3].filter(v => v).length !== 2;
-    var occupation_mids = this.state.occupation_mids.map(mid => {
-      return <MenuItem key={mid} value={mid}>{mid}</MenuItem>
+
+    var occupation_names = this.state.occupation_names.map(name => {
+      return <MenuItem key={name} value={name}>{name}</MenuItem>
     })
-    var year_mids = this.state.year_mids.map(mid => {
-      return <MenuItem key={mid} value={mid}>{mid}</MenuItem>
-    })
-   
-    
+
 
     return (
       
       <main className={classes.main}>
         <Paper className={classes.paper}>
           <Typography component="h1" variant="h5">
-            Register
+            Your Profile
           </Typography>
           <form className={classes.form} onSubmit={this.handleSubmit}>
             <div id={GOOGLE_BUTTON_ID}/>
             <TextField
-              fullWidth
+              required fullWidth
               id='first_name'
               label='First Name'
               className={classes.textField}
@@ -205,23 +196,7 @@ class Register extends Component {
               onChange={this.handleChange('ucla_id')}
               margin='normal'
             />
-            <FormLabel component="legend">Enter your major</FormLabel>
-            <Select
-              required fullWidth
-              className={classes.select}
-              value={this.state.major_name || ''}
-              onChange={this.handleChange('major_name')}
-              inputProps={{
-                    name: 'Major ID',
-                    id: 'major_id',
-              }}
-              margin='normal'
-            >
-              <MenuItem value="">
-                <em>None</em>
-              </MenuItem>
-              {occupation_mids}
-            </Select>
+          
             <FormLabel component="legend">Enter your year</FormLabel>
             <Select
               required fullWidth
@@ -237,7 +212,7 @@ class Register extends Component {
               <MenuItem value="">
                 <em>None</em>
               </MenuItem>
-              {year_mids}
+              {occupation_names}
             </Select>
             <FormHelperText error className={classes.formHelperText}>
               {this.state.errorMessage}
@@ -254,6 +229,16 @@ class Register extends Component {
             />
             <TextField
               fullWidth
+              id='phone_number'
+              label='Phone Number'
+              className={classes.textField}
+              placeholder='e.g. 408900876'
+              value={this.state.phone_number || ''}
+              onChange={this.handleChange('phone_number')}
+              margin='normal'
+            />
+            <TextField
+              fullWidth
               id='swe_id'
               label='SWE ID'
               className={classes.textField}
@@ -262,6 +247,54 @@ class Register extends Component {
               onChange={this.handleChange('swe_id')}
               margin='normal'
             />
+            <TextField
+              fullWidth
+              id='swe_id'
+              label='GPA'
+              className={classes.textField}
+              placeholder='e.g. 408900876'
+              value={this.state.gpa || ''}
+              onChange={this.handleChange('gpa')}
+              margin='normal'
+            />
+            <Typography component="h2" variant="h5">
+              Evening with Industry
+            </Typography>
+             <FormControl component="fieldset" className={classes.formControl}>
+              <FormLabel component="legend">Select your major(s)</FormLabel>
+              <FormGroup>
+                <FormControlLabel
+                  control={
+                    <Checkbox 
+                      checked={check1} 
+                      onChange={this.handleCheckChange('check1')} 
+                      value="check1" 
+                    />
+                  }
+                  label="Check 1"
+                />
+                <FormControlLabel
+                  control={
+                    <Checkbox 
+                      checked={check2} 
+                      onChange={this.handleCheckChange('check2')} 
+                      value="check2" 
+                    />
+                  }
+                  label="Check 2"
+                />
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={check3}
+                      onChange={this.handleCheckChange('check3')}
+                      value="check3"
+                    />
+                  }
+                  label="Check 3"
+                />
+              </FormGroup>
+            </FormControl>
             <Button
               type="submit"
               fullWidth

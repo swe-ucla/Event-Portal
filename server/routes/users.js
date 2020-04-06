@@ -71,6 +71,8 @@ router.post('/register', function(req, res, next) {
   let company_ids = req.body.company_id;
   let major_ids = req.body.major_id;
   let ranks = req.body.rank;
+  let swe_id = req.body.swe_id;
+  let gpa = req.body.gpa;
 
   values = {
     first_name: req.body.first_name,
@@ -80,6 +82,8 @@ router.post('/register', function(req, res, next) {
     phone: req.body.phone,
     university_id: req.body.university_id,
     is_admin: req.body.is_admin,
+    swe_id: req.body.swe_id,
+    gpa: req.body.gpa,
   }
 
   diet_values = []
