@@ -4,11 +4,9 @@ import { withStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
 import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
-import Grid from '@material-ui/core/Grid';
 import MediaCardStyles from '../styles/MediaCard.js'
 import Divider from '@material-ui/core/Divider';
 import Link from '@material-ui/core/Link';
@@ -37,7 +35,6 @@ function MediaCard(props) {
       // NOT same day
       startTime += monthNames[startMonth] + " " + startDay + ", ";
       endTime += monthNames[endMonth] + " " + endDay + ", ";
-
     }
 
     var minutesBool = false;  // checks for if either start or end time has minutes not 0
@@ -72,7 +69,7 @@ function MediaCard(props) {
   }
 
   const handleCardClicked = (e) => {
-    if (e.target.tagName !== 'A') {  // not a link
+    if (e.target.tagName !== 'A') {  // checks if the object clicked was a link
       setDisplayDescription(!displayDescription);
       setDisplayLink(!displayLink);
     }

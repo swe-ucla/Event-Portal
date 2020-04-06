@@ -1,13 +1,11 @@
 const MediaCardStyles = theme => ({
 	card: {
     width: '330px',
-  	//margin: '10px',
     backgroundColor: '#EBE6FB',
     borderRadius: '13px',
 	},
   media: {
     height: '200px',
-    //width: '330px',
     backgroundColor: '#FFFFFF',
   },
   text: {
