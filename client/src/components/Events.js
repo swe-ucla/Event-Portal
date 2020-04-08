@@ -52,15 +52,15 @@ class Events extends Component {
 					  		period: event.period,
 					  		week: event.week,
 					  	}
-					  });
+					});
 						
 						// group by start date. example function to buil groupByDate
-					  function groupBy(arr, property) {
-		  				return arr.reduce(function(memo, event) {
-			    			if (!memo[event[property]]) { memo[event[property]] = []; }
-			    				memo[event[property]].push(event);
-			    				return memo;
-			  			}, {});
+						function groupBy(arr, property) {
+							return arr.reduce(function(memo, event) {
+								if (!memo[event[property]]) { memo[event[property]] = []; }
+									memo[event[property]].push(event);
+									return memo;
+							}, {});
 						}
 
 						function isBeforeToday(date) {
@@ -71,23 +71,23 @@ class Events extends Component {
 						}
 
 						function groupByDate(arr) {
-		  				return arr.reduce(function(memo, event) {
-		  					let startOfDate = new Date((new Date(event['starts_at'])).setUTCHours(0,0,0,0));
-		  					let endOfDate = new Date((new Date(event['ends_at'])).setUTCHours(0,0,0,0));
+							return arr.reduce(function(memo, event) {
+								let startOfDate = new Date((new Date(event['starts_at'])).setUTCHours(0,0,0,0));
+								let endOfDate = new Date((new Date(event['ends_at'])).setUTCHours(0,0,0,0));
 
-		  					// if end date has passed, don't display
-		  					//if (isBeforeToday(endOfDate)) return memo;
+								// if end date has passed, don't display
+								//if (isBeforeToday(endOfDate)) return memo;
 
-		  					for (var date = new Date(startOfDate); date.getTime() <= endOfDate.getTime(); date.setUTCDate(date.getUTCDate() + 1)) {
-		  						// if event's date < today's date then don't display
-		  						//if (!isBeforeToday(date)) {
-			  						if (!memo[new Date(date)]) { memo[new Date(date)] = []; }
-					    				memo[new Date(date)].push(event);
-		  						//}
-		  					}
+								for (var date = new Date(startOfDate); date.getTime() <= endOfDate.getTime(); date.setUTCDate(date.getUTCDate() + 1)) {
+									// if event's date < today's date then don't display
+									//if (!isBeforeToday(date)) {
+										if (!memo[new Date(date)]) { memo[new Date(date)] = []; }
+											memo[new Date(date)].push(event);
+									//}
+								}
 
 		  					return memo;
-			  			}, {});
+			  				}, {});
 						}
 
 						let eventsArray = groupByDate(eventsData);
@@ -134,12 +134,12 @@ class Events extends Component {
 		var dividerIndex = 0;
 
 		for (var start_date in this.state.eventsByDayArray) {
-	    if (this.state.eventsByDayArray.hasOwnProperty(start_date)) {
-	        eventRows.push(<EventRow key={start_date} events={this.state.eventsByDayArray[start_date]} name={this.getFormattedDate(new Date(start_date))}/>)
-	    		
-	    		eventRows.push(<Divider key={dividerIndex} className={classes.line}></Divider>)
-	    		dividerIndex++;
-	    }
+			if (this.state.eventsByDayArray.hasOwnProperty(start_date)) {
+				eventRows.push(<EventRow key={start_date} events={this.state.eventsByDayArray[start_date]} name={this.getFormattedDate(new Date(start_date))}/>)
+					
+				eventRows.push(<Divider key={dividerIndex} className={classes.line}></Divider>)
+				dividerIndex++;
+			}
 		}
 
 		return eventRows;
