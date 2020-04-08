@@ -1,0 +1,9 @@
+user_id,company_id,rank,updated_at,created_at
+1,39,First Choice
+1,35,Third Choice
+1,19,Second Choice
+2,3,First Choice
+2,2,Second Choice
+2,1,Third Choice
+3,23,First Choice
+3,12,Second Choice
