@@ -277,7 +277,7 @@ class CompaniesForm extends Component {
               {this.state.errorMessage}
             </FormHelperText>
             <FormControl className={classes.formControl}>
-              <InputLabel id="demo-simple-select-label">Citizenship</InputLabel>
+            <FormLabel id="demo-simple-select-label">Citizenship</FormLabel>
               <Select
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"
