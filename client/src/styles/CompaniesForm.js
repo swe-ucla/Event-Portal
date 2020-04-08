@@ -13,6 +13,7 @@ const CompaniesFormStyles = theme => ({
       marginLeft: 'auto',
       marginRight: 'auto',
     },
+    background: '#F3F2F6',
   },
   paper: {
     marginTop: theme.spacing.unit * 3,
@@ -23,7 +24,7 @@ const CompaniesFormStyles = theme => ({
       marginBottom: theme.spacing.unit * 12,
       padding: theme.spacing.unit * 3,
     },
-    boxShadow: 'none'
+    //boxShadow: 'none'
     //square: 'false'
   },
   stepper: {
