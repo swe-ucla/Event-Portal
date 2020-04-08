@@ -14,8 +14,10 @@ import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
 import Checkbox from '@material-ui/core/Checkbox';
 import Paper from '@material-ui/core/Paper';
+
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
+
 import ExamplePostFormStyles from '../styles/ExamplePostForm.js';
 import CompaniesStyles from '../styles/CompaniesForm.js';
 import ExampleGet from '../components/ExampleGet.js';
@@ -189,7 +191,7 @@ class CompaniesForm extends Component {
   };
 
   //implement with check boxes
-  handleMenuChange = name => event => {
+  handleCheckChange = name => event => {
     let value = event.target.value;
     let obj = this.state[name];
     obj[value] = event.target.checked;
@@ -207,17 +209,29 @@ class CompaniesForm extends Component {
     const positions = this.state.positions;
     
     const majorChecks = Object.getOwnPropertyNames(majors).map(elem => {
-      return (<MenuItem
-                  value={elem}
-                  key={elem}>{elem}
-                  </MenuItem>)
-
+      return (<FormControlLabel
+                  control={
+                    <Checkbox 
+                      checked={majors[elem]}
+                      onChange={this.handleCheckChange('majors')} 
+                      value={elem}
+                    />
+                  }
+                  label={elem}
+                />)
     })
+
     const positionChecks = Object.getOwnPropertyNames(positions).map(elem => {
-      return (<MenuItem
-                  value={elem}
-                  key={elem}>{elem}
-                  </MenuItem>)
+      return (<FormControlLabel
+                  control={
+                    <Checkbox 
+                      checked={positions[elem]}
+                      onChange={this.handleCheckChange('positions')} 
+                      value={elem}
+                    />
+                  }
+                  label={elem}
+                />)
     })
 
 
@@ -247,49 +261,29 @@ class CompaniesForm extends Component {
               onChange={this.handleChange('website')}
               margin='normal'
             />
+            <FormLabel>Majors Hiring:</FormLabel>
             <FormGroup>
-              <FormLabel>Majors Hiring:</FormLabel>
-              <FormControl className={classes.formControl}>
-                <Select
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  value={this.state.majors}
-                  onChange={this.handleMenuChange('majors')}
-                >
-                  {majorChecks}
-                </Select>
-              </FormControl>
+              {majorChecks}
             </FormGroup>
+            <FormLabel>Positions Hiring:</FormLabel>
             <FormGroup>
-              <FormLabel>Positions Hiring:</FormLabel>
-              <FormControl className={classes.formControl}>
-                <Select
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  value={this.state.positions}
-                  onChange={this.handleMenuChange('positions')}
-                >
-                  {positionChecks}
-                </Select>
-              </FormControl>
+              {positionChecks}
             </FormGroup>
             <FormHelperText error className={classes.formHelperText}>
               {this.state.errorMessage}
             </FormHelperText>
-            <FormGroup>
-              <FormControl className={classes.formControl}>
-                <InputLabel id="demo-simple-select-label">Citizenship</InputLabel>
-                <Select
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  value={this.state.citizenship}
-                  onChange={this.handleChange('citizenship')}
-                >
-                  <MenuItem value={'Y'}>Yes</MenuItem>
-                  <MenuItem value={'N'}>No</MenuItem>
-                </Select>
-              </FormControl>
-            </FormGroup>
+            <FormControl className={classes.formControl}>
+              <InputLabel id="demo-simple-select-label">Citizenship</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={this.state.citizenship}
+                onChange={this.handleChange('citizenship')}
+              >
+                <MenuItem value={'Y'}>Yes</MenuItem>
+                <MenuItem value={'N'}>No</MenuItem>
+              </Select>
+            </FormControl>
             <TextField
               fullWidth
               id='description'
