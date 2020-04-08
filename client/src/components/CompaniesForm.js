@@ -189,7 +189,7 @@ class CompaniesForm extends Component {
   };
 
   //implement with check boxes
-  handleCheckChange = name => event => {
+  handleMenuChange = name => event => {
     let value = event.target.value;
     let obj = this.state[name];
     obj[value] = event.target.checked;
@@ -254,7 +254,7 @@ class CompaniesForm extends Component {
                   labelId="demo-simple-select-label"
                   id="demo-simple-select"
                   value={this.state.majors}
-                  onChange={this.handleChange('majors')}
+                  onChange={this.handleMenuChange('majors')}
                 >
                   {majorChecks}
                 </Select>
@@ -267,7 +267,7 @@ class CompaniesForm extends Component {
                   labelId="demo-simple-select-label"
                   id="demo-simple-select"
                   value={this.state.positions}
-                  onChange={this.handleChange('positions')}
+                  onChange={this.handleMenuChange('positions')}
                 >
                   {positionChecks}
                 </Select>
