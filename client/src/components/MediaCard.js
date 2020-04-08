@@ -9,10 +9,12 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import MediaCardStyles from '../styles/MediaCard.js'
 import Divider from '@material-ui/core/Divider';
+import Link from '@material-ui/core/Link';
 
 function MediaCard(props) {
   const { classes } = props;
   const [displayDescription, setDisplayDescription] = useState(false);
+  const [displayLink, setDisplayLink] = useState(false);
   const [registered, setRegistered] = useState(false);
 
   const getTime = () => {
@@ -33,7 +35,6 @@ function MediaCard(props) {
       // NOT same day
       startTime += monthNames[startMonth] + " " + startDay + ", ";
       endTime += monthNames[endMonth] + " " + endDay + ", ";
-
     }
 
     var minutesBool = false;  // checks for if either start or end time has minutes not 0
@@ -67,8 +68,11 @@ function MediaCard(props) {
     return startTime + " - " + endTime;
   }
 
-  const handleCardClicked = () => {
-    setDisplayDescription(!displayDescription);
+  const handleCardClicked = (e) => {
+    if (e.target.tagName !== 'A') {  // checks if the object clicked was a link
+      setDisplayDescription(!displayDescription);
+      setDisplayLink(!displayLink);
+    }
   }
 
   const handleRegisterClick = () => {
@@ -80,11 +84,12 @@ function MediaCard(props) {
 
   return ( 
     <Card className={classes.card}>
-      <CardActionArea onClick={() => handleCardClicked()} disableRipple>
+      <CardActionArea onClick={(e) => handleCardClicked(e)} disableRipple>
         <CardMedia
           className={classes.media}
-          //image={props.event.picture}
-          image={require('../swe-logo.png')}
+          component="img"
+          onError={(e) => {e.target.src = require('../swe-logo.png')}} // use swe image if picture link is broken
+          src={props.event.picture}
           title="Event Image"
         />
 
@@ -93,6 +98,7 @@ function MediaCard(props) {
           <Typography component='p' className={classes.nameText}>{props.event.name}</Typography>
           <Typography component='p' className={classes.locationText}>{props.event.location}</Typography>
           <Typography component='p' className={displayDescription ? classes.descripText : classes.descripTextHide}>{props.event.description}</Typography>
+          <Link className={displayLink ? classes.link : classes.linkHide} href={props.event.fb_event}>Event page</Link>
         </div>
       </CardActionArea>
       <Divider className={classes.line}></Divider>
