@@ -70,7 +70,7 @@ class Events extends Component {
         let options = {
           params: {
             sort: "date",
-            limit: '10',
+            limit: '6', // max number of days loaded (lazy loading)
             start_date: date,
           }
         };
@@ -192,6 +192,7 @@ class Events extends Component {
 
   render() {
     const { classes } = this.props;
+    // TO-DO: formatting
     const loadingCSS = {
       height: "100px",
       margin: "30px"
