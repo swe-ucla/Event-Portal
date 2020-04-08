@@ -207,6 +207,8 @@ class CompaniesForm extends Component {
     const majors = this.state.majors;
     const allPositions = this.state.allPositions;
     const positions = this.state.positions;
+
+   //console.log(allMajors);
     
     const majorChecks = Object.getOwnPropertyNames(majors).map(elem => {
       return (<FormControlLabel
@@ -263,7 +265,9 @@ class CompaniesForm extends Component {
             />
             <FormLabel>Majors Hiring:</FormLabel>
             <FormGroup>
-              {majorChecks}
+              <div>
+                {majorChecks}
+               </div>
             </FormGroup>
             <FormLabel>Positions Hiring:</FormLabel>
             <FormGroup>
