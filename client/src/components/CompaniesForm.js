@@ -271,7 +271,9 @@ class CompaniesForm extends Component {
             </FormGroup>
             <FormLabel>Positions Hiring:</FormLabel>
             <FormGroup>
+              <div>
               {positionChecks}
+              </div>
             </FormGroup>
             <FormHelperText error className={classes.formHelperText}>
               {this.state.errorMessage}
