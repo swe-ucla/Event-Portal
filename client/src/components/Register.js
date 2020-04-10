@@ -39,13 +39,11 @@ class Register extends Component {
     this.state = { 
       occupation_ids: [],
       occupation_names: [],
+      major_names: [],
       phone_number: '',
       major_name: '',
       major_id: '',
       ucla_id: null,
-      check1: true,
-      check2: false,
-      check3: false,
       errorMessage: '',
       swe_id: '',
       email: '',
@@ -53,14 +51,29 @@ class Register extends Component {
       //user values
       occupation_id: null, //occupation name is really year
       occupation_name: null,
+
+      occupations : {}, //<occupation name, occupation id
+
+      major_checkboxes : {} //<name, checked>
     };
   }
 
   getMajors = () => {
     axios.get('/majors')
       .then(result => {
-        let mids = result.data.map(function(major) { return major.name });
-        this.setState({ occupation_mids: mids });
+        let m_map = {}
+        let m_checkboxes = {}
+        let m_names = result.data.map(function(major) { 
+          m_map[major.name]=major.id
+          m_checkboxes[major.name]=false
+          return major.name 
+        });
+        this.setState({ 
+          major_names: m_names,
+          majors : m_map,
+          major_checkboxes : m_checkboxes
+        });
+
       })
       .catch(err => console.log(err));
   }
@@ -68,16 +81,22 @@ class Register extends Component {
   getOccupations = () => {
     axios.get('/occupations')
       .then(result => {
-        let onames = result.data.map(function(occupation) { return occupation.name });
-        this.setState({ occupation_names : onames });
-        let oids = result.data.map(function(occupation) { return occupation.id });
-        this.setState({ occupation_ids : oids });
+        let o_map = {}
+        let o_names = result.data.map(function(occupation) { 
+          o_map[occupation.name]=occupation.id
+          return occupation.name 
+        });
+        this.setState({
+          occupation_names : o_names,
+          occupations : o_map
+        });
       })
       .catch(err => console.log(err));
   }
 
-  handleCheckChange = name => event => {
-    this.setState({ [name]: event.target.checked });
+  handleCheckChangeMajor = name => event => {
+    this.state.major_checkboxes[name] = event.target.checked;
+    console.log(this.state.major_checkboxes[name])
   };
 
   addUser = () => {
@@ -87,13 +106,20 @@ class Register extends Component {
       //return;
     }
 
+    let occupation_id = null
+    let occupation_name = this.state.occupation_name 
+    if (occupation_name)
+      occupation_id = this.state.occupations[occupation_name]
 
+    let major_ids = []
+    let m_names = this.state.major_names
 
-    if (this.state.occupation_name) {
-      let index = this.state.occupation_names.indexOf(this.state.occupation_name)
-      this.state.occupation_id = this.state.occupation_ids[index]
-      console.log(this.state.occupation_id)
-    }
+    //iterate through all major names, checking if checkbox is checked
+    //if checkbox is checked then insert the major into the majors array for the user
+    m_names.map(name => {
+      if (this.state.major_checkboxes[name])
+        major_ids.push(this.state.majors[name])
+    });
     
     let body = {
       first_name: this.state.first_name,
@@ -106,7 +132,8 @@ class Register extends Component {
       major_id: this.state.major_id,
       swe_id: this.state.swe_id ? this.state.swe_id : null,
       gpa: this.state.gpa ? this.state.gpa : null,
-      occupation_id: this.state.occupation_id
+      occupation_id: occupation_id ? occupation_id : null,
+      major_id: major_ids
     };
 
     // Make POST request to add major
@@ -118,9 +145,6 @@ class Register extends Component {
         this.setState({
           phone_number: '',
           ucla_id: null,
-          check1: true,
-          check2: false,
-          check3: false,
           errorMessage: ''
         });
       })
@@ -143,6 +167,7 @@ class Register extends Component {
   handleChange = name => event => {
       this.setState({
         [name]: event.target.value,
+
       });
   };
 
@@ -153,6 +178,20 @@ class Register extends Component {
 
     var occupation_names = this.state.occupation_names.map(name => {
       return <MenuItem key={name} value={name}>{name}</MenuItem>
+    })
+
+    var major_names = this.state.major_names.map(name => {
+
+      return <FormControlLabel
+          control={
+            <Checkbox 
+            checked={this.state.major_checkboxes[{name}]} 
+            onChange={this.handleCheckChangeMajor(name)} 
+            value={name} 
+          />
+        }
+        label={name}
+      />
     })
 
 
@@ -209,9 +248,6 @@ class Register extends Component {
               }}
               margin='normal'
             >
-              <MenuItem value="">
-                <em>None</em>
-              </MenuItem>
               {occupation_names}
             </Select>
             <FormHelperText error className={classes.formHelperText}>
@@ -263,38 +299,9 @@ class Register extends Component {
              <FormControl component="fieldset" className={classes.formControl}>
               <FormLabel component="legend">Select your major(s)</FormLabel>
               <FormGroup>
-                <FormControlLabel
-                  control={
-                    <Checkbox 
-                      checked={check1} 
-                      onChange={this.handleCheckChange('check1')} 
-                      value="check1" 
-                    />
-                  }
-                  label="Check 1"
-                />
-                <FormControlLabel
-                  control={
-                    <Checkbox 
-                      checked={check2} 
-                      onChange={this.handleCheckChange('check2')} 
-                      value="check2" 
-                    />
-                  }
-                  label="Check 2"
-                />
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={check3}
-                      onChange={this.handleCheckChange('check3')}
-                      value="check3"
-                    />
-                  }
-                  label="Check 3"
-                />
               </FormGroup>
             </FormControl>
+            {major_names}
             <Button
               type="submit"
               fullWidth
