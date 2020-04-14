@@ -25,6 +25,11 @@ const NavBar = (props) => {
         <Button component={Link} to="/put">PUT</Button>
         <Button component={Link} to="/delete">DELETE</Button>
         <Button component={Link} to="/events">EVENTS</Button>
+
+        {/* temporary button to link to add event page--reroute later!*/}
+        <Button component={Link} to="/add-event">ADD EVENT</Button>
+
+
         <Button color="primary" variant="outlined">
           Login
         </Button>

@@ -11,6 +11,8 @@ import ExamplePutForm from './components/ExamplePutForm.js'
 import ExampleDeleteForm from './components/ExampleDeleteForm.js'
 import Events from './components/Events.js'
 
+import AddEvent from './components/AddEvent.js'
+
 require('typeface-roboto');
 
 ReactGA.initialize('UA-139728260-1', { debug: true });
@@ -44,6 +46,9 @@ class App extends Component {
         <Route path="/put" component={ExamplePutForm} />
         <Route path="/delete" component={ExampleDeleteForm} />
         <Route path="/events" component={Events} />
+
+        {/* temporarily here -- nested routing later! */}
+        <Route path="/add-event" component={AddEvent} />
       </Router>
     )
   }
