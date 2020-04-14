@@ -11,6 +11,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
 import Grid from '@material-ui/core/Grid';
+import Button from '@material-ui/core/Button';
 /*
 import 'date-fns';
 import DateFnsUtils from '@date-io/date-fns';
@@ -120,6 +121,10 @@ function AddEvent(props) {
     return eventURL.substring(start, end);
   }
 
+  const addEvent = () => {
+    console.log('add');
+  }
+
 	return (
 		<form noValidate autoComplete="off">
       <div>
@@ -179,8 +184,6 @@ function AddEvent(props) {
             </MenuItem>
           ))}
       	</TextField>
-      </div>
-      <div>
         <TextField select value={week} onChange={(e) => handleChange(e, "week")} helperText="Week">
           {weeks.map((option) => (
             <MenuItem key={option.value} value={option.value}>
@@ -218,6 +221,9 @@ function AddEvent(props) {
           <FormControlLabel value="No" control={<Radio />} label="No" />
         </RadioGroup>
       </FormControl>
+      <div>
+        <Button variant="contained" onClick={addEvent}>Add</Button>
+      </div>
     </form>
 	);
 }
