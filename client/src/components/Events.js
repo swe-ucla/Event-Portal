@@ -11,19 +11,21 @@ class Events extends Component {
   constructor() {
     super();
 
-    this.getEvents = this.getEvents.bind(this);
     this.state = {
       eventsByDayArray: {},
       loading: false,
-      date: "",
+      date: "", // TO-DO: change to today's date when we populate with real data
       prevY: 0,
+      pastEvents: false,
     };
+
+    this.getEvents = this.getEvents.bind(this);
+    this.handlePastEvents = this.handlePastEvents.bind(this);
   }
 
   componentDidMount() {
     this._isMounted = true;
     this.getEvents();
-
     let options = {
       root: null,
       rootMargin: "0px",
@@ -42,7 +44,7 @@ class Events extends Component {
     this._isMounted = false;
   }
 
-  handleObserver(entities, observer) {
+  handleObserver(entities) {
     const y = entities[0].boundingClientRect.y;
     if (this.state.prevY > y) {
       let lastDate;
@@ -57,8 +59,9 @@ class Events extends Component {
     this.setState({ prevY: y });
   }
 
-  getEvents(date) {
+  getEvents(start = this.state.date, end = null, period = null, limit = 6, isPastEvent = false) {
     this.setState({ loading: true });
+
     axios
       .get("/locations")
       .then(result => {
@@ -70,10 +73,12 @@ class Events extends Component {
         let options = {
           params: {
             sort: "date",
-            limit: '6', // max number of days loaded (lazy loading)
-            start_date: date,
+            limit: limit, // max number of days loaded (lazy loading)
+            start_date: start,
+            end_date: end,
+            period: period,
           }
-        };
+        }
 
         axios
           .get("/events", options)
@@ -119,17 +124,21 @@ class Events extends Component {
                   }
                   memo[new Date(date)].push(event);
                 }
-
                 return memo;
               }, {});
             }
+            this.setState({ loading: false });
 
             let eventsArray = groupByDate(eventsData);
-
-            this.setState({
-              eventsByDayArray: {...this.state.eventsByDayArray, ...eventsArray}
-            });
-            this.setState({ loading: false });
+            if (isPastEvent) {
+              this.setState({
+                eventsByDayArray: {...eventsArray, ...this.state.eventsByDayArray}
+              });
+            } else {
+              this.setState({
+                eventsByDayArray: {...this.state.eventsByDayArray, ...eventsArray}
+              });
+            }
           })
           .catch(err => console.log(err));
       })
@@ -190,9 +199,57 @@ class Events extends Component {
     return eventRows;
   };
 
+  handlePastEvents = () => {
+    // TO-DO: Figure out how to handle events if past quarter was not found
+
+    if (this.state.eventsByDayArray.length === 0)
+      return;
+
+    /* Get the period of the very first event. */
+    let first_period;
+    let first_date;
+    for (let start_date in this.state.eventsByDayArray) {
+      if (this.state.eventsByDayArray.hasOwnProperty(start_date)) {
+        let event = this.state.eventsByDayArray[start_date];
+        first_period = event[0].period;
+        first_date = event[0].starts_at;
+        break;
+      }
+    }
+
+    /* Get the period before. */
+    let period;
+    switch (first_period) {
+      case 'Fall Quarter': 
+        period = 'Summer Quarter';
+        break;
+      case 'Winter Quarter':
+        period = 'Fall Quarter';
+        break;
+      case 'Winter Break':
+        period = 'Winter Quarter';
+        break;
+      case 'Spring Quarter': 
+        period = 'Winter Break';
+        break;
+      case 'Spring Break':
+        period = 'Spring Quarter';
+        break;
+      case 'Summer Quarter':
+        period = 'Spring Break';
+        break;
+      default:
+        period = 'Fall Quarter';
+    }
+    
+    /* Get all events from the previous quarter. */
+    let start_date = first_date.substring(0, 3) + (parseInt(first_date[3]) - 1) + first_date.substring(4);
+    this.getEvents(start_date, first_date, period, null, true);
+    this.renderEventRows();
+  }
+
   render() {
     const { classes } = this.props;
-    // TO-DO: formatting
     const loadingCSS = {
       height: "100px",
       margin: "30px"
@@ -202,13 +259,17 @@ class Events extends Component {
     return (
       <div className={classes.container}>
         <div className={classes.whiteBackground}>
+          <button className={classes.pastEventsButton} onClick={this.handlePastEvents}>
+            <svg width="25" height="10" viewBox="0 0 35 19" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect width="23.9152" height="3.82643" rx="1.91322" transform="matrix(-0.728645 -0.684891 0.728645 -0.684891 32.2119 19)" fill="#C4C4C4"/>
+              <rect width="23.9152" height="3.82643" rx="1.91322" transform="matrix(0.728645 -0.684891 0.728645 0.684891 0 16.3793)" fill="#C4C4C4"/>
+            </svg>
+            <p className={classes.buttonLabel}>see past events</p>
+          </button>
           <div className={classes.events}>{this.renderEventRows()}</div>
-        </div>
-        <div
-          ref = {loadingRef => (this.loadingRef = loadingRef)}
-          style={loadingCSS}
-        >
-          <span style={loadingTextCSS}>Loading...</span>
+          <div ref = {loadingRef => (this.loadingRef = loadingRef)} style={loadingCSS}>
+            <span style={loadingTextCSS}>Loading...</span>
+          </div>
         </div>
       </div>
     );
