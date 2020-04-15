@@ -13,22 +13,34 @@ router.get('/ping', function(req, res, next) {
 
 // GET all events
 router.get('/', function(req, res, next) {
-  knex('event')
-    .select()
-    .modify((queryBuilder) => {
-      if (req.query.limit) {
-        queryBuilder.limit(req.query.limit);
-      }
-      if (req.query.period) {
-        queryBuilder.where('period', req.query.period);
-      }
-      if (req.query.start_date) {
-        queryBuilder.where('starts_at', '>=', req.query.start_date).orderBy('starts_at', 'asc');
-      }
-      if (req.query.end_date) {
-        queryBuilder.where('ends_at', '<', req.query.end_date).orderBy('ends_at', 'asc');
-      }
-    })
+  let query;
+  if (req.query.reverse) {
+    let subquery = knex('event')
+      .select()
+      .orderBy('starts_at', 'desc')
+      .where('ends_at', '<', req.query.end_date)
+      .limit(10)
+      .as('t1')
+    query = knex.select('*').from(subquery).orderBy('starts_at', 'asc');
+  }
+  else {
+    query = knex('event')
+      .select()
+      .modify((queryBuilder) => {
+        if (req.query.limit) {
+          queryBuilder.limit(req.query.limit);
+        }
+        if (req.query.start_date) {
+          queryBuilder.where('starts_at', '>=', req.query.start_date);
+        }
+        if (req.query.end_date) {
+          queryBuilder.where('ends_at', '<', req.query.end_date);
+        }
+      })
+      .orderBy('starts_at', 'asc');
+  }
+  
+  query
     .then(result => {
       if (result.length) {
         res.json(result);

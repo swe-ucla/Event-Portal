@@ -14,9 +14,8 @@ class Events extends Component {
     this.state = {
       eventsByDayArray: {},
       loading: false,
-      date: "", // TO-DO: change to today's date when we populate with real data
+      date: "", // TO-DO: change to today's date when we populate with real data; 2019-01-22T12:00:00.000Z
       prevY: 0,
-      pastEvents: false,
     };
 
     this.getEvents = this.getEvents.bind(this);
@@ -44,6 +43,16 @@ class Events extends Component {
     this._isMounted = false;
   }
 
+  getFirstDate = () => {
+    for (let start_date in this.state.eventsByDayArray) {
+      if (this.state.eventsByDayArray.hasOwnProperty(start_date)) {
+        let event = this.state.eventsByDayArray[start_date];
+        let first_date = event[0].starts_at;
+        return first_date;
+      }
+    }
+  }
+
   handleObserver(entities) {
     const y = entities[0].boundingClientRect.y;
     if (this.state.prevY > y) {
@@ -59,7 +68,7 @@ class Events extends Component {
     this.setState({ prevY: y });
   }
 
-  getEvents(start = this.state.date, end = null, period = null, limit = 6, isPastEvent = false) {
+  getEvents(start = this.state.date, end = null, reverse = null) {
     this.setState({ loading: true });
 
     axios
@@ -73,10 +82,10 @@ class Events extends Component {
         let options = {
           params: {
             sort: "date",
-            limit: limit, // max number of days loaded (lazy loading)
+            limit: 6, // max number of days loaded (lazy loading)
             start_date: start,
             end_date: end,
-            period: period,
+            reverse: reverse,
           }
         }
 
@@ -130,7 +139,7 @@ class Events extends Component {
             this.setState({ loading: false });
 
             let eventsArray = groupByDate(eventsData);
-            if (isPastEvent) {
+            if (reverse) {
               this.setState({
                 eventsByDayArray: {...eventsArray, ...this.state.eventsByDayArray}
               });
@@ -139,6 +148,10 @@ class Events extends Component {
                 eventsByDayArray: {...this.state.eventsByDayArray, ...eventsArray}
               });
             }
+
+            this.setState({
+              date: this.getFirstDate()
+            })
           })
           .catch(err => console.log(err));
       })
@@ -200,51 +213,14 @@ class Events extends Component {
   };
 
   handlePastEvents = () => {
-    // TO-DO: Figure out how to handle events if past quarter was not found
-
     if (this.state.eventsByDayArray.length === 0)
       return;
 
-    /* Get the period of the very first event. */
-    let first_period;
-    let first_date;
-    for (let start_date in this.state.eventsByDayArray) {
-      if (this.state.eventsByDayArray.hasOwnProperty(start_date)) {
-        let event = this.state.eventsByDayArray[start_date];
-        first_period = event[0].period;
-        first_date = event[0].starts_at;
-        break;
-      }
-    }
-
-    /* Get the period before. */
-    let period;
-    switch (first_period) {
-      case 'Fall Quarter': 
-        period = 'Summer Quarter';
-        break;
-      case 'Winter Quarter':
-        period = 'Fall Quarter';
-        break;
-      case 'Winter Break':
-        period = 'Winter Quarter';
-        break;
-      case 'Spring Quarter': 
-        period = 'Winter Break';
-        break;
-      case 'Spring Break':
-        period = 'Spring Quarter';
-        break;
-      case 'Summer Quarter':
-        period = 'Spring Break';
-        break;
-      default:
-        period = 'Fall Quarter';
-    }
+    /* Get the date of the very first event. */
+    let first_date = this.getFirstDate();
     
-    /* Get all events from the previous quarter. */
-    let start_date = first_date.substring(0, 3) + (parseInt(first_date[3]) - 1) + first_date.substring(4);
-    this.getEvents(start_date, first_date, period, null, true);
+    /* Get all previous 10 events. */
+    this.getEvents(null, first_date, true);
     this.renderEventRows();
   }
 
