@@ -1,13 +1,11 @@
 const MediaCardStyles = theme => ({
 	card: {
     width: '330px',
-  	//margin: '10px',
     backgroundColor: '#EBE6FB',
     borderRadius: '13px',
 	},
   media: {
     height: '200px',
-    //width: '330px',
     backgroundColor: '#FFFFFF',
   },
   text: {
@@ -30,11 +28,22 @@ const MediaCardStyles = theme => ({
   },
   descripText: {
     marginTop: '5px',
+    marginBottom: '5px',
     fontFamily: 'Helvetica Neue',
   },
   descripTextHide: {
     marginTop: '5px',
+    marginBottom: '5px',
     fontFamily: 'Helvetica Neue',
+    display: 'none',
+  },
+  link: {
+    fontFamily: 'Helvetica Neue',
+    fontSize: '15px',
+  },
+  linkHide: {
+    fontFamily: 'Helvetica Neue',
+    fontSize: '15px',
     display: 'none',
   },
   line: {
