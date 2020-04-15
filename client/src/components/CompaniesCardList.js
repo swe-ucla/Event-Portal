@@ -45,7 +45,7 @@ class CompaniesCardList extends Component{
   			}
   		}
   		var companiesData = [];
-  		axios.get('/companies/', options)
+  		axios.get('/companies/', options.params)
 			.then(result => {
 				let companiesData = result.data;
 				this.setState({companies: companiesData});

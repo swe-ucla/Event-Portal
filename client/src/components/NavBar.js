@@ -26,6 +26,7 @@ const NavBar = (props) => {
         <Button component={Link} to="/delete">DELETE</Button>
         <Button component={Link} to="/companies">Companies</Button>
         <Button component={Link} to="/companiesform">Companies Form</Button>
+        <Button component={Link} to="/companiesupdateform">Accenture</Button>
         <Button color="primary" variant="outlined">
           Login
         </Button>
