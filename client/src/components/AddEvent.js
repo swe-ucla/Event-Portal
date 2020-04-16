@@ -12,6 +12,7 @@ import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
+import Switch from '@material-ui/core/Switch';
 /*
 import 'date-fns';
 import DateFnsUtils from '@date-io/date-fns';
@@ -33,6 +34,9 @@ import {
     - Description
     - fb_event link
     - is_featured?
+
+   REQUIRED:
+   event_id, name, starts_at, ends_at, period
 */
 
 const periods = [
@@ -61,14 +65,24 @@ const weeks = [
 
 function AddEvent(props) {
 	const { classes } = props;
+  const [name, setName] = React.useState('');
   const [locations, setLocatons] = React.useState(null);
   const [period, setPeriod] = React.useState('');
   const [week, setWeek] = React.useState('');
-  const [isEWI, setIsEWI] = React.useState('No');
-  const [isFeatured, setIsFeatured] = React.useState('No');
-  const [selectedDate, setSelectedDate] = React.useState(new Date());
+  const [isEWI, setIsEWI] = React.useState(false);
+  const [isFeatured, setIsFeatured] = React.useState(false);
+  const [startDate, setStartDate] = React.useState(new Date().toISOString().substring(0,10));
+  const [startTime, setStartTime] = React.useState("12:00");
+  const [endDate, setEndDate] = React.useState(new Date().toISOString().substring(0,10));
+  const [endTime, setEndTime] = React.useState("19:00");
+  const [isSameDay, setIsSameDay] = React.useState(true);
+  const [description, setDescription] = React.useState('');
+  const [location, setLocation] = React.useState('');
+  const [link, setLink] = React.useState('');
+  const [img, setImg] = React.useState('');
 
   useEffect(() => {
+    /* TODO: do check for admin */
     getLocations();
   }, []);
 
@@ -93,25 +107,43 @@ function AddEvent(props) {
 
 
 	const handleChange = (event, field) => {
-    if (!field.localeCompare("period"))
+    if (!field.localeCompare("name"))
+      setName(event.target.value);
+    else if (!field.localeCompare("period"))
       setPeriod(event.target.value);
     else if (!field.localeCompare("week"))
       setWeek(event.target.value);
-    else if (!field.localeCompare("isEWI"))
-      setIsEWI(event.target.value);
-    else if (!field.localeCompare("isFeatured"))
-      setIsFeatured(event.target.value);
-  };
-
-  const handleDateChange = (date) => {
-    setSelectedDate(date);
+    else if (!field.localeCompare("isEWI")) {
+      setIsEWI(event.target.value.localeCompare("Yes") == 0 ? true : false);
+      setName("Evening With Industry");
+    }
+    else if (!field.localeCompare("isFeatured")) 
+      setIsFeatured(event.target.value.localeCompare("Yes") == 0 ? true : false);
+    else if (!field.localeCompare("isSameDay"))
+      setIsSameDay(event.target.checked);
+    else if (!field.localeCompare("startDate"))
+      setStartDate(event.target.value);
+    else if (!field.localeCompare("startTime"))
+      setStartTime(event.target.value);
+    else if (!field.localeCompare("endDate"))
+      setEndDate(event.target.value);
+    else if (!field.localeCompare("endTime"))
+      setEndTime(event.target.value);
+    else if (!field.localeCompare("location"))
+      setLocation(event.target.value);
+    else if (!field.localeCompare("link"))
+      setLink(event.target.value);
+    else if (!field.localeCompare("img"))
+      setImg(event.target.value);
+    else if (!field.localeCompare("description"))
+      setDescription(event.target.value);
   };
 
   const parseLinkForID = (eventURL) => {
     // Assumes some form like: https://www.facebook.com/events/3373102776039760/
     var baseURL = "facebook.com/events/";
     var start = eventURL.search(baseURL);
-    if (start == -1) return "not found";
+    if (start == -1) return "";
     start += baseURL.length;
 
     var end = eventURL.indexOf('/', start);
@@ -122,39 +154,94 @@ function AddEvent(props) {
   }
 
   const addEvent = () => {
+    /* TODO: do check for admin */
     console.log('add');
+    var validFields = true;
+
+    // Checks for fields:
+    var id = parseLinkForID(link);
+    if (id.length == 0) {
+      validFields = false;
+      console.log("Invalid ID");
+    }
+
+    var starts = startDate + " " + startTime + ":00";
+    var ends = ((isSameDay) ? startDate : endDate) + " " + endTime + ":00";
+
+    // Post to database
+    if (validFields) {
+      axios.post('/events', {
+        "event_id": id,
+        "name": name,
+        "starts_at": starts,
+        "ends_at": ends,
+        "location_id": "1",
+        "description": description,
+        "fb_event": link,
+        "picture": img,
+        "is_featured": isFeatured,
+        "categories": ["7", "11"],
+        "companies": ["39", "1"],
+        "hosts": ["1", "2", "3"],
+        "period": period,
+      })
+      .then(function (response) {
+        console.log(response);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+    }
   }
 
 	return (
-		<form noValidate autoComplete="off">
+		<form className={classes.form} noValidate autoComplete="off">
       <div>
         {/*<TextField required id="standard-required" label="Required" defaultValue="Hello World" helperText="Facebook Event ID"/>*/}
-        <TextField required id="standard-required" label="Required" defaultValue="Hello World" helperText="Event Name"/>
+        <TextField className={classes.name} fullWidth required disabled={isEWI} id="standard-required" label="Event Name" value={name} onChange={(e) => handleChange(e, "name")}/>
       </div>
-      <FormControl component="fieldset">
-        <FormLabel component="legend">EWI?</FormLabel>
-        <RadioGroup aria-label="Is this event EWI?" name="ewi" value={isEWI} onChange={(e) => handleChange(e, "isEWI")}>
-          <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
-          <FormControlLabel value="No" control={<Radio />} label="No" />
-        </RadioGroup>
-      </FormControl>
-      <Grid container justify="space-around">
+      <Grid container spacing={32} justify="flex-start">
+        <Grid item>
+          <FormControl component="fieldset">
+            <FormLabel component="legend">EWI?</FormLabel>
+            <RadioGroup aria-label="Is this event EWI?" name="ewi" value={isEWI ? "Yes" : "No"} onChange={(e) => handleChange(e, "isEWI")}>
+              <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
+              <FormControlLabel value="No" control={<Radio />} label="No" />
+            </RadioGroup>
+          </FormControl>
+        </Grid>
+        <Grid item>
+          <FormControl component="fieldset">
+            <FormLabel component="legend">Featured Event?</FormLabel>
+            <RadioGroup aria-label="Is this event featured?" name="featured" value={isFeatured ? "Yes" : "No"} onChange={(e) => handleChange(e, "isFeatured")}>
+              <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
+              <FormControlLabel value="No" control={<Radio />} label="No" />
+            </RadioGroup>
+          </FormControl>
+        </Grid>
+      </Grid>
+      <Grid container spacing={16} justify="flex-start">
+        <Grid item>
           <TextField
             id="date"
-            label="Date"
+            required
+            label={isSameDay ? "Date" : "Start Date"}
             type="date"
-            defaultValue="2017-05-24"
-            className={classes.textField}
+            value={startDate}
+            onChange={(e) => handleChange(e, "startDate")}
             InputLabelProps={{
               shrink: true,
             }}
           />
+        </Grid>
+        <Grid item>
           <TextField
             id="time"
+            required
             label="Start time"
             type="time"
-            defaultValue="07:30"
-            className={classes.textField}
+            value={startTime}
+            onChange={(e) => handleChange(e, "startTime")}
             InputLabelProps={{
               shrink: true,
             }}
@@ -162,12 +249,30 @@ function AddEvent(props) {
               step: 300, // 5 min
             }}
           />
+        </Grid>
+        {!isSameDay && (
+        <Grid item>
+          <TextField
+            id="date"
+            required
+            label="End Date"
+            type="date"
+            value={endDate}
+            onChange={(e) => handleChange(e, "endDate")}
+            InputLabelProps={{
+              shrink: true,
+            }}
+          />
+        </Grid>
+        )}
+        <Grid item>
           <TextField
             id="time"
+            required
             label="End time"
             type="time"
-            defaultValue="07:30"
-            className={classes.textField}
+            value={endTime}
+            onChange={(e) => handleChange(e, "endTime")}
             InputLabelProps={{
               shrink: true,
             }}
@@ -175,16 +280,23 @@ function AddEvent(props) {
               step: 300, // 5 min
             }}
           />
+        </Grid>
+        <Grid item>
+          <FormControlLabel
+            control={<Switch checked={isSameDay} onChange={(e) => handleChange(e, "isSameDay")} name="sameDayCheck"/>}
+            label="Same Day"
+          />
+        </Grid>
       </Grid>
       <div>
-      	<TextField select value={period} onChange={(e) => handleChange(e, "period")} helperText="Period">
+      	<TextField required className={classes.period} select value={period} onChange={(e) => handleChange(e, "period")} label="Period">
       		{periods.map((option) => (
             <MenuItem key={option.value} value={option.value}>
               {option.label}
             </MenuItem>
           ))}
       	</TextField>
-        <TextField select value={week} onChange={(e) => handleChange(e, "week")} helperText="Week">
+        <TextField className={classes.week} select value={week} onChange={(e) => handleChange(e, "week")} label="Week">
           {weeks.map((option) => (
             <MenuItem key={option.value} value={option.value}>
               {option.label}
@@ -193,8 +305,7 @@ function AddEvent(props) {
         </TextField>
       </div>
       <div>
-        {/*<TextField required id="standard-required" label="Required" helperText="Location">
-        </TextField>*/}
+        <TextField required id="standard-required" label="Location" value={location} onChange={(e) => handleChange(e, "location")}/>
         {/*<input type="search" list="languages" placeholder="Pick a programming language.."/>*/}
 
         <datalist id="languages">
@@ -209,20 +320,26 @@ function AddEvent(props) {
         </datalist>
       </div>
       <div>
-        <TextField required id="standard-required" label="Required" defaultValue="Hello World" helperText="Facebook Event Link"/>
+        <TextField className={classes.link} fullWidth required id="standard-required" label="Facebook Event Link" value={link} onChange={(e) => handleChange(e, "link")}/>
       </div>
       <div>
-        <TextField required id="standard-required" label="Required" defaultValue="Hello World" helperText="Description" multiline/>
+        <TextField className={classes.img} fullWidth required id="standard-required" label="Image URL" value={img} onChange={(e) => handleChange(e, "img")}/>
       </div>
-      <FormControl component="fieldset">
-        <FormLabel component="legend">Featured Event?</FormLabel>
-        <RadioGroup aria-label="Is this event featured?" name="featured" value={isFeatured} onChange={(e) => handleChange(e, "isFeatured")}>
-          <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
-          <FormControlLabel value="No" control={<Radio />} label="No" />
-        </RadioGroup>
-      </FormControl>
       <div>
-        <Button variant="contained" onClick={addEvent}>Add</Button>
+        <TextField
+          className={classes.description} 
+          id="outlined-multiline-static"
+          label="Description"
+          value={description}
+          fullWidth
+          multiline
+          rows={6}
+          variant="outlined"
+          onChange={(e) => handleChange(e, "description")}
+        />
+      </div>
+      <div className={classes.btnDiv}>
+        <Button variant="contained" onClick={addEvent}>Add Event</Button>
       </div>
     </form>
 	);
