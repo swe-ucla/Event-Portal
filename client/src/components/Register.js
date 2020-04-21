@@ -30,6 +30,7 @@ class Register extends Component {
   {
     this.getMajors();
     this.getOccupations();
+    this.getUserInfo(1);
   }
 
   constructor() {
@@ -37,20 +38,25 @@ class Register extends Component {
 
     // Initiate state
     this.state = { 
+      // form info
       occupation_ids: [],
       occupation_names: [],
       major_names: [],
+      errorMessage: '',
+      
+      // user values
+      user_id: null,
+      email: '',
+      first_name: '',
+      last_name: '',
+      ucla_id: null,
+      occupation_id: null, //occupation name is really year
+      occupation_name: null,
+      swe_id: '',
+      gpa: null,
       phone_number: '',
       major_name: '',
       major_id: '',
-      ucla_id: null,
-      errorMessage: '',
-      swe_id: '',
-      email: '',
-
-      //user values
-      occupation_id: null, //occupation name is really year
-      occupation_name: null,
 
       occupations : {}, //<occupation name, occupation id
 
@@ -94,9 +100,64 @@ class Register extends Component {
       .catch(err => console.log(err));
   }
 
-  handleCheckChangeMajor = name => event => {
-    this.state.major_checkboxes[name] = event.target.checked;
-    console.log(this.state.major_checkboxes[name])
+  getUserInfo = (id) => {
+    axios.get(`/users/${id}/id`)
+      .then(result => {
+        let u_info = result.data[0];
+        this.setState({
+          first_name: u_info.first_name,
+          last_name: u_info.last_name,
+          ucla_id: u_info.university_id,
+          email: u_info.email,
+          phone_number: u_info.phone,
+          swe_id: u_info.swe_id,
+          gpa: u_info.gpa,
+        });
+      })
+      .catch(err => console.log(err));
+
+      // TODO: get user major request
+    axios.get(`/users/${id}/majors`)
+      .then(result => {
+        // TODO: ensure database is planning to have multiple ids from this request
+        console.log(result)
+        let m_id = result.data[0].major_id;
+        this.setState(prev => {
+          let m_name = prev.major_names[m_id];
+          return {
+            major_checkboxes: {
+              ...prev.major_checkboxes,
+              [m_name]: true,
+            }
+          }
+        });
+      })
+      .catch(err => console.log(err));
+
+      // TODO: get user occupation request
+      axios.get(`/users/${id}/occupations`)
+        .then(result => {
+          let occ_id = result.data[0].occupation_id;
+          this.setState(prev => {
+            return {
+              occupation_id: occ_id,
+              occupation_name: prev.occupation_names[occ_id]
+            }
+          })
+        })
+        .catch(err => console.log(err));
+  }
+
+  handleCheckChangeMajor = event => {
+    const target = event.target;
+    this.setState(prev => {
+      return {
+        major_checkboxes: {
+          ...prev.major_checkboxes,
+          [target.name]: target.checked
+        }
+      }
+    });
   };
 
   addUser = () => {
@@ -185,8 +246,9 @@ class Register extends Component {
       return <FormControlLabel
           control={
             <Checkbox 
-            checked={this.state.major_checkboxes[{name}]} 
-            onChange={this.handleCheckChangeMajor(name)} 
+            name={name}
+            checked={this.state.major_checkboxes[name]} 
+            onChange={(event) => this.handleCheckChangeMajor(event)} 
             value={name} 
           />
         }
@@ -285,7 +347,7 @@ class Register extends Component {
             />
             <TextField
               fullWidth
-              id='swe_id'
+              id='gpa'
               label='GPA'
               className={classes.textField}
               placeholder='e.g. 408900876'
