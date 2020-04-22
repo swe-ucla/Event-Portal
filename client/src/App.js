@@ -12,6 +12,7 @@ import ExampleDeleteForm from './components/ExampleDeleteForm.js'
 import Companies from './components/Companies.js'
 import CompaniesForm from './components/CompaniesForm.js'
 import CompaniesUpdateForm from './components/CompaniesUpdateForm.js'
+import CompaniesAdmin from './components/CompaniesAdmin.js'
 
 require('typeface-roboto');
 
@@ -46,6 +47,7 @@ class App extends Component {
         <Route path="/companies" component={Companies} />
         <Route path="/companiesform" component={CompaniesForm} />
         <Route path="/companiesupdateform" component={CompaniesUpdateForm} />
+        <Route path="/companiesadmin" component={CompaniesAdmin} />
         <Footer />
       </Router>
     )
