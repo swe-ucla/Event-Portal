@@ -13,6 +13,7 @@ import FormLabel from '@material-ui/core/FormLabel';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import Switch from '@material-ui/core/Switch';
+//import Autocomplete from '@material-ui/lab/Autocomplete';
 /*
 import 'date-fns';
 import DateFnsUtils from '@date-io/date-fns';
@@ -64,10 +65,12 @@ const weeks = [
 ];
 
 function AddEvent(props) {
-	const { classes } = props;
+  const { classes } = props;
   const [name, setName] = React.useState('');
-  const [locations, setLocatons] = React.useState(null);
+  const [nameErr, setNameErr] = React.useState(false);
+  const [locations, setLocations] = React.useState(null);
   const [period, setPeriod] = React.useState('');
+  const [periodErr, setPeriodErr] = React.useState(false);
   const [week, setWeek] = React.useState('');
   const [isEWI, setIsEWI] = React.useState(false);
   const [isFeatured, setIsFeatured] = React.useState(false);
@@ -76,9 +79,12 @@ function AddEvent(props) {
   const [endDate, setEndDate] = React.useState(new Date().toISOString().substring(0,10));
   const [endTime, setEndTime] = React.useState("19:00");
   const [isSameDay, setIsSameDay] = React.useState(true);
+  const [timeErr, setTimeErr] = React.useState(false);
   const [description, setDescription] = React.useState('');
   const [location, setLocation] = React.useState('');
   const [link, setLink] = React.useState('');
+  const [linkErr, setLinkErr] = React.useState(false);
+  const [linkHelpText, setLinkHelpText] = React.useState("Link can't be empty");
   const [img, setImg] = React.useState('');
 
   useEffect(() => {
@@ -100,13 +106,13 @@ function AddEvent(props) {
           }
         });
 
-        setLocatons(locationsData);
+        setLocations(locationsData);
       })
       .catch(err => console.log(err));
   }
 
 
-	const handleChange = (event, field) => {
+  const handleChange = (event, field) => {
     if (!field.localeCompare("name"))
       setName(event.target.value);
     else if (!field.localeCompare("period"))
@@ -114,11 +120,11 @@ function AddEvent(props) {
     else if (!field.localeCompare("week"))
       setWeek(event.target.value);
     else if (!field.localeCompare("isEWI")) {
-      setIsEWI(event.target.value.localeCompare("Yes") == 0 ? true : false);
+      setIsEWI(event.target.value.localeCompare("Yes") === 0 ? true : false);
       setName("Evening With Industry");
     }
     else if (!field.localeCompare("isFeatured")) 
-      setIsFeatured(event.target.value.localeCompare("Yes") == 0 ? true : false);
+      setIsFeatured(event.target.value.localeCompare("Yes") === 0 ? true : false);
     else if (!field.localeCompare("isSameDay"))
       setIsSameDay(event.target.checked);
     else if (!field.localeCompare("startDate"))
@@ -139,15 +145,45 @@ function AddEvent(props) {
       setDescription(event.target.value);
   };
 
+  const checkForErrors = () => {
+    // check if name is empty
+    setNameErr(name.length === 0);
+
+    // check start time before end time
+    var starts = startDate + " " + startTime + ":00";
+    var ends = ((isSameDay) ? startDate : endDate) + " " + endTime + ":00";
+    setTimeErr(new Date(starts) > new Date(ends));
+
+    // check period
+    setPeriodErr(period.length === 0);
+
+    // check link
+    if (link.length === 0) {
+      setLinkErr(true);
+      setLinkHelpText("Link can't be empty");
+    }
+    else {
+      var id = parseLinkForID(link);
+      if (id.length === 0) {
+        setLinkErr(true);
+        setLinkHelpText("Not valid link -- can't parse for ID");
+      }
+      else {
+        setLinkErr(false);
+      }
+    }
+
+  }
+
   const parseLinkForID = (eventURL) => {
     // Assumes some form like: https://www.facebook.com/events/3373102776039760/
     var baseURL = "facebook.com/events/";
     var start = eventURL.search(baseURL);
-    if (start == -1) return "";
+    if (start === -1) return "";
     start += baseURL.length;
 
     var end = eventURL.indexOf('/', start);
-    if (end == -1) end = eventURL.length;
+    if (end === -1) end = eventURL.length;
 
     console.log(eventURL.substring(start, end));
     return eventURL.substring(start, end);
@@ -159,16 +195,19 @@ function AddEvent(props) {
     var validFields = true;
 
     // Checks for fields:
+    checkForErrors();
+
     var id = parseLinkForID(link);
-    if (id.length == 0) {
+    if (id.length === 0) {
       validFields = false;
       console.log("Invalid ID");
     }
 
     var starts = startDate + " " + startTime + ":00";
-    var ends = ((isSameDay) ? startDate : endDate) + " " + endTime + ":00";
+    var ends = ((isSameDay) ? startDate : endDate) + " " + endTime + ":00"; // check end is after start?
 
     // Post to database
+    
     if (validFields) {
       axios.post('/events', {
         "event_id": id,
@@ -180,25 +219,36 @@ function AddEvent(props) {
         "fb_event": link,
         "picture": img,
         "is_featured": isFeatured,
-        "categories": ["7", "11"],
-        "companies": ["39", "1"],
-        "hosts": ["1", "2", "3"],
+        "categories": [],
+        "companies": [],
+        "hosts": [],
         "period": period,
       })
       .then(function (response) {
         console.log(response);
+        alert("Event " + id + ": '" + name + "' successfully added!");
       })
       .catch(function (error) {
         console.log(error);
+        alert("Error adding event. Please try again!");
       });
     }
   }
 
-	return (
-		<form className={classes.form} noValidate autoComplete="off">
+  return (
+    <form className={classes.form} noValidate autoComplete="off">
       <div>
         {/*<TextField required id="standard-required" label="Required" defaultValue="Hello World" helperText="Facebook Event ID"/>*/}
-        <TextField className={classes.name} fullWidth required disabled={isEWI} id="standard-required" label="Event Name" value={name} onChange={(e) => handleChange(e, "name")}/>
+        <TextField 
+          className={classes.name} 
+          fullWidth required 
+          disabled={isEWI} 
+          id="standard-required" 
+          label="Event Name" 
+          value={name} 
+          error={nameErr}
+          helperText={nameErr ? "Name can't be empty" : ""}
+          onChange={(e) => handleChange(e, "name")}/>
       </div>
       <Grid container spacing={32} justify="flex-start">
         <Grid item>
@@ -228,6 +278,8 @@ function AddEvent(props) {
             label={isSameDay ? "Date" : "Start Date"}
             type="date"
             value={startDate}
+            error={timeErr}
+            helperText={timeErr ? "Start time must be before end time" : ""}
             onChange={(e) => handleChange(e, "startDate")}
             InputLabelProps={{
               shrink: true,
@@ -241,6 +293,7 @@ function AddEvent(props) {
             label="Start time"
             type="time"
             value={startTime}
+            error={timeErr}
             onChange={(e) => handleChange(e, "startTime")}
             InputLabelProps={{
               shrink: true,
@@ -258,6 +311,7 @@ function AddEvent(props) {
             label="End Date"
             type="date"
             value={endDate}
+            error={timeErr}
             onChange={(e) => handleChange(e, "endDate")}
             InputLabelProps={{
               shrink: true,
@@ -272,6 +326,7 @@ function AddEvent(props) {
             label="End time"
             type="time"
             value={endTime}
+            error={timeErr}
             onChange={(e) => handleChange(e, "endTime")}
             InputLabelProps={{
               shrink: true,
@@ -289,13 +344,21 @@ function AddEvent(props) {
         </Grid>
       </Grid>
       <div>
-      	<TextField required className={classes.period} select value={period} onChange={(e) => handleChange(e, "period")} label="Period">
-      		{periods.map((option) => (
+        <TextField 
+          required 
+          className={classes.period} 
+          select 
+          value={period} 
+          error={periodErr}
+          helperText={periodErr ? "Period can't be empty" : ""}
+          onChange={(e) => handleChange(e, "period")} 
+          label="Period">
+          {periods.map((option) => (
             <MenuItem key={option.value} value={option.value}>
               {option.label}
             </MenuItem>
           ))}
-      	</TextField>
+        </TextField>
         <TextField className={classes.week} select value={week} onChange={(e) => handleChange(e, "week")} label="Week">
           {weeks.map((option) => (
             <MenuItem key={option.value} value={option.value}>
@@ -304,9 +367,9 @@ function AddEvent(props) {
           ))}
         </TextField>
       </div>
-      <div>
+      {/*<div>
         <TextField required id="standard-required" label="Location" value={location} onChange={(e) => handleChange(e, "location")}/>
-        {/*<input type="search" list="languages" placeholder="Pick a programming language.."/>*/}
+        {/*<input type="search" list="languages" placeholder="Pick a programming language.."/>}
 
         <datalist id="languages">
           <option value="PHP" />
@@ -318,9 +381,27 @@ function AddEvent(props) {
           <option value="Perl" />
           <option value="Erlang" />
         </datalist>
+      </div>*/}
+      <div>
+      {/*
+        <Autocomplete
+          options={locations}
+          getOptionLabel={(option) => option.name}
+          style={{ width: 300 }}
+          renderInput={(params) => <TextField {...params} label="Combo box" variant="outlined" />}
+        />*/}
       </div>
       <div>
-        <TextField className={classes.link} fullWidth required id="standard-required" label="Facebook Event Link" value={link} onChange={(e) => handleChange(e, "link")}/>
+        <TextField 
+          className={classes.link} 
+          fullWidth 
+          required 
+          id="standard-required" 
+          label="Facebook Event Link" 
+          value={link} 
+          error={linkErr}
+          helperText={linkErr ? linkHelpText : ""}
+          onChange={(e) => handleChange(e, "link")}/>
       </div>
       <div>
         <TextField className={classes.img} fullWidth required id="standard-required" label="Image URL" value={img} onChange={(e) => handleChange(e, "img")}/>
@@ -342,7 +423,7 @@ function AddEvent(props) {
         <Button variant="contained" onClick={addEvent}>Add Event</Button>
       </div>
     </form>
-	);
+  );
 }
 
 export default withStyles(AddEventStyles)(AddEvent);
