@@ -14,8 +14,8 @@ import Grid from '@material-ui/core/Grid';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
-import CompanyCard from './CompanyCard.js';
-import CompaniesCardList from './CompaniesCardList.js';
+import AdminCompanyCard from './AdminCompanyCard.js';
+import AdminCompaniesCardList from './AdminCompaniesCardList.js';
 import CompaniesStyles from '../styles/Companies.js';
 
 
@@ -59,7 +59,7 @@ class CompaniesAdmin extends Component {
 		            </Typography>
 		          </div>
 		        </div>
-		        <CompaniesCardList/>
+		        <AdminCompaniesCardList/>
 		      </main>
 		    </React.Fragment>
 		  );
