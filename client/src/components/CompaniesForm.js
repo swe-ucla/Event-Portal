@@ -1,44 +1,45 @@
-import React, { Component } from 'react';
-import axios from 'axios';
-import MenuItem from '@material-ui/core/MenuItem';
-import { withStyles } from '@material-ui/core/styles';
-import Typography from '@material-ui/core/Typography';
-import TextField from '@material-ui/core/TextField';
-import Button from '@material-ui/core/Button';
-import FormLabel from '@material-ui/core/FormLabel';
-import FormControl from '@material-ui/core/FormControl';
-import FormGroup from '@material-ui/core/FormGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import FormHelperText from '@material-ui/core/FormHelperText';
-import InputLabel from '@material-ui/core/InputLabel';
-import Select from '@material-ui/core/Select';
-import Checkbox from '@material-ui/core/Checkbox';
-import Paper from '@material-ui/core/Paper';
+import React, { Component } from "react";
+import axios from "axios";
+import MenuItem from "@material-ui/core/MenuItem";
+import { withStyles } from "@material-ui/core/styles";
+import Typography from "@material-ui/core/Typography";
+import TextField from "@material-ui/core/TextField";
+import Button from "@material-ui/core/Button";
+import FormLabel from "@material-ui/core/FormLabel";
+import FormControl from "@material-ui/core/FormControl";
+import FormGroup from "@material-ui/core/FormGroup";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import FormHelperText from "@material-ui/core/FormHelperText";
+import InputLabel from "@material-ui/core/InputLabel";
+import Select from "@material-ui/core/Select";
+import Checkbox from "@material-ui/core/Checkbox";
+import Paper from "@material-ui/core/Paper";
 
-import Radio from '@material-ui/core/Radio';
-import RadioGroup from '@material-ui/core/RadioGroup';
+import Radio from "@material-ui/core/Radio";
+import RadioGroup from "@material-ui/core/RadioGroup";
+import Input from "@material-ui/core/Input";
 
-import ExamplePostFormStyles from '../styles/ExamplePostForm.js';
-import CompaniesStyles from '../styles/CompaniesForm.js';
-import ExampleGet from '../components/ExampleGet.js';
+import ExamplePostFormStyles from "../styles/ExamplePostForm.js";
+import CompaniesStyles from "../styles/CompaniesForm.js";
+import ExampleGet from "../components/ExampleGet.js";
 
 class CompaniesForm extends Component {
   constructor() {
     super();
 
     // Initiate state
-    this.state = { 
-      name: '',
-      description: '',
-      website: '',
-      errorMessage: '',
-      citizenship: 'N',
+    this.state = {
+      name: "",
+      description: "",
+      website: "",
+      errorMessage: "",
+      citizenship: "N",
       majors: {},
       positions: {},
       allMajors: {},
       allPositions: {}
     };
- //   const [citizenship, setCitizen] = React.useState(''),
+    //   const [citizenship, setCitizen] = React.useState(''),
 
     this.handleChange = this.handleChange.bind(this);
     // this.handleChange = event => {
@@ -46,7 +47,7 @@ class CompaniesForm extends Component {
     // };
   }
 
-  componentDidMount(){
+  componentDidMount() {
     this.getAllMajors();
     this.getAllPositions();
   }
@@ -56,7 +57,7 @@ class CompaniesForm extends Component {
 
     if (!this.state.name) {
       // Do not add major if no name specified
-      console.log('ERROR: fill out Company Name field.');
+      console.log("ERROR: fill out Company Name field.");
       return;
     }
 
@@ -77,7 +78,7 @@ class CompaniesForm extends Component {
     let allMajors = this.state.allMajors;
     for (let property in majors) {
       if (majors.hasOwnProperty(property)) {
-        if(majors[property] === true){
+        if (majors[property] === true) {
           majorIDs.push(allMajors[property]);
         }
       }
@@ -88,8 +89,8 @@ class CompaniesForm extends Component {
     let positions = this.state.positions;
     for (let property in positions) {
       if (positions.hasOwnProperty(property)) {
-        console.log(property)
-        if(positions[property] === true){
+        console.log(property);
+        if (positions[property] === true) {
           positionIDs.push(allPositions[property]);
         }
       }
@@ -100,31 +101,32 @@ class CompaniesForm extends Component {
       name: this.state.name,
       description: this.state.description,
       website: this.state.website,
-      citizenship_requirement: this.state.citizenship ? 'Y' : 'N', //change
+      citizenship_requirement: this.state.citizenship ? "Y" : "N", //change
       major_id: majorIDs,
       position_id: positionIDs
     };
 
     // Make POST request to add major
-    axios.post('/companies', body)
+    axios
+      .post("/companies", body)
       .then(result => {
-        // Clear form values 
+        // Clear form values
         this.setState({
-          name: '',
-          description: '',
-          website: '',
-          citizenship_requirement: '',
-          errorMessage: ''
+          name: "",
+          description: "",
+          website: "",
+          citizenship_requirement: "",
+          errorMessage: ""
         });
       })
       .catch(err => {
         // TODO: use user-friendly error message
-        console.log(err.response.data)
+        console.log(err.response.data);
         this.setState({
-          errorMessage: err.response.data.message,
-        })
+          errorMessage: err.response.data.message
+        });
       });
-  }
+  };
 
   //ideally extract similar allMajors calls out and then format for specific
   //components
@@ -132,61 +134,62 @@ class CompaniesForm extends Component {
   getAllMajors = () => {
     var options = {
       params: {
-        sort: 'id'
+        sort: "id"
       }
-    }
-    axios.get('/majors', options)
+    };
+    axios
+      .get("/majors", options)
       .then(result => {
         let majorsEnum = {};
         let majorsChecked = {};
-        result.data.forEach(function(major) { 
+        result.data.forEach(function(major) {
           majorsEnum[major.name] = major.id;
           majorsChecked[major.name] = false;
         });
 
-        this.setState({ 
+        this.setState({
           allMajors: majorsEnum,
           majors: majorsChecked
         });
         //console.log(this.state.allMajors)
       })
       .catch(err => console.log(err));
-  }
+  };
 
   getAllPositions = () => {
-      var options = {
-        params: {
-          sort: 'id'
-        }
+    var options = {
+      params: {
+        sort: "id"
       }
-      axios.get('/positions', options)
-        .then(result => {
-          let positionsEnum = {};
-          let positionsChecked = {};
-          result.data.forEach(function(position) { 
-            positionsEnum[position.role] = position.id;
-            positionsChecked[position.role] = false;
-          });
+    };
+    axios
+      .get("/positions", options)
+      .then(result => {
+        let positionsEnum = {};
+        let positionsChecked = {};
+        result.data.forEach(function(position) {
+          positionsEnum[position.role] = position.id;
+          positionsChecked[position.role] = false;
+        });
 
+        this.setState({
+          allPositions: positionsEnum,
+          positions: positionsChecked
+        });
+      })
+      .catch(err => console.log(err));
+  };
 
-          this.setState({ 
-            allPositions: positionsEnum,
-            positions: positionsChecked
-          });
-        })
-        .catch(err => console.log(err));
-    }
-
-  handleSubmit = (event) => {
+  handleSubmit = event => {
     this.addCompany();
     // Prevent site refresh after submission
     event.preventDefault();
-  }
+  };
 
   handleChange = name => event => {
-    console.log("Tried")
+    console.log("Tried");
     this.setState({
-      [name]: event.target.value,
+      [name]: event.target.value
     });
   };
 
@@ -208,34 +211,37 @@ class CompaniesForm extends Component {
     const allPositions = this.state.allPositions;
     const positions = this.state.positions;
 
-   //console.log(allMajors);
-    
+    //console.log(allMajors);
+
     const majorChecks = Object.getOwnPropertyNames(majors).map(elem => {
-      return (<FormControlLabel
-                  control={
-                    <Checkbox 
-                      checked={majors[elem]}
-                      onChange={this.handleCheckChange('majors')} 
-                      value={elem}
-                    />
-                  }
-                  label={elem}
-                />)
-    })
+      return (
+        <FormControlLabel
+          control={
+            <Checkbox
+              checked={majors[elem]}
+              onChange={this.handleCheckChange("majors")}
+              value={elem}
+            />
+          }
+          label={elem}
+        />
+      );
+    });
 
     const positionChecks = Object.getOwnPropertyNames(positions).map(elem => {
-      return (<FormControlLabel
-                  control={
-                    <Checkbox 
-                      checked={positions[elem]}
-                      onChange={this.handleCheckChange('positions')} 
-                      value={elem}
-                    />
-                  }
-                  label={elem}
-                />)
-    })
-
+      return (
+        <FormControlLabel
+          control={
+            <Checkbox
+              checked={positions[elem]}
+              onChange={this.handleCheckChange("positions")}
+              value={elem}
+            />
+          }
+          label={elem}
+        />
+      );
+    });
 
     return (
       <main className={classes.main}>
@@ -245,61 +251,66 @@ class CompaniesForm extends Component {
           </Typography>
           <form className={classes.form} onSubmit={this.handleSubmit}>
             <TextField
-              required fullWidth
-              id='name'
-              label='Company Name'
+              required
+              fullWidth
+              id="name"
+              label="Company Name"
               className={classes.textField}
-              placeholder=''
-              value={this.state.name || ''}
-              onChange={this.handleChange('name')}
-              margin='normal'
+              placeholder=""
+              value={this.state.name || ""}
+              onChange={this.handleChange("name")}
+              margin="normal"
             />
-            <TextField fullWidth
-              id='website'
-              label='Company Website'
+            <TextField
+              fullWidth
+              id="website"
+              label="Company Website"
               className={classes.textField}
-              placeholder='e.g. www.company.com'
-              value={this.state.website || ''}
-              onChange={this.handleChange('website')}
-              margin='normal'
+              placeholder="e.g. www.company.com"
+              value={this.state.website || ""}
+              onChange={this.handleChange("website")}
+              margin="normal"
             />
             <FormLabel>Majors Hiring:</FormLabel>
             <FormGroup>
-              <div>
-                {majorChecks}
-               </div>
+              <div>{majorChecks}</div>
             </FormGroup>
             <FormLabel>Positions Hiring:</FormLabel>
             <FormGroup>
-              <div>
-              {positionChecks}
-              </div>
+              <div>{positionChecks}</div>
             </FormGroup>
             <FormHelperText error className={classes.formHelperText}>
               {this.state.errorMessage}
             </FormHelperText>
             <FormControl className={classes.formControl}>
-            <FormLabel id="demo-simple-select-label">Citizenship</FormLabel>
+              <FormLabel id="demo-simple-select-label">Citizenship</FormLabel>
               <Select
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"
                 value={this.state.citizenship}
-                onChange={this.handleChange('citizenship')}
+                onChange={this.handleChange("citizenship")}
               >
-                <MenuItem value={'Y'}>Yes</MenuItem>
-                <MenuItem value={'N'}>No</MenuItem>
+                <MenuItem value={"Y"}>Yes</MenuItem>
+                <MenuItem value={"N"}>No</MenuItem>
               </Select>
             </FormControl>
             <TextField
               fullWidth
-              id='description'
-              label='Company Description'
+              id="description"
+              label="Company Description"
               className={classes.textField}
-              placeholder=''
-              value={this.state.description || ''}
-              onChange={this.handleChange('description')}
-              margin='normal'
+              placeholder=""
+              value={this.state.description || ""}
+              onChange={this.handleChange("description")}
+              margin="normal"
             />
+            <br />
+            <br />
+            <FormLabel id="demo-simple-select-label">Company Image</FormLabel>
+            <br />
+            <Input type="file" disableUnderline="true" />
+            <br />
+            <br />
             <Button
               type="submit"
               fullWidth
