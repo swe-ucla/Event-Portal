@@ -46,10 +46,53 @@ class CompaniesForm extends Component {
     // };
   }
 
-  componentDidMount(){
-    this.getAllMajors();
-    this.getAllPositions();
-    this.getCompanyData();
+  async componentDidMount(){
+    //console.log("1")
+    // let response1 = await this.getAllMajors();
+    // //console.log("2")
+    // let response2 = await this.getAllPositions();
+    // //console.log("3")
+    // let response3 = await this.getCompanyData();
+    // let fulfill1 = this.getAllMajors()
+    // let fulfill2 = this.getAllPositions();
+    // let fulfill3 = this.getCompanyData();
+    // new Promise(function(fulfill1, reject){
+    //     //do something for 5 seconds
+    //     fulfill1();
+    // }).then(function(result){
+    //     return new Promise(function(fulfill2, reject){
+    //         //do something for 5 seconds
+    //         fulfill2();
+    //     });
+    // }).then(function(result){
+    //     return new Promise(function(fulfill3, reject){
+    //         //do something for 8 seconds
+    //         fulfill3();
+    //         //fulfill(result);
+    //     });
+    // }).then(function(result){
+    //     //do something with the result
+    // });
+    // this.getAllMajors().then(function() {
+    //   this.getAllPositions().then(function() {
+    //     this.getCompanyData();
+    //   })
+    // })
+    // this.getAllMajors(function() {
+    //   this.getAllPositions(function() {
+    //     this.getCompanyData(function() {
+    //       //work?
+    //     });
+    //   });
+    // });
+    /*some_3secs_function(some_value, function() {
+  some_5secs_function(other_value, function() {
+    some_8secs_function(third_value, function() {
+      //All three functions have completed, in order.
+    });
+  });
+});*/
+    this.getEverything();
   }
 
   changeCompany = () => {
@@ -88,6 +131,9 @@ class CompaniesForm extends Component {
         }
       }
     }
+    console.log(majorIDs);
+    console.log(removeMajorIDs);
+    //console.log(removePositionIDs);
     //console.log(majorIDs);
 
     let body = {
@@ -96,9 +142,9 @@ class CompaniesForm extends Component {
       website: this.state.website,
       citizenship_requirement: this.state.citizenship ? 'Y' : 'N', //change?
       major_id: majorIDs,
-      position_id: positionIDs,
-      remove_position_ids: removePositionIDs,
-      remove_major_ids: removeMajorIDs
+      //position_id: positionIDs,
+      //remove_position_id: removePositionIDs,
+      //remove_major_id: removeMajorIDs,
     };
 
     // Make PUT request to update company data
@@ -115,8 +161,81 @@ class CompaniesForm extends Component {
       });
   }
 
-  getCompanyData = () => {
-    axios.get('/companies/1/id')
+  getEverything = () => {
+    var options = {
+      params: {
+        sort: 'id'
+      }
+    }
+    let majorsChecked = {};
+    let positionsChecked = {};
+    axios.get('/majors', options)
+      .then(result => {
+        let majorsEnum = {};
+        //let majorsChecked = {};
+        result.data.forEach(function(major) { 
+          majorsEnum[major.name] = major.id;
+          majorsChecked[major.name] = false;
+        });
+
+        this.setState({ 
+          allMajors: majorsEnum,
+          majors: majorsChecked
+        });
+        console.log(this.state.allMajors)
+        axios.get('/positions', options)
+          .then(result => {
+            let positionsEnum = {};
+            result.data.forEach(function(position) { 
+              positionsEnum[position.role] = position.id;
+              positionsChecked[position.role] = false;
+            });
+            // maybe skip intermediate state updates
+            this.setState({ 
+              allPositions: positionsEnum,
+              positions: positionsChecked
+            });
+            let idToMajor = {};
+            console.log(this.state.allMajors);
+            Object.keys(this.state.allMajors).forEach(key => {
+              console.log(key)
+              idToMajor[this.state.allMajors[key]] = key;
+            })
+            console.log(idToMajor);
+            axios.get('/companies/1/majors')
+            .then(result => {
+              let majs = result.data;
+              console.log(majs)
+              for (let m in majs) {
+                console.log(majs[m].major_id)
+                console.log(idToMajor[majs[m].major_id])
+                majorsChecked[idToMajor[majs[m].major_id]] = true;
+              }
+              this.setState({
+                majors: majorsChecked
+              });
+              console.log(this.state.majors);
+              axios.get('/companies/1/positions')
+              .then(result => {
+                let idToPosition = {};
+                console.log(this.state.allPositions);
+                Object.keys(this.state.allPositions).forEach(key => {
+                  console.log(key)
+                  idToPosition[this.state.allPositions[key]] = key;
+                })
+                let pos = result.data;
+                for (let p in pos) {
+                  positionsChecked[idToPosition[pos[p].position_id]] = true;
+                }
+              })
+              .catch(err => console.log(err));
+            })
+            .catch(err => console.log(err));
+          })
+          .catch(err => console.log(err));
+        })
+        .catch(err => console.log(err));
+       axios.get('/companies/1/id')
       .then(result => {
         let nam = result.data[0].name;
         let web = result.data[0].website;
@@ -133,7 +252,55 @@ class CompaniesForm extends Component {
       .catch(err => console.log(err));
   }
 
-  getAllMajors = () => {
+ getCompanyData = async() => {
+    //invert mapping of enum, yielding mapping from id to name
+    let idToMajor = {};
+    console.log(this.state.allMajors);
+    Object.keys(this.state.allMajors).forEach(key => {
+      console.log(key)
+      idToMajor[this.state.allMajors[key]] = key;
+    })
+    console.log(idToMajor);
+
+    axios.get('/companies/1/id')
+      .then(result => {
+        let nam = result.data[0].name;
+        let web = result.data[0].website;
+        let desc = result.data[0].description;
+        let cit_req = result.data[0].citizenship_requirement;
+        console.log(nam)
+        this.setState({
+          name: nam,
+          description: desc,   
+          website: web,
+          citizenship: cit_req 
+        });
+      })
+      .catch(err => console.log(err));
+      axios.get('/companies/1/majors')
+      .then(result => {
+        let majs = result.data;
+        let majorsChecked = {};
+        console.log(majs)
+        for (let am in this.state.allMajors) {
+          majorsChecked[idToMajor[am.major_id]] = false;
+        }
+        for (let m in majs) {
+          console.log(majs[m].major_id)
+          console.log(idToMajor[majs[m].major_id])
+          majorsChecked[idToMajor[majs[m].major_id]] = true;
+        }
+        this.setState({
+          majors: majorsChecked
+        });
+        console.log(this.majors);
+      })
+      .catch(err => console.log(err));
+      //majorsChecked[major.name] = false;
+      return 1;
+  }
+
+  getAllMajors = async() => {
     var options = {
       params: {
         sort: 'id'
@@ -152,12 +319,13 @@ class CompaniesForm extends Component {
           allMajors: majorsEnum,
           majors: majorsChecked
         });
-        //console.log(this.state.allMajors)
+        console.log(this.state.allMajors)
       })
       .catch(err => console.log(err));
+      return 1;
   }
 
-  getAllPositions = () => {
+  getAllPositions = async() => {
       var options = {
         params: {
           sort: 'id'
@@ -179,6 +347,7 @@ class CompaniesForm extends Component {
           });
         })
         .catch(err => console.log(err));
+        return 1;
     }
 
   handleSubmit = (event) => {
