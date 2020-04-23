@@ -22,6 +22,7 @@ services:
       - server
     ports:
       - ${REACT_CLIENT_PORT}:${REACT_CLIENT_PORT}
+    stdin_open: true
 
   postgres:
     build: ./database
