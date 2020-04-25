@@ -13,7 +13,7 @@ import FormLabel from '@material-ui/core/FormLabel';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import Switch from '@material-ui/core/Switch';
-//import Autocomplete from '@material-ui/lab/Autocomplete';
+import Autocomplete from '@material-ui/lab/Autocomplete';
 /*
 import 'date-fns';
 import DateFnsUtils from '@date-io/date-fns';
@@ -68,7 +68,7 @@ function AddEvent(props) {
   const { classes } = props;
   const [name, setName] = React.useState('');
   const [nameErr, setNameErr] = React.useState(false);
-  const [locations, setLocations] = React.useState(null);
+  const [dbLocations, setDBLocations] = React.useState([]);
   const [period, setPeriod] = React.useState('');
   const [periodErr, setPeriodErr] = React.useState(false);
   const [week, setWeek] = React.useState('');
@@ -95,18 +95,20 @@ function AddEvent(props) {
   const getLocations = () => {
     axios.get('/locations')
       .then(result => {
-        let locationsData = result.data.map(function(location) {
-          return {
-            id: location.id,
-            name: location.name,
-            address_id: location.address_id,
-            description: location.description,
-            updated_at: location.updated_at,
-            created_at: location.created_at,
+        let locationsData = result.data.reduce(function(data, loc) {
+          if (loc.name) {  // make sure it has a name!
+            data.push({
+              id: loc.id,
+              name: loc.name,
+              address_id: loc.address_id,
+              description: loc.description,
+              updated_at: loc.updated_at,
+              created_at: loc.created_at,
+            });
           }
-        });
-
-        setLocations(locationsData);
+          return data;
+        }, []);
+        setDBLocations(dbLocations => [...dbLocations, ...locationsData]);
       })
       .catch(err => console.log(err));
   }
@@ -190,6 +192,9 @@ function AddEvent(props) {
   }
 
   const addEvent = () => {
+    // TESTING
+    console.log(dbLocations);
+
     /* TODO: do check for admin */
     console.log('add');
     var validFields = true;
@@ -207,7 +212,7 @@ function AddEvent(props) {
     var ends = ((isSameDay) ? startDate : endDate) + " " + endTime + ":00"; // check end is after start?
 
     // Post to database
-    
+    /*
     if (validFields) {
       axios.post('/events', {
         "event_id": id,
@@ -232,7 +237,7 @@ function AddEvent(props) {
         console.log(error);
         alert("Error adding event. Please try again!");
       });
-    }
+    }*/
   }
 
   return (
@@ -250,7 +255,7 @@ function AddEvent(props) {
           helperText={nameErr ? "Name can't be empty" : ""}
           onChange={(e) => handleChange(e, "name")}/>
       </div>
-      <Grid container spacing={32} justify="flex-start">
+      <Grid container spacing={4} justify="flex-start">
         <Grid item>
           <FormControl component="fieldset">
             <FormLabel component="legend">EWI?</FormLabel>
@@ -270,7 +275,7 @@ function AddEvent(props) {
           </FormControl>
         </Grid>
       </Grid>
-      <Grid container spacing={16} justify="flex-start">
+      <Grid container spacing={2} justify="flex-start">
         <Grid item>
           <TextField
             id="date"
@@ -383,14 +388,15 @@ function AddEvent(props) {
         </datalist>
       </div>*/}
       <div>
-      {/*
+      
         <Autocomplete
-          options={locations}
+          options={dbLocations}
           getOptionLabel={(option) => option.name}
           style={{ width: 300 }}
-          renderInput={(params) => <TextField {...params} label="Combo box" variant="outlined" />}
-        />*/}
+          renderInput={(params) => <TextField {...params} label="Location" variant="outlined" />}
+        />
       </div>
+
       <div>
         <TextField 
           className={classes.link} 
