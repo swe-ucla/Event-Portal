@@ -28,7 +28,7 @@ class EventRow extends Component {
 				<p className={classes.title}> 
 					{this.props.name}
 				</p>
-				<Grid container spacing={32} className={classes.row}>
+				<Grid container spacing={4} className={classes.row}>
 					{cards}
 				</Grid>
 			</div>
