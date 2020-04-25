@@ -13,7 +13,9 @@ import FormLabel from '@material-ui/core/FormLabel';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import Switch from '@material-ui/core/Switch';
-import Autocomplete from '@material-ui/lab/Autocomplete';
+import Autocomplete, { createFilterOptions } from '@material-ui/lab/Autocomplete';
+
+const filter = createFilterOptions();
 /*
 import 'date-fns';
 import DateFnsUtils from '@date-io/date-fns';
@@ -81,7 +83,8 @@ function AddEvent(props) {
   const [isSameDay, setIsSameDay] = React.useState(true);
   const [timeErr, setTimeErr] = React.useState(false);
   const [description, setDescription] = React.useState('');
-  const [location, setLocation] = React.useState('');
+  const [location, setLocation] = React.useState(null);
+  const [locErr, setLocErr] = React.useState(false);
   const [link, setLink] = React.useState('');
   const [linkErr, setLinkErr] = React.useState(false);
   const [linkHelpText, setLinkHelpText] = React.useState("Link can't be empty");
@@ -175,6 +178,9 @@ function AddEvent(props) {
       }
     }
 
+    // check location
+    setLocErr(location ? false : true);
+
   }
 
   const parseLinkForID = (eventURL) => {
@@ -192,8 +198,6 @@ function AddEvent(props) {
   }
 
   const addEvent = () => {
-    // TESTING
-    console.log(dbLocations);
 
     /* TODO: do check for admin */
     console.log('add');
@@ -212,14 +216,14 @@ function AddEvent(props) {
     var ends = ((isSameDay) ? startDate : endDate) + " " + endTime + ":00"; // check end is after start?
 
     // Post to database
-    /*
+    
     if (validFields) {
       axios.post('/events', {
         "event_id": id,
         "name": name,
         "starts_at": starts,
         "ends_at": ends,
-        "location_id": "1",
+        "location_id": location.id,  // check if new location!!
         "description": description,
         "fb_event": link,
         "picture": img,
@@ -237,7 +241,7 @@ function AddEvent(props) {
         console.log(error);
         alert("Error adding event. Please try again!");
       });
-    }*/
+    }
   }
 
   return (
@@ -391,9 +395,48 @@ function AddEvent(props) {
       
         <Autocomplete
           options={dbLocations}
-          getOptionLabel={(option) => option.name}
+          getOptionLabel={(option) => {
+            // e.g value selected with enter, right from the input
+            if (typeof option === 'string') {
+              return option;
+            }
+            if (option.inputValue) {
+              return option.inputValue;
+            }
+            return option.name;
+          }}
+          renderOption={(option) => option.name}
           style={{ width: 300 }}
-          renderInput={(params) => <TextField {...params} label="Location" variant="outlined" />}
+          renderInput={(params) => <TextField {...params} 
+            label="Location" 
+            error={locErr}
+            helperText={locErr ? "Location can't be empty" : ""}/>
+          }
+          value={location}
+          onChange={(event, newValue) => {
+            console.log(newValue);
+            if (newValue && newValue.inputValue) {
+              setLocation({
+                name: newValue.inputValue,
+              });
+
+              return;
+            }
+
+            setLocation(newValue);
+          }}
+          filterOptions={(options, params) => {
+            const filtered = filter(options, params);
+
+            if (params.inputValue !== '') {
+              filtered.push({
+                inputValue: params.inputValue,
+                name: `Add "${params.inputValue}"`,
+              });
+            }
+            return filtered;
+          }}
+          freeSolo
         />
       </div>
 
