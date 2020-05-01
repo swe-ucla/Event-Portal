@@ -1,9 +1,11 @@
 import React, { Component } from "react";
 import EventRow from "./EventRow.js";
+import PopUp from "./PopUp.js"
 import axios from "axios";
 import { withStyles } from "@material-ui/core/styles";
 import EventsStyles from "../styles/Events.js";
 import Divider from "@material-ui/core/Divider";
+import Modal from '@material-ui/core/Modal'
 
 class Events extends Component {
   _isMounted = false;
@@ -14,12 +16,15 @@ class Events extends Component {
     this.state = {
       eventsByDayArray: {},
       loading: false,
-      date: "", // TO-DO: change to today's date when we populate with real data; 2019-01-22T12:00:00.000Z
+      date: "", // TO-DO: change to today's date. E.G.: 2019-03-02T15:30:00.000Z
       prevY: 0,
+      popUp: false,
     };
 
     this.getEvents = this.getEvents.bind(this);
     this.handlePastEvents = this.handlePastEvents.bind(this);
+    this.handleOpenPopUp = this.handleOpenPopUp.bind(this);
+    this.handleClosePopUp = this.handleClosePopUp.bind(this);
   }
 
   componentDidMount() {
@@ -98,6 +103,7 @@ class Events extends Component {
                 name: event.name,
                 starts_at: event.starts_at,
                 ends_at: event.ends_at,
+                attendance_code: event.attendance_code,
                 location_id: event.location_id,
                 location: event.location_id
                   ? locationsData[event.location_id].name
@@ -109,7 +115,7 @@ class Events extends Component {
                 updated_at: event.updated_at,
                 created_at: event.created_at,
                 period: event.period,
-                week: event.week
+                week: event.week,
               };
             });
 
@@ -224,14 +230,31 @@ class Events extends Component {
     this.renderEventRows();
   }
 
+  handleOpenPopUp = () => {
+    this.setState({
+      popUp: true,
+    })
+  }
+
+  handleClosePopUp = () => {
+    this.setState ({
+      popUp: false,
+    })
+  }
+
+  handlePopUpSubmit = (inputValue) => {
+    console.log(inputValue);
+  }
+
   render() {
     const { classes } = this.props;
     const loadingCSS = {
       height: "100px",
       margin: "30px"
     }
+    
     const loadingTextCSS = { display: this.state.loading ? "block" : "none" };
-
+  
     return (
       <div className={classes.container}>
         <div className={classes.whiteBackground}>
@@ -242,6 +265,12 @@ class Events extends Component {
             </svg>
             <p className={classes.buttonLabel}>see past events</p>
           </button>
+          <button className={classes.checkInButton} onClick={this.handleOpenPopUp}>
+            Check In
+          </button>
+          <Modal open={this.state.popUp} onClose={this.handleClosePopUp} >
+            <PopUp onPopUpSubmit={this.handlePopUpSubmit}/>
+          </Modal>
           <div className={classes.events}>{this.renderEventRows()}</div>
           <div ref = {loadingRef => (this.loadingRef = loadingRef)} style={loadingCSS}>
             <span style={loadingTextCSS}>Loading...</span>

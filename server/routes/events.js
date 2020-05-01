@@ -94,19 +94,37 @@ router.get('/:event_id/id', function(req, res, next) {
     .catch(err => { return next(err) });
 });
 
+// GET event by attendance_code
+router.get('/:attendance_code/attendance_code', function(req, res, next) {
+  if (isNaN(req.params.attendance_code)) {
+    util.throwError(400, "Attendance code must be a valid string.");
+  }
+
+  knex('event').select().where({ attendance_code: req.params.attendance_code })
+    .then(result => {
+      if(result.length) {
+        res.json(result);
+      } else {
+        res.status(404).json('No events with matching event ID found.');
+      }
+    })
+    .catch(err => { return next(err) });
+});
+
 // Add a single event
 router.post('/', function(req, res, next) {
   let values = { 
   	fb_id: req.body.event_id, 
   	name: req.body.name, 
   	starts_at: req.body.starts_at, 
-  	ends_at: req.body.ends_at,
+    ends_at: req.body.ends_at,
+    attendance_code: req.body.attendance_code,
   	period: req.body.period,
   	location_id: req.body.location_id,
   	description: req.body.description,
   	fb_event: req.body.fb_event,
   	picture: req.body.picture,
-  	is_featured: req.body.is_featured
+    is_featured: req.body.is_featured
   };
   
   if (!req.body.event_id) util.throwError(400, "Missing 'event_id' parameter.");
@@ -114,6 +132,7 @@ router.post('/', function(req, res, next) {
   if (!req.body.starts_at) util.throwError(400, "Missing 'starts_at' parameter.");
   if (!req.body.ends_at) util.throwError(400, "Missing 'ends_at' parameter.");
   if (!req.body.period) util.throwError(400, "Missing 'period' parameter.");
+  if (!req.body.attendance_code) util.throwError(400, "Missing 'attendance_code' parameter.");
 
   let category_ids = req.body.categories;
   let category_values = [];
@@ -180,13 +199,14 @@ router.put('/:event_id', function(req, res, next) {
 	let values = {
   	name: req.body.name, 
   	starts_at: req.body.starts_at, 
-  	ends_at: req.body.ends_at,
+    ends_at: req.body.ends_at,
+    attendance_code: req.body.attendance_code,
   	period: req.body.period,
   	location_id: req.body.location_id,
   	description: req.body.description,
   	fb_event: req.body.fb_event,
   	picture: req.body.picture,
-  	is_featured: req.body.is_featured
+    is_featured: req.body.is_featured
   };
 
   if (!values.name && !values.starts_at && !values.ends_at && !values.period 
