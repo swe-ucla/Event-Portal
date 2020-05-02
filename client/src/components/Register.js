@@ -116,20 +116,23 @@ class Register extends Component {
       })
       .catch(err => console.log(err));
 
-      // TODO: get user major request
     axios.get(`/users/${id}/majors`)
       .then(result => {
-        // TODO: ensure database is planning to have multiple ids from this request
         console.log(result)
-        let m_id = result.data[0].major_id;
+        let major_data = result.data;
+        let m_ids = [...major_data];
         this.setState(prev => {
-          let m_name = prev.major_names[m_id];
+          let m_names = {};
+          m_ids.forEach(id => {
+            m_names[prev.major_names[id.major_id]] = true;
+          });
+          // console.log(m_names);
           return {
             major_checkboxes: {
               ...prev.major_checkboxes,
-              [m_name]: true,
+              ...m_names
             }
-          }
+          };
         });
       })
       .catch(err => console.log(err));
