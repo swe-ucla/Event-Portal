@@ -19,10 +19,6 @@ const AddEventStyles = theme => ({
 	week: {
 		minWidth: '80px',
 	},
-	link: {
-		//width: '95%',
-		//marginBottom: '20px',
-	},
 	description: {
 	    //width: '95%',
 	    marginTop: '20px',
@@ -30,7 +26,15 @@ const AddEventStyles = theme => ({
 	btnDiv: {
 		margin: 'auto',
 		width: '200px',
-	}
+	},
+	categories: {
+		overflow: 'auto',
+		position: 'relative',
+    	maxHeight: '300px',
+    	maxWidth: '180px',
+    	width: '100%',
+    	border: '2px',
+	},
 });
 
 export default AddEventStyles;

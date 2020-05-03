@@ -80,6 +80,7 @@ router.post('/', function(req, res, next) {
   	starts_at: req.body.starts_at, 
   	ends_at: req.body.ends_at,
   	period: req.body.period,
+    week: req.body.week,
   	location_id: req.body.location_id,
   	description: req.body.description,
   	fb_event: req.body.fb_event,

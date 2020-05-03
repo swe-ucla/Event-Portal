@@ -10,9 +10,11 @@ import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
+import FormGroup from '@material-ui/core/FormGroup';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import Switch from '@material-ui/core/Switch';
+import Checkbox from '@material-ui/core/Checkbox';
 import Autocomplete, { createFilterOptions } from '@material-ui/lab/Autocomplete';
 
 const filter = createFilterOptions();
@@ -71,6 +73,8 @@ function AddEvent(props) {
   const [name, setName] = React.useState('');
   const [nameErr, setNameErr] = React.useState(false);
   const [dbLocations, setDBLocations] = React.useState([]);
+  const [dbAddresses, setDBAddresses] = React.useState([]);
+  const [dbCategories, setDBCategories] = React.useState([]);
   const [period, setPeriod] = React.useState('');
   const [periodErr, setPeriodErr] = React.useState(false);
   const [week, setWeek] = React.useState('');
@@ -85,14 +89,19 @@ function AddEvent(props) {
   const [description, setDescription] = React.useState('');
   const [location, setLocation] = React.useState(null);
   const [locErr, setLocErr] = React.useState(false);
+  const [address, setAddress] = React.useState(null);
+  const [street, setStreet] = React.useState('');
   const [link, setLink] = React.useState('');
   const [linkErr, setLinkErr] = React.useState(false);
   const [linkHelpText, setLinkHelpText] = React.useState("Link can't be empty");
   const [img, setImg] = React.useState('');
+  const [categories, setCategories] = React.useState([]);
 
   useEffect(() => {
     /* TODO: do check for admin */
     getLocations();
+    getAddresses();
+    getCategories();
   }, []);
 
   const getLocations = () => {
@@ -105,17 +114,45 @@ function AddEvent(props) {
               name: loc.name,
               address_id: loc.address_id,
               description: loc.description,
-              updated_at: loc.updated_at,
-              created_at: loc.created_at,
             });
           }
           return data;
         }, []);
-        setDBLocations(dbLocations => [...dbLocations, ...locationsData]);
+        setDBLocations(dbLocations => [...locationsData]);
       })
       .catch(err => console.log(err));
   }
 
+  const getAddresses = () => {
+    axios.get('/addresses')
+      .then(result => {
+        let addressesData = result.data.reduce(function(data, addr) {
+          data.push({
+            id: addr.id,
+            name: addr.name,
+            street: addr.street,
+          });
+          return data;
+        }, []);
+        setDBAddresses(dbAddresses => [...addressesData]);
+      })
+      .catch(err => console.log(err));
+  }
+
+  const getCategories = () => {
+    axios.get('/categories')
+      .then(result => {
+        let categoriesData = result.data.reduce(function(data, category) {
+          data.push({
+            id: category.id,
+            name: category.name,
+          });
+          return data;
+        }, []);
+        setDBCategories(dbCategories => [...categoriesData]);
+      })
+      .catch(err => console.log(err));
+  }
 
   const handleChange = (event, field) => {
     if (!field.localeCompare("name"))
@@ -148,7 +185,11 @@ function AddEvent(props) {
       setImg(event.target.value);
     else if (!field.localeCompare("description"))
       setDescription(event.target.value);
+    else if (!field.localeCompare("street"))
+      setStreet(event.target.value);
   };
+
+
 
   const checkForErrors = () => {
     // check if name is empty
@@ -197,7 +238,7 @@ function AddEvent(props) {
     return eventURL.substring(start, end);
   }
 
-  const addEvent = () => {
+  const addEvent = async () => {
 
     /* TODO: do check for admin */
     console.log('add');
@@ -217,25 +258,59 @@ function AddEvent(props) {
 
     // Post to database
     
+    // TODO: add rollback/commit??
     if (validFields) {
+      var addressID = (address && address.id) ? address.id : -1;
+      var locID = (location && location.id) ? location.id : -1;
+
+      // First check if need to add a new location!
+      if (!location.id) {
+        // check if need new address
+        if (!address.id) {
+          const addrRes = await axios.post('/addresses', {
+            "name": address.name,
+            "street": street,
+          })
+          const responseStr = addrRes.data.message;
+          console.log("Address: " + responseStr);
+          var index = responseStr.indexOf(':');
+          addressID = parseInt(responseStr.substring(index+1));
+        }
+
+        const locRes = await axios.post('/locations', {
+          "name": location.name,
+          "address_id": addressID,
+          "description": '',
+        })
+
+        const responseStr = locRes.data.message;
+        console.log("Location: " + responseStr);
+        var index = responseStr.indexOf(':');
+        locID = parseInt(responseStr.substring(index+1));
+      }
+
+      console.log(categories);
+
       axios.post('/events', {
         "event_id": id,
         "name": name,
         "starts_at": starts,
         "ends_at": ends,
-        "location_id": location.id,  // check if new location!!
+        "location_id": locID, 
         "description": description,
         "fb_event": link,
         "picture": img,
         "is_featured": isFeatured,
-        "categories": [],
+        "categories": categories,
         "companies": [],
         "hosts": [],
         "period": period,
+        "week": week,
       })
       .then(function (response) {
         console.log(response);
         alert("Event " + id + ": '" + name + "' successfully added!");
+        // TODO: add force reload of pg
       })
       .catch(function (error) {
         console.log(error);
@@ -376,23 +451,7 @@ function AddEvent(props) {
           ))}
         </TextField>
       </div>
-      {/*<div>
-        <TextField required id="standard-required" label="Location" value={location} onChange={(e) => handleChange(e, "location")}/>
-        {/*<input type="search" list="languages" placeholder="Pick a programming language.."/>}
-
-        <datalist id="languages">
-          <option value="PHP" />
-          <option value="C++" />
-          <option value="Java" />
-          <option value="Ruby" />
-          <option value="Python" />
-          <option value="Go" />
-          <option value="Perl" />
-          <option value="Erlang" />
-        </datalist>
-      </div>*/}
       <div>
-      
         <Autocomplete
           options={dbLocations}
           getOptionLabel={(option) => {
@@ -419,8 +478,6 @@ function AddEvent(props) {
               setLocation({
                 name: newValue.inputValue,
               });
-
-              return;
             }
 
             setLocation(newValue);
@@ -439,7 +496,62 @@ function AddEvent(props) {
           freeSolo
         />
       </div>
+      {(location ? (location.id ? false : true) : false) &&
+        <div>
+          <Autocomplete
+            options={dbAddresses}
+            getOptionLabel={(option) => {
+              // e.g value selected with enter, right from the input
+              if (typeof option === 'string') {
+                return option;
+              }
+              if (option.inputValue) {
+                return option.inputValue;
+              }
+              return option.name;
+            }}
+            renderOption={(option) => option.name}
+            style={{ width: 300 }}
+            renderInput={(params) => <TextField {...params} 
+              label="Building/location name"/>
+            }
+            value={address}
+            onChange={(event, newValue) => {
+              console.log(newValue);
+              if (newValue && newValue.inputValue) {
+                setAddress({
+                  name: newValue.inputValue,
+                });
 
+                return;
+              }
+
+              setAddress(newValue);
+              setStreet(newValue ? newValue.street : '')
+            }}
+            filterOptions={(options, params) => {
+              const filtered = filter(options, params);
+
+              if (params.inputValue !== '') {
+                filtered.push({
+                  inputValue: params.inputValue,
+                  name: `Add "${params.inputValue}"`,
+                });
+              }
+              return filtered;
+            }}
+            freeSolo
+          />
+          <TextField 
+            disabled={(address ? (address.id ? true : false) : true)} 
+            id="standard-required" 
+            label="Street Address" 
+            value={street} 
+            onChange={(e) => handleChange(e, "street")}
+            style={{ width: 300 }}/>
+        </div>
+      }
+      
       <div>
         <TextField 
           className={classes.link} 
@@ -467,6 +579,28 @@ function AddEvent(props) {
           variant="outlined"
           onChange={(e) => handleChange(e, "description")}
         />
+      </div>
+      <div>
+        <FormLabel component="legend">Categories</FormLabel>
+        <FormGroup>
+          {dbCategories.map((category) => (
+            <FormControlLabel
+              control={<Checkbox 
+                onChange={() => {
+                  const index = categories.indexOf(category.id);
+                  console.log("check");
+                  if (index == -1)
+                    setCategories((categories) => [...categories, category.id]);
+                  else 
+                    setCategories((categories) => [...categories.slice(0, index), ...categories.slice(index+1)])
+                }}
+                key={category.name} 
+                name={category.name}
+              />}
+              label={category.name}
+            />
+          ))}
+        </FormGroup>
       </div>
       <div className={classes.btnDiv}>
         <Button variant="contained" onClick={addEvent}>Add Event</Button>

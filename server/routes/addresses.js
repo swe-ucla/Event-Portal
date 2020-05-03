@@ -40,8 +40,9 @@ router.post('/', function(req, res, next) {
 
   values = { name: req.body.name, street: req.body.street };
   knex('address').insert(values)
-    .then(result => {
-      res.send(util.message('Successfully inserted new address: ' + req.body.id));
+    .returning('id')
+    .then(([id]) => {
+      res.send(util.message('Successfully inserted new address: ' + id));
     })
     .catch(err => { return next(err) });
 });
