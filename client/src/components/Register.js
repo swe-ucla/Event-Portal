@@ -21,7 +21,7 @@ import { useMajors, useOccupations } from "../utils/misc-hooks.js";
 // const GOOGLE_BUTTON_ID = 'google-sign-in-button';
 
 function Register(props) {
-  const user_id = null;
+  const user_id = 1;
   const INITIAL_USER = {
     first_name: '',
     last_name: '',
@@ -146,6 +146,15 @@ function Register(props) {
     });
   }
 
+  /* Addition by Nikhita 149-156 */
+  let occupation_id_nums = []
+  userDetails.occupation_ids.forEach(occupation => occupation_id_nums.push(occupation.occupation_id));
+  console.log(occupation_id_nums)
+
+  let major_id_nums = []
+  userDetails.major_ids.forEach(major => major_id_nums.push(major.major_id));
+  console.log(major_id_nums)
+
   // handle POST request for new users
   const addUser = () => {
     // TODO: add support from server to handle the fields in userDetails
@@ -160,8 +169,8 @@ function Register(props) {
       swe_id: userDetails.swe_id,
       gpa: userDetails.gpa,
       is_admin: false,
-      occupation_id: userDetails.occupation_ids,
-      major_id: userDetails.major_ids,
+      occupation_id: occupation_id_nums,
+      major_id: major_id_nums, 
     };
     axios.post('/users/register', body)
       .then(result => {
