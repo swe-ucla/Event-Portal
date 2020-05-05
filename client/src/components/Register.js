@@ -1,5 +1,4 @@
-
-import React, { Component } from 'react';
+import React, {useState, useEffect} from 'react'
 import axios from 'axios';
 
 import { withStyles } from '@material-ui/core/styles';
@@ -16,288 +15,266 @@ import Paper from '@material-ui/core/Paper';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 
-
 import ExamplePostFormStyles from '../styles/ExamplePostForm.js';
-import ExampleGet from '../components/ExampleGet.js';
+import { useMajors, useOccupations } from "../utils/misc-hooks.js";
 
+// const GOOGLE_BUTTON_ID = 'google-sign-in-button';
 
-const GOOGLE_BUTTON_ID = 'google-sign-in-button';
-
-
-class Register extends Component {
+function Register(props) {
+  const user_id = null;
+  const INITIAL_USER = {
+    first_name: '',
+    last_name: '',
+    password: '',
+    email: '',
+    phone: '',
+    university_id: '',
+    swe_id: '',
+    gpa: '',
+    is_admin: false,
+    occupation_ids: [], // array of occupations, each occupation has form { occupation_id: # }
+    // diet_ids: [], // array of dietary needs, each diet has form { diet_id: # }
+    // position_ids: [], // array of positions, each having form { position_id: # }
+    // ranks: [],
+    major_ids: [], // array of majors, each having for { major_id: # }
+    // company_ids: []
+  };
   
-  componentDidMount ()
-  {
-    this.getMajors();
-    this.getOccupations();
-    this.getUserInfo(1);
-  }
+  // get major and occupation information from database
+  const { majors } = useMajors({});
+  const { occupations } = useOccupations({});
 
-  constructor() {
-    super();
-
-    // Initiate state
-    this.state = { 
-      // form info
-      occupation_ids: [],
-      occupation_names: [],
-      major_names: [],
-      errorMessage: '',
-      
-      // user values
-      user_id: null,
-      email: '',
-      first_name: '',
-      last_name: '',
-      ucla_id: null,
-      occupation_id: null, //occupation name is really year
-      occupation_name: null,
-      swe_id: '',
-      gpa: null,
-      phone_number: '',
-      major_name: '',
-      major_id: '',
-
-      occupations : {}, //<occupation name, occupation id
-
-      major_checkboxes : {} //<name, checked>
-    };
-  }
-
-  getMajors = () => {
-    axios.get('/majors')
-      .then(result => {
-        let m_map = {}
-        let m_checkboxes = {}
-        let m_names = result.data.map(function(major) { 
-          m_map[major.name]=major.id
-          m_checkboxes[major.name]=false
-          return major.name 
-        });
-        this.setState({ 
-          major_names: m_names,
-          majors : m_map,
-          major_checkboxes : m_checkboxes
-        });
-
-      })
-      .catch(err => console.log(err));
-  }
-
-  getOccupations = () => {
-    axios.get('/occupations')
-      .then(result => {
-        let o_map = {}
-        let o_names = result.data.map(function(occupation) { 
-          o_map[occupation.name]=occupation.id
-          return occupation.name 
-        });
-        this.setState({
-          occupation_names : o_names,
-          occupations : o_map
-        });
-      })
-      .catch(err => console.log(err));
-  }
-
-  getUserInfo = (id) => {
-    axios.get(`/users/${id}/id`)
-      .then(result => {
-        let u_info = result.data[0];
-        this.setState({
-          first_name: u_info.first_name,
-          last_name: u_info.last_name,
-          ucla_id: u_info.university_id,
-          email: u_info.email,
-          phone_number: u_info.phone,
-          swe_id: u_info.swe_id,
-          gpa: u_info.gpa,
-        });
-      })
-      .catch(err => console.log(err));
-
-    axios.get(`/users/${id}/majors`)
-      .then(result => {
-        console.log(result)
-        let major_data = result.data;
-        let m_ids = [...major_data];
-        this.setState(prev => {
-          let m_names = {};
-          m_ids.forEach(id => {
-            m_names[prev.major_names[id.major_id]] = true;
-          });
-          // console.log(m_names);
-          return {
-            major_checkboxes: {
-              ...prev.major_checkboxes,
-              ...m_names
-            }
-          };
-        });
-      })
-      .catch(err => console.log(err));
-
-      // TODO: get user occupation request
-      axios.get(`/users/${id}/occupations`)
+  // create state for all information that will be submitted (for requests)
+  // refer to state using 'userDetails', modify state using setUserDetails (works in the same way as setState)
+  const [userDetails, setUserDetails] = useState(INITIAL_USER);
+  useEffect(() => {
+    // get user information if a user is logged in (from user_id)
+    if (user_id) {
+      axios.all([
+        axios.get(`/users/${user_id}/id`),
+        axios.get(`/users/${user_id}/occupations`),
+        axios.get(`/users/${user_id}/majors`),
+      ])
         .then(result => {
-          let occ_id = result.data[0].occupation_id;
-          this.setState(prev => {
+          console.log(result);          
+          let user_data = {...result[0].data[0]};
+          let user_occupations = [...result[1].data];
+          let user_majors = [...result[2].data];
+
+          // console.log(user_data);
+          // console.log(user_occupations);
+          // console.log(user_majors);
+
+          // update the state with the fetched data          
+          setUserDetails((prev) => {
             return {
-              occupation_id: occ_id,
-              occupation_name: prev.occupation_names[occ_id]
-            }
+              ...prev,
+              ...user_data,
+              occupation_ids: user_occupations,
+              major_ids: user_majors,
+            };
           })
         })
         .catch(err => console.log(err));
-  }
+    } 
+    return () => {
+      setUserDetails(INITIAL_USER)
+    }
+  }, [user_id, setUserDetails]);
 
-  handleCheckChangeMajor = event => {
+  
+  // handle generic changes of form data
+  const handleChange = (event) => {
     const target = event.target;
-    this.setState(prev => {
+    setUserDetails((prev) => {
       return {
-        major_checkboxes: {
-          ...prev.major_checkboxes,
-          [target.name]: target.checked
-        }
-      }
+        // ...prev ensures that all previous state still persists
+        ...prev,
+        // overwrite [target.name] in the state
+        [target.name]: target.value
+      };
     });
   };
 
-  addUser = () => {
-    if (!this.state.phone_number) {
-      // Do not add major if no name specified
-      console.log('ERROR: fill out phone number field.');
-      //return;
-    }
+  // handle major checkbox changes
+  const handleMajorChange = (event) => {
+    // get the id of the toggled checkboxx
+    const value = parseInt(event.target.value);
 
-    let occupation_id = null
-    let occupation_name = this.state.occupation_name 
-    if (occupation_name)
-      occupation_id = this.state.occupations[occupation_name]
+    // update user detils state
+    setUserDetails((prev) => {
+      let removed = false;
+      // if the id exists in the array of major_ids then remove it
+      let major_ids = prev.major_ids.filter((major) => {
+        if (major.major_id === value) {
+          removed = true;
+        }
+        return major.major_id !== value;
+      });
 
-    let major_ids = []
-    let m_names = this.state.major_names
-
-    //iterate through all major names, checking if checkbox is checked
-    //if checkbox is checked then insert the major into the majors array for the user
-    m_names.map(name => {
-      if (this.state.major_checkboxes[name])
-        major_ids.push(this.state.majors[name])
-    });
-    
-    let body = {
-      first_name: this.state.first_name,
-      last_name: this.state.last_name,
-      password: "",
-      email: this.state.email,
-      phone: this.state.phone_number ? this.state.phone_number : null,
-      university_id: this.state.ucla_id,
-      is_admin: false,
-      major_id: this.state.major_id,
-      swe_id: this.state.swe_id ? this.state.swe_id : null,
-      gpa: this.state.gpa ? this.state.gpa : null,
-      occupation_id: occupation_id ? occupation_id : null,
-      major_id: major_ids
-    };
-
-    // Make POST request to add major
-    axios.post('/users/register', body)
-      .then(result => {
-
-        
-        // Clear form values 
-        this.setState({
-          phone_number: '',
-          ucla_id: null,
-          errorMessage: ''
+      // if the id is not found in major_ids then add it
+      if (!removed) {
+        major_ids.push({
+          major_id: value
         });
-      })
-      .catch(err => {
-        // TODO: use user-friendly error message
-        console.log(err.response.data)
-        this.setState({
-          errorMessage: err.response.data.message,
-        })
-      })
+      }
+      console.log(major_ids);
+
+      // return the updated state
+      return {
+        ...prev,
+        major_ids: [...major_ids],
+      };
+    });
+  };
+
+  // handle in occupation select field changes
+  const handleOccupationChange = (event) => {
+    const target = event.target;
+    console.log(target.value)
+
+    // update state
+    setUserDetails((prev) => {
+      return {
+        ...prev,
+        occupation_ids: [
+          {
+            occupation_id: parseInt(target.value)
+          }
+        ],
+      };
+    });
   }
 
-  handleSubmit = (event) => {
-    this.addUser();
+  // handle POST request for new users
+  const addUser = () => {
+    // TODO: add support from server to handle the fields in userDetails
+    console.log(userDetails);
+    // axios.post('/users/register', userDetails)
+    //   .then(result => {
+    //     console.log(result);
+    //   })
+    //   .catch(err => {
+    //     console.log(err);
+    //   });
+  };
+
+  const updateUser = () => {
+    console.log(userDetails);
+    // TODO: allow PUT request to be made once server can handle it
+    // axios.put(`/users/${user_id}`, userDetails)
+    //   .then(result => {
+    //     console.log(result);
+    //   })
+    //   .catch(err => {
+    //     console.log(err);      
+    //   });
+  };
+
+  // handle submission of form data
+  const handleSubmit = (event) => {
     // Prevent site refresh after submission
     event.preventDefault();
-  }
-
-  
-  handleChange = name => event => {
-      this.setState({
-        [name]: event.target.value,
-
-      });
+    if (user_id) {
+      updateUser();
+    } else {
+      addUser();
+    }
   };
 
-  
-  render() {
-    const { classes } = this.props;
-    const { check1, check2, check3 } = this.state;
+  const { classes } = props;
+  const {
+    first_name,
+    last_name,
+    password,
+    email,
+    phone,
+    university_id,
+    swe_id,
+    gpa,
+    is_admin,
+    occupation_ids,
+    major_ids,
+  } = userDetails;
 
-    var occupation_names = this.state.occupation_names.map(name => {
-      return <MenuItem key={name} value={name}>{name}</MenuItem>
-    })
+  // map occupations to select options
+  let occupation_names = [];
+  for (let id in occupations) {
+    occupation_names.push(
+      <MenuItem 
+        key={id} 
+        value={id}
+      >
+        {occupations[id]}
+      </MenuItem>
+    )
+  }
 
-    var major_names = this.state.major_names.map(name => {
-
-      return <FormControlLabel
-          control={
-            <Checkbox 
-            name={name}
-            checked={this.state.major_checkboxes[name]} 
-            onChange={(event) => this.handleCheckChangeMajor(event)} 
-            value={name} 
+  // map majors to checkboxes
+  let major_names = [];
+  for (let id in majors) {
+    major_names.push(
+      <FormControlLabel
+        control={
+          <Checkbox 
+            name={majors[id]}
+            value={id}
+            checked={
+              // checkbox should be checked if the id exits in the major_ids array
+              major_ids.find((major) => major.major_id === parseInt(id))
+              === undefined ?
+              false :
+              true
+            } 
+            onChange={handleMajorChange} 
           />
         }
-        label={name}
+        label={majors[id]}
+        key={id}
       />
-    })
+    );
+  }
 
-
-    return (
-      
-      <main className={classes.main}>
+  return (
+    <main className={classes.main}>
         <Paper className={classes.paper}>
           <Typography component="h1" variant="h5">
             Your Profile
           </Typography>
-          <form className={classes.form} onSubmit={this.handleSubmit}>
-            <div id={GOOGLE_BUTTON_ID}/>
+          <form className={classes.form} onSubmit={handleSubmit}>
+            {/* <div id={GOOGLE_BUTTON_ID}/> */}
             <TextField
               required fullWidth
               id='first_name'
+              name='first_name'
               label='First Name'
               className={classes.textField}
-              placeholder='e.g. 408900876'
-              value={this.state.first_name || ''}
-              onChange={this.handleChange('first_name')}
+              placeholder='e.g. John'
+              value={first_name || ''}
+              onChange={handleChange}
               margin='normal'
             />
             <TextField
               required fullWidth
               id='last_name'
+              name='last_name'
               label='Last Name'
               className={classes.textField}
-              placeholder='e.g. 408900876'
-              value={this.state.last_name || ''}
-              onChange={this.handleChange('last_name')}
+              placeholder='e.g. Doe'
+              value={last_name || ''}
+              onChange={handleChange}
               margin='normal'
             />
 
             <TextField 
               required fullWidth
-              id='ucla_id'
+              id='university_id'
+              name='university_id'
               label='UCLA ID'
               className={classes.textField}
-              placeholder='e.g. 605105555'
-              value={this.state.ucla_id || ''}
-              onChange={this.handleChange('ucla_id')}
+              placeholder='e.g. 123456789'
+              value={university_id || ''}
+              onChange={handleChange}
               margin='normal'
             />
           
@@ -305,57 +282,61 @@ class Register extends Component {
             <Select
               required fullWidth
               className={classes.select}
-              value={this.state.occupation_name || ''}
-              onChange={this.handleChange('occupation_name')}
+              value={occupation_ids[0] ? occupation_ids[0].occupation_id : 1}
+              onChange={handleOccupationChange}
+              margin='normal'
               inputProps={{
-                    name: 'Occupation ID',
+                    name: 'occupation_id',
                     id: 'occupation_id',
               }}
-              margin='normal'
             >
               {occupation_names}
             </Select>
-            <FormHelperText error className={classes.formHelperText}>
-              {this.state.errorMessage}
-            </FormHelperText>
+            {/* <FormHelperText error className={classes.formHelperText}>
+              {errorMessage}
+            </FormHelperText> */}
             <TextField
               fullWidth
               id='email'
+              name='email'
               label='Email'
               className={classes.textField}
-              placeholder='e.g. 408900876'
-              value={this.state.email || ''}
-              onChange={this.handleChange('email')}
+              placeholder='e.g. example@example.com'
+              value={email || ''}
+              onChange={handleChange}
               margin='normal'
             />
             <TextField
               fullWidth
-              id='phone_number'
+              id='phone'
+              name='phone'
               label='Phone Number'
               className={classes.textField}
-              placeholder='e.g. 408900876'
-              value={this.state.phone_number || ''}
-              onChange={this.handleChange('phone_number')}
+              placeholder='e.g. 7778889999'
+              value={phone || ''}
+              onChange={handleChange}
               margin='normal'
             />
             <TextField
               fullWidth
               id='swe_id'
+              name='swe_id'
               label='SWE ID'
               className={classes.textField}
               placeholder='e.g. 408900876'
-              value={this.state.swe_id || ''}
-              onChange={this.handleChange('swe_id')}
+              value={swe_id || ''}
+              onChange={handleChange}
               margin='normal'
             />
             <TextField
               fullWidth
               id='gpa'
+              name='gpa'
               label='GPA'
               className={classes.textField}
-              placeholder='e.g. 408900876'
-              value={this.state.gpa || ''}
-              onChange={this.handleChange('gpa')}
+              placeholder='e.g. 4.00'
+              value={gpa || ''}
+              onChange={handleChange}
               margin='normal'
             />
             <Typography component="h2" variant="h5">
@@ -373,17 +354,14 @@ class Register extends Component {
               variant="contained"
               color="primary"
               className={classes.submit}
+              onClick={handleSubmit}
             >
-              Create Your Account
+              {user_id ? "Update Profile" : "Create Your Account"}
             </Button>
           </form>
         </Paper>
-        <ExampleGet onRef={ref => (this.users = ref)}/>
       </main>
-    );
-  }
+  )
 }
 
 export default withStyles(ExamplePostFormStyles)(Register);
-
-
