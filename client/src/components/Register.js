@@ -150,13 +150,26 @@ function Register(props) {
   const addUser = () => {
     // TODO: add support from server to handle the fields in userDetails
     console.log(userDetails);
-    // axios.post('/users/register', userDetails)
-    //   .then(result => {
-    //     console.log(result);
-    //   })
-    //   .catch(err => {
-    //     console.log(err);
-    //   });
+    let body = {
+      first_name: userDetails.first_name,
+      last_name: userDetails.last_name,
+      password: "",
+      email: userDetails.email,
+      phone: userDetails.phone,
+      university_id: userDetails.ucla_id,
+      swe_id: userDetails.swe_id,
+      gpa: userDetails.gpa,
+      is_admin: false,
+      occupation_id: userDetails.occupation_ids,
+      major_id: userDetails.major_ids,
+    };
+    axios.post('/users/register', body)
+      .then(result => {
+        console.log(result);
+      })
+      .catch(err => {
+        console.log(err);
+      });
   };
 
   const updateUser = () => {
