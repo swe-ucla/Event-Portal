@@ -168,7 +168,11 @@ class RegisterEWI extends Component {
   
 
   handleCheckChangeMajor = name => event => {
-    this.state.major_checkboxes[name] = event.target.checked;
+    let m_checkboxes = this.state.major_checkboxes
+    m_checkboxes[name] = event.target.checked
+    console.log(m_checkboxes)
+    console.log(this.state.major_checkboxes)
+    this.setState({major_checkboxes : m_checkboxes})
     console.log(this.state.major_checkboxes[name])
   };
 
@@ -189,10 +193,10 @@ class RegisterEWI extends Component {
       //return;
     }
 
-    let occupation_id = null
+    let occupation_ids = []
     let occupation_name = this.state.occupation_name 
     if (occupation_name)
-      occupation_id = this.state.occupations[occupation_name]
+      occupation_ids.push(this.state.occupations[occupation_name])
 
     let major_ids = []
     let m_names = this.state.major_names
@@ -253,7 +257,7 @@ class RegisterEWI extends Component {
       major_id: this.state.major_id,
       swe_id: this.state.swe_id ? this.state.swe_id : null,
       gpa: this.state.gpa ? this.state.gpa : null,
-      occupation_id: occupation_id ? occupation_id : null,
+      occupation_id: occupation_ids,
       major_id: major_ids,
       position_id: position_ids,
       diet_id: diet_ids,
