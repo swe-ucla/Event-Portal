@@ -170,10 +170,10 @@ class Register extends Component {
       //return;
     }
 
-    let occupation_id = null
+    let occupation_ids = []
     let occupation_name = this.state.occupation_name 
     if (occupation_name)
-      occupation_id = this.state.occupations[occupation_name]
+      occupation_ids.push(this.state.occupations[occupation_name])
 
     let major_ids = []
     let m_names = this.state.major_names
@@ -196,9 +196,10 @@ class Register extends Component {
       major_id: this.state.major_id,
       swe_id: this.state.swe_id ? this.state.swe_id : null,
       gpa: this.state.gpa ? this.state.gpa : null,
-      occupation_id: occupation_id ? occupation_id : null,
+      occupation_id: occupation_ids,
       major_id: major_ids
     };
+
 
     // Make POST request to add major
     axios.post('/users/register', body)
