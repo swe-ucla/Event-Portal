@@ -21,7 +21,7 @@ import { useMajors, useOccupations } from "../utils/misc-hooks.js";
 // const GOOGLE_BUTTON_ID = 'google-sign-in-button';
 
 function Register(props) {
-  const user_id = 2;
+  const user_id = 1;
   const INITIAL_USER = {
     first_name: '',
     last_name: '',

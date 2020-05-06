@@ -66,6 +66,7 @@ router.get('/ids', function(req, res, next) {
 
 // Add a user
 router.post('/register', function(req, res, next) {
+  //TODO: fix inconsistency b/w id and ID*S*
   let diet_ids = req.body.diet_id;
   let occupation_ids = req.body.occupation_id;
   let position_ids = req.body.position_id;
@@ -222,10 +223,12 @@ router.put('/:user_id', function(req, res, next) {
       remove_major_ids.push([ user_id, element.major_id ]); 
     })
     //
-    var query_major = knex.raw(
-        '? ON CONFLICT (user_id,major_id) DO NOTHING;', [knex('user_major').insert(major_ids)],
-    );
-    var query_remove_major = knex('user_major').del().whereNotIn(['user_id', 'major_id'], remove_major_ids);
+    if (major_ids.length > 0) {
+      var query_major = knex.raw(
+          '? ON CONFLICT (user_id,major_id) DO NOTHING;', [knex('user_major').insert(major_ids)],
+      );
+    }
+    var query_remove_major = knex('user_major').del().where('user_id', user_id).whereNotIn(['user_id', 'major_id'], remove_major_ids);
 
   }
   
@@ -238,7 +241,7 @@ router.put('/:user_id', function(req, res, next) {
     var query_occupation = knex.raw(
         '? ON CONFLICT (user_id,occupation_id) DO NOTHING;', [knex('user_occupation').insert(occupation_ids)],
     );
-    var query_remove_occupation = knex('user_occupation').del().whereNotIn(['user_id', 'occupation_id'], remove_occupation_ids);
+    var query_remove_occupation = knex('user_occupation').del().where('user_id', user_id).whereNotIn(['user_id', 'occupation_id'], remove_occupation_ids);
   }
   /*
   if (position_ids) {
