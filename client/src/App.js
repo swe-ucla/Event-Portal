@@ -10,6 +10,7 @@ import ExamplePostForm from './components/ExamplePostForm.js'
 import ExamplePutForm from './components/ExamplePutForm.js'
 import ExampleDeleteForm from './components/ExampleDeleteForm.js'
 import Register from './components/Register.js'
+import Register_Google from './components/Register_Google.js'
 import RegisterEWI from './components/RegisterEWI.js'
 import Profile from './components/Profile.js'
 import EditProfile from './components/EditProfile.js'
@@ -47,7 +48,8 @@ class App extends Component {
         <Route path="/post" component={ExamplePostForm} />
         <Route path="/put" component={ExamplePutForm} />
         <Route path="/delete" component={ExampleDeleteForm} />
-        <Route path="/register" component={Register} />
+        <Route path="/register_basic" component={Register} />
+        <Route path="/register" component={Register_Google} />
         <Route path="/profile" component={Profile} />
         <Route path="/registerEWI" component={RegisterEWI} />
       </Router>

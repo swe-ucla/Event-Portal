@@ -21,17 +21,17 @@ import { useMajors, useOccupations } from "../utils/misc-hooks.js";
 // const GOOGLE_BUTTON_ID = 'google-sign-in-button';
 
 function Register(props) {
-  const user_id = 1;
+  const user_id = null;
   const INITIAL_USER = {
-    first_name: '',
-    last_name: '',
-    password: '',
     email: '',
-    phone: '',
-    university_id: '',
-    swe_id: '',
+    first_name: '',
     gpa: '',
     is_admin: false,
+    last_name: '',
+    password: '',
+    phone: '',
+    swe_id: '',
+    university_id: '',
     occupation_ids: [], // array of occupations, each occupation has form { occupation_id: # }
     // diet_ids: [], // array of dietary needs, each diet has form { diet_id: # }
     // position_ids: [], // array of positions, each having form { position_id: # }
@@ -151,6 +151,7 @@ function Register(props) {
   const addUser = () => {
     // TODO: add support from server to handle the fields in userDetails
     console.log(userDetails);
+    /*
     let body = {
       first_name: userDetails.first_name,
       last_name: userDetails.last_name,
@@ -164,7 +165,8 @@ function Register(props) {
       occupation_id: userDetails.occupation_ids,
       major_id: userDetails.major_ids, 
     };
-    axios.post('/users/register', body)
+    */
+    axios.post('/users/register', userDetails)
       .then(result => {
         console.log(result);
       })

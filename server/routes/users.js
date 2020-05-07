@@ -67,15 +67,6 @@ router.get('/ids', function(req, res, next) {
 // Add a user
 router.post('/register', function(req, res, next) {
   //TODO: fix inconsistency b/w id and ID*S*
-  let diet_ids = req.body.diet_id;
-  let occupation_ids = req.body.occupation_id;
-  let position_ids = req.body.position_id;
-  let company_ids = req.body.company_id;
-  let major_ids = req.body.major_id;
-  let ranks = req.body.rank;
-  let swe_id = req.body.swe_id;
-  let gpa = req.body.gpa;
-
   values = {
     first_name: req.body.first_name,
     last_name: req.body.last_name,
@@ -85,8 +76,18 @@ router.post('/register', function(req, res, next) {
     university_id: req.body.university_id,
     is_admin: req.body.is_admin,
     swe_id: req.body.swe_id,
-    gpa: req.body.gpa,
+    gpa: req.body.gpa
   }
+
+  let user_id = req.params.user_id;
+  let diet_ids = req.body.diet_ids;
+  let occupation_ids = req.body.occupation_ids;
+  let position_ids = req.body.position_ids;
+  let major_ids = req.body.major_ids;
+  let company_ids = req.body.company_ids;
+  let ranks = req.body.ranks;
+
+  console.log(occupation_ids)
 
   if (company_ids && ranks) {
     if (Array.isArray(company_ids) && Array.isArray(ranks)) {
@@ -106,40 +107,45 @@ router.post('/register', function(req, res, next) {
       .then(async function(ids) {
         let user_id = ids[0];
         
+        /*
         if (diet_ids) {
           diet_ids.forEach(function(element) { element.user_id = user_id; })
           var query_diet = knex('user_diet').insert(diet_ids)
           await query_diet.transacting(trx);
         }
+        */
+      
         if (occupation_ids) {
           occupation_ids.forEach(function(element) { element.user_id = user_id; })
-          console.log(occupation_ids)
           var query_occupation = knex('user_occupation').insert(occupation_ids)
+          await query_occupation.transacting(trx)
         }
+        /*
         if (position_ids) {
           position_ids.forEach(function(element) { element.user_id = user_id; })
           var query_position = knex('user_position').insert(position_ids)
           await query_position.transacting(trx);
         }
+        */
 
         if (major_ids) {
           major_ids.forEach(function(element) { element.user_id = user_id; })
           var query_major = knex('user_major').insert(major_ids)
           await query_major.transacting(trx);
         }
+
+        /*
         if (company_ids && ranks) {
           company_rank_values.forEach(function(element) { element.user_id = user_id; })
           var query_company = knex('user_company_rank').insert(company_rank_values)
           console.log(company_rank_values)
           await query_company.transacting(trx);
         }
+        */
         return trx.commit;
       })
   })
   .then(function() {
-    //console.log(major_values)
-    console.log(major_ids)
-    console.log(occupation_values)
     res.send(util.message('Successfully inserted user'));
   })
   .catch(err => {return next(err) });
