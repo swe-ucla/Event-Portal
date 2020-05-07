@@ -21,7 +21,7 @@ import { useMajors, useOccupations } from "../utils/misc-hooks.js";
 // const GOOGLE_BUTTON_ID = 'google-sign-in-button';
 
 function Register(props) {
-  const user_id = null;
+  const user_id = 3;
   const INITIAL_USER = {
     email: '',
     first_name: '',
@@ -71,6 +71,8 @@ function Register(props) {
               ...prev,
               ...user_data,
               occupation_ids: user_occupations,
+              occupation_ids_get: user_occupations,
+              major_ids_get: user_majors,
               major_ids: user_majors,
             };
           })
@@ -100,6 +102,7 @@ function Register(props) {
   const handleMajorChange = (event) => {
     // get the id of the toggled checkboxx
     const value = parseInt(event.target.value);
+
 
     // update user detils state
     setUserDetails((prev) => {
@@ -151,21 +154,7 @@ function Register(props) {
   const addUser = () => {
     // TODO: add support from server to handle the fields in userDetails
     console.log(userDetails);
-    /*
-    let body = {
-      first_name: userDetails.first_name,
-      last_name: userDetails.last_name,
-      password: "",
-      email: userDetails.email,
-      phone: userDetails.phone,
-      university_id: userDetails.ucla_id,
-      swe_id: userDetails.swe_id,
-      gpa: userDetails.gpa,
-      is_admin: false,
-      occupation_id: userDetails.occupation_ids,
-      major_id: userDetails.major_ids, 
-    };
-    */
+   
     axios.post('/users/register', userDetails)
       .then(result => {
         console.log(result);
@@ -177,13 +166,46 @@ function Register(props) {
 
   const updateUser = () => {
     console.log(userDetails);
-    axios.put(`/users/${user_id}`, userDetails)
+
+    let insert_major_ids = userDetails.major_ids.filter(x => !userDetails.major_ids_get.find(y => y.major_id == x.major_id))
+    let remove_major_ids = userDetails.major_ids_get.filter(x => !userDetails.major_ids.find(y => y.major_id == x.major_id))
+
+    let insert_occupation_ids = userDetails.occupation_ids.filter(x => !userDetails.occupation_ids_get.find(y => y.occupation_id == x.occupation_id))
+    let remove_occupation_ids = userDetails.occupation_ids_get.filter(x => !userDetails.occupation_ids.find(y => y.occupation_id == x.occupation_id))
+
+    console.log(insert_occupation_ids)
+    console.log(remove_occupation_ids)
+    console.log(insert_major_ids)
+    console.log(remove_major_ids)
+    let body = {
+      first_name: userDetails.first_name,
+      last_name: userDetails.last_name,
+      password: "",
+      email: userDetails.email,
+      phone: userDetails.phone,
+      university_id: userDetails.ucla_id,
+      swe_id: userDetails.swe_id,
+      gpa: userDetails.gpa,
+      is_admin: false,
+      occupation_ids: userDetails.occupation_ids,
+      insert_major_ids: insert_major_ids,
+      remove_major_ids: remove_major_ids,
+      insert_occupation_ids: insert_occupation_ids,
+      remove_occupation_ids: remove_occupation_ids
+    };
+  
+
+
+    axios.put(`/users/${user_id}`, body)
     .then(result => {
       console.log(result);
+      userDetails.major_ids_get = userDetails.major_ids //set the GET state to the current major_ids since they were successfully pushed to the database
+      userDetails.occupation_ids_get = userDetails.occupation_ids
     })
     .catch(err => {
       console.log(err);      
     });
+
   };
 
   // handle submission of form data
