@@ -47,6 +47,8 @@ function Register(props) {
   // create state for all information that will be submitted (for requests)
   // refer to state using 'userDetails', modify state using setUserDetails (works in the same way as setState)
   const [userDetails, setUserDetails] = useState(INITIAL_USER);
+  const [initialDetails, setInitialDetails] = useState(INITIAL_USER);
+
   useEffect(() => {
     // get user information if a user is logged in (from user_id)
     if (user_id) {
@@ -71,10 +73,20 @@ function Register(props) {
               ...prev,
               ...user_data,
               occupation_ids: user_occupations,
-              occupation_ids_get: user_occupations,
-              major_ids_get: user_majors,
+              // occupation_ids_get: user_occupations,
+              // major_ids_get: user_majors,
               major_ids: user_majors,
             };
+          });
+
+          // update 'initial' state
+          setInitialDetails((prev) => {
+            return {
+              occupation_ids: user_occupations,
+              // occupation_ids_get: user_occupations,
+              // major_ids_get: user_majors,
+              major_ids: user_majors,
+            }
           })
         })
         .catch(err => console.log(err));
@@ -82,7 +94,7 @@ function Register(props) {
     return () => {
       setUserDetails(INITIAL_USER)
     }
-  }, [user_id, setUserDetails]);
+  }, [user_id, setUserDetails, setInitialDetails]);
 
   
   // handle generic changes of form data
@@ -158,6 +170,10 @@ function Register(props) {
     axios.post('/users/register', userDetails)
       .then(result => {
         console.log(result);
+        setInitialDetails({
+          occupation_ids: userDetails.occupation_ids,
+          major_ids: userDetails.major_ids,
+        });
       })
       .catch(err => {
         console.log(err);
@@ -167,11 +183,11 @@ function Register(props) {
   const updateUser = () => {
     console.log(userDetails);
 
-    let insert_major_ids = userDetails.major_ids.filter(x => !userDetails.major_ids_get.find(y => y.major_id == x.major_id))
-    let remove_major_ids = userDetails.major_ids_get.filter(x => !userDetails.major_ids.find(y => y.major_id == x.major_id))
+    let insert_major_ids = userDetails.major_ids.filter(x => !initialDetails.major_ids.find(y => y.major_id == x.major_id))
+    let remove_major_ids = initialDetails.major_ids.filter(x => !userDetails.major_ids.find(y => y.major_id == x.major_id))
 
-    let insert_occupation_ids = userDetails.occupation_ids.filter(x => !userDetails.occupation_ids_get.find(y => y.occupation_id == x.occupation_id))
-    let remove_occupation_ids = userDetails.occupation_ids_get.filter(x => !userDetails.occupation_ids.find(y => y.occupation_id == x.occupation_id))
+    let insert_occupation_ids = userDetails.occupation_ids.filter(x => !initialDetails.occupation_ids.find(y => y.occupation_id == x.occupation_id))
+    let remove_occupation_ids = initialDetails.occupation_ids.filter(x => !userDetails.occupation_ids.find(y => y.occupation_id == x.occupation_id))
 
     console.log(insert_occupation_ids)
     console.log(remove_occupation_ids)
@@ -180,27 +196,26 @@ function Register(props) {
     let body = {
       first_name: userDetails.first_name,
       last_name: userDetails.last_name,
-      password: "",
+      password: userDetails.password,
       email: userDetails.email,
       phone: userDetails.phone,
-      university_id: userDetails.ucla_id,
+      university_id: userDetails.university_id,
       swe_id: userDetails.swe_id,
       gpa: userDetails.gpa,
-      is_admin: false,
-      occupation_ids: userDetails.occupation_ids,
+      is_admin: userDetails.is_admin,
       insert_major_ids: insert_major_ids,
       remove_major_ids: remove_major_ids,
       insert_occupation_ids: insert_occupation_ids,
       remove_occupation_ids: remove_occupation_ids
     };
   
-
-
     axios.put(`/users/${user_id}`, body)
     .then(result => {
       console.log(result);
-      userDetails.major_ids_get = userDetails.major_ids //set the GET state to the current major_ids since they were successfully pushed to the database
-      userDetails.occupation_ids_get = userDetails.occupation_ids
+      setInitialDetails({
+        occupation_ids: userDetails.occupation_ids,
+        major_ids: userDetails.major_ids,
+      });
     })
     .catch(err => {
       console.log(err);      
