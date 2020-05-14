@@ -100,6 +100,7 @@ function Register(props) {
   // handle generic changes of form data
   const handleChange = (event) => {
     const target = event.target;
+    console.log(userDetails['major_ids']);
     setUserDetails((prev) => {
       return {
         // ...prev ensures that all previous state still persists
@@ -110,38 +111,38 @@ function Register(props) {
     });
   };
 
-  // handle major checkbox changes
-  const handleMajorChange = (event) => {
-    // get the id of the toggled checkboxx
+  // handle generic checkbox changes
+  const handleCheckboxChange = (event) => {
     const value = parseInt(event.target.value);
+    const name = event.target.name;
+    const field = name.substr(0, name.length - 1);
 
-
-    // update user detils state
     setUserDetails((prev) => {
       let removed = false;
-      // if the id exists in the array of major_ids then remove it
-      let major_ids = prev.major_ids.filter((major) => {
-        if (major.major_id === value) {
+      const prevIds = prev[name];
+      // if the id exists in the array of ids then remove it
+      let ids = prevIds.filter((id) => {
+        if (id[field] === value) {
           removed = true;
         }
-        return major.major_id !== value;
+        return id[field] !== value;
       });
 
-      // if the id is not found in major_ids then add it
+      // if the id is not found in ids then add it
       if (!removed) {
-        major_ids.push({
-          major_id: value
+        ids.push({
+          [field]: value
         });
       }
-      console.log(major_ids);
+      console.log(ids);
 
       // return the updated state
       return {
         ...prev,
-        major_ids: [...major_ids],
+        [name]: [...ids],
       };
-    });
-  };
+    })
+  }
 
   // handle in occupation select field changes
   const handleOccupationChange = (event) => {
@@ -183,11 +184,11 @@ function Register(props) {
   const updateUser = () => {
     console.log(userDetails);
 
-    let insert_major_ids = userDetails.major_ids.filter(x => !initialDetails.major_ids.find(y => y.major_id == x.major_id))
-    let remove_major_ids = initialDetails.major_ids.filter(x => !userDetails.major_ids.find(y => y.major_id == x.major_id))
+    let insert_major_ids = userDetails.major_ids.filter(x => !initialDetails.major_ids.find(y => y.major_id === x.major_id))
+    let remove_major_ids = initialDetails.major_ids.filter(x => !userDetails.major_ids.find(y => y.major_id === x.major_id))
 
-    let insert_occupation_ids = userDetails.occupation_ids.filter(x => !initialDetails.occupation_ids.find(y => y.occupation_id == x.occupation_id))
-    let remove_occupation_ids = initialDetails.occupation_ids.filter(x => !userDetails.occupation_ids.find(y => y.occupation_id == x.occupation_id))
+    let insert_occupation_ids = userDetails.occupation_ids.filter(x => !initialDetails.occupation_ids.find(y => y.occupation_id === x.occupation_id))
+    let remove_occupation_ids = initialDetails.occupation_ids.filter(x => !userDetails.occupation_ids.find(y => y.occupation_id === x.occupation_id))
 
     console.log(insert_occupation_ids)
     console.log(remove_occupation_ids)
@@ -269,7 +270,7 @@ function Register(props) {
       <FormControlLabel
         control={
           <Checkbox 
-            name={majors[id]}
+            name={'major_ids'}
             value={id}
             checked={
               // checkbox should be checked if the id exits in the major_ids array
@@ -278,7 +279,7 @@ function Register(props) {
               false :
               true
             } 
-            onChange={handleMajorChange} 
+            onChange={handleCheckboxChange} 
           />
         }
         label={majors[id]}
