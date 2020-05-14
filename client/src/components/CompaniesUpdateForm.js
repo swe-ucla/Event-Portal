@@ -228,7 +228,7 @@ class CompaniesForm extends Component {
                   positionsChecked[idToPosition[pos[p].position_id]] = true;
                 }
               })
-              .catch(err => console.log(err));
+              .catch(err => console.log(err)); //work on error handling!
             })
             .catch(err => console.log(err));
           })

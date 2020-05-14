@@ -349,7 +349,7 @@ router.put('/:company_id', function(req, res, next) {
     } else {
       companyMajors = { company_id: company_id, major_id: major_ids }
     }
-    var queryMajor = knex('company_major').insert(companyMajors)
+    var queryMajor = knex.raw(knex('company_major').insert(companyMajors).toString().replace(/^insert/i, 'insert ignore'));
   }
 
   let companyContacts = [];
@@ -455,7 +455,7 @@ router.put('/:company_id', function(req, res, next) {
   .then(function(){
     res.send(util.message('Successfully updated company'));
   })
-  .catch(err => {return next(err) });
+  .catch(err => {return next(err)});
 });
 
 // Delete a single company
