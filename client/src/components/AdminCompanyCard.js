@@ -15,8 +15,6 @@ import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
 import CompanyCardStyles from '../styles/CompanyCard.js';
 import axios from 'axios';
-import { MemoryRouter as Router } from 'react-router';
-import { Link as RouterLink } from 'react-router-dom';
 
 
 class AdminCompanyCard extends Component{
@@ -132,17 +130,13 @@ class AdminCompanyCard extends Component{
             Citizenship Requirement: {this.props.company.citizenship_requirement}
           </Typography>
           <CardActions>
-          <Router>
             <Button 
               variant = "outlined"
               size="small" 
               color = "primary"
-            //  component={RouterLink} to="/companiesupdateform"
               href="/companiesupdateform"
-             // onClick = handleClick()
               >Update<
             /Button>
-            </Router>
           </CardActions>
         </CardContent>
       </Card>
