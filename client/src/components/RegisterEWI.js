@@ -28,8 +28,6 @@ class RegisterEWI extends Component {
   
   componentDidMount ()
   {
-    console.log(localStorage)
-    console.log(localStorage.getItem('token'))
     this.getCurrentUser();
     this.getMajors();
     this.getOccupations();
@@ -80,7 +78,6 @@ class RegisterEWI extends Component {
   getCurrentUser = () => {
     const itemStr = localStorage.getItem("token")
     const item = JSON.parse(itemStr)
-    console.log(item.value)
      axios.get(`/users/search?email=` + item.value) 
       .then(result => {
         this.setState({

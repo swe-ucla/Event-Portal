@@ -77,7 +77,7 @@ class Register extends Component {
           longtitle: true,
           theme: 'dark',
           onsuccess: function(googleUser) {
-        //console.log();
+
         console.log("hello");
         const profile = googleUser.getBasicProfile();
         console.log("Email: " + profile.getEmail());
@@ -92,25 +92,18 @@ class Register extends Component {
           var id_token = googleUser.getAuthResponse().id_token;
           console.log(id_token)
 
-         // If request is good update state - user is authenticated
-          //dispatch({ type: AUTHENTICATE_THE_USER });
+         
 
           const now = new Date()
           const item = {
             value : profile.getEmail(),
             expiry: now.getTime() + 60*2
           }
-          // - Save the JWT in localStorage
+          // - Save the value of email and expiry in localStorage
           localStorage.setItem('token', JSON.stringify(item));
           console.log(localStorage)
           
-          // - redirect to the route '/isauthenticated'
-          //browserHistory.push('/isauthenticated');
-
-
-        //if this email can be found then redirect to events page
-        //redirect to register page ok?
-        //axios.put('/majors/' + this.state.major_id, diffBody)
+      
     },
           onfailure: function(googleUser) {
               console.log("error: signin failed")
@@ -120,10 +113,6 @@ class Register extends Component {
 
 
       });
-      //window.auth2.grantOfflineAccess().then(window.signInCallback);
-      /*
-      
-      */
     }
   }
   
@@ -142,8 +131,6 @@ class Register extends Component {
       check3: false,
       errorMessage: ''
     };
-
-    console.log(localStorage)
     
   }
 
