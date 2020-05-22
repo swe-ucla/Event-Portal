@@ -28,6 +28,7 @@ class RegisterEWI extends Component {
   
   componentDidMount ()
   {
+    console.log(localStorage.getItem('token'))
     this.getMajors();
     this.getOccupations();
     this.getPositions();

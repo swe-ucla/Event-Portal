@@ -2,7 +2,14 @@
 <html lang="en">
   <head>
     <script src="https://apis.google.com/js/platform.js" async defer></script>
-    <meta charset="utf-8" />
+   <div class="gs2" data-onsuccess="onSignIn" data-theme="dark"></div>
+    <script>
+      window.addEventListener('storage', () => {
+  // When local storage changes, dump the list to
+  // the console
+  window.location='/registerbasic'
+});
+    </script>
     <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico" />
     <meta
       name="viewport"
@@ -23,6 +30,7 @@
       work correctly both with client-side routing and a non-root public URL.
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
+
     <title>React App</title>
   </head>
   <body>
