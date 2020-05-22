@@ -152,15 +152,6 @@ router.post('/register', function(req, res, next) {
 });
 
 
-// Login a user
-router.put('/login', function(req, res, next) {
-  knex('swe_user').where({ email: req.body.email, password: req.body.password })
-    .then(result => {
-      res.send(util.message('Successfully logged in user with email: ' + req.body.email));
-    })
-    .catch(err => { return next(err) });
-});
-
 // GET user info by user_id
 router.get('/:user_id/id', function(req, res, next) {
   if (isNaN(req.params.user_id)) {

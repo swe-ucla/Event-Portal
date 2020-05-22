@@ -28,7 +28,9 @@ class RegisterEWI extends Component {
   
   componentDidMount ()
   {
+    console.log(localStorage)
     console.log(localStorage.getItem('token'))
+    this.getCurrentUser();
     this.getMajors();
     this.getOccupations();
     this.getPositions();
@@ -41,6 +43,7 @@ class RegisterEWI extends Component {
 
     // Initiate state
     this.state = { 
+      user_id: null,
       occupation_ids: [],
       occupation_names: [],
       position_ids: [],
@@ -72,6 +75,21 @@ class RegisterEWI extends Component {
       position_checkboxes : {},
       diet_checkboxes : {}
     };
+  }
+
+  getCurrentUser = () => {
+    const itemStr = localStorage.getItem("token")
+    const item = JSON.parse(itemStr)
+    console.log(item.value)
+     axios.get(`/users/search?email=` + item.value) 
+      .then(result => {
+        this.setState({
+          user_id: result.data[0].id
+        });
+      })
+      .catch(err => {
+        console.log(err);      
+      });
   }
 
   getMajors = () => {

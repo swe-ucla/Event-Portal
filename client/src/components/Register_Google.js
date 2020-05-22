@@ -48,83 +48,83 @@ class Register extends Component {
     this.getMajors();
 
 
-    if (localStorage && localStorage.getItem('length') > 0)
-        window.location='/registerbasic'
+    if (localStorage && localStorage.getItem('token') != null)
+        window.location='/registerEWI'
+    else {
 
-    localStorage.clear()
-    console.log(localStorage)
+      localStorage.clear()
 
 
+      window.gapi.load('auth2', function() {
+          window.auth2 = window.gapi.auth2.init({
+            client_id: '*******',
+           redirect_uri: 'http://localhost:3000/register'
+            // Scopes to request in addition to 'profile' and 'email'
+            //scope: 'additional_scope'
+          });
 
-    window.gapi.load('auth2', function() {
-        window.auth2 = window.gapi.auth2.init({
-          client_id: '600888122535-jlfmpjhc7g7hv02tulkmmgbrfmntlot6.apps.googleusercontent.com',
-         redirect_uri: 'http://localhost:3000/register'
-          // Scopes to request in addition to 'profile' and 'email'
-          //scope: 'additional_scope'
+        window.auth2.signOut().then(function () {
         });
-
-      window.auth2.signOut().then(function () {
-      });
-      window.auth2.disconnect();
-    
-    window.gapi.signin2.render(
-      GOOGLE_BUTTON_ID,
-      {
-        ux_mode: 'redirect',
-        scope: 'email',
-        width: 350,
-        height: 50,
-        longtitle: true,
-        theme: 'dark',
-        onsuccess: function(googleUser) {
-      //console.log();
-      console.log("hello");
-      const profile = googleUser.getBasicProfile();
-      console.log("Email: " + profile.getEmail());
-      console.log("Name: " + profile.getName());
+        window.auth2.disconnect();
       
-      let first_and_last = profile.getName();
-      email = profile.getEmail();
-      let namearr = first_and_last.split(" ");
-      first_name = namearr[0];
-      last_name = namearr[1];
-
-        var id_token = googleUser.getAuthResponse().id_token;
-        console.log(id_token)
-
-       // If request is good update state - user is authenticated
-        //dispatch({ type: AUTHENTICATE_THE_USER });
-
-        const now = new Date()
-        const item = {
-          value : profile.getEmail(),
-          expiry: now.getTime() + 60*2
-        }
-        // - Save the JWT in localStorage
-        localStorage.setItem('token', JSON.stringify(item));
-        console.log(localStorage)
+      window.gapi.signin2.render(
+        GOOGLE_BUTTON_ID,
+        {
+          ux_mode: 'redirect',
+          scope: 'email',
+          width: 350,
+          height: 50,
+          longtitle: true,
+          theme: 'dark',
+          onsuccess: function(googleUser) {
+        //console.log();
+        console.log("hello");
+        const profile = googleUser.getBasicProfile();
+        console.log("Email: " + profile.getEmail());
+        console.log("Name: " + profile.getName());
         
-        // - redirect to the route '/isauthenticated'
-        //browserHistory.push('/isauthenticated');
+        let first_and_last = profile.getName();
+        email = profile.getEmail();
+        let namearr = first_and_last.split(" ");
+        first_name = namearr[0];
+        last_name = namearr[1];
+
+          var id_token = googleUser.getAuthResponse().id_token;
+          console.log(id_token)
+
+         // If request is good update state - user is authenticated
+          //dispatch({ type: AUTHENTICATE_THE_USER });
+
+          const now = new Date()
+          const item = {
+            value : profile.getEmail(),
+            expiry: now.getTime() + 60*2
+          }
+          // - Save the JWT in localStorage
+          localStorage.setItem('token', JSON.stringify(item));
+          console.log(localStorage)
+          
+          // - redirect to the route '/isauthenticated'
+          //browserHistory.push('/isauthenticated');
 
 
-      //if this email can be found then redirect to events page
-      //redirect to register page ok?
-      //axios.put('/majors/' + this.state.major_id, diffBody)
-  },
-        onfailure: function(googleUser) {
-            console.log("error: signin failed")
-        }
-      },
-    );
+        //if this email can be found then redirect to events page
+        //redirect to register page ok?
+        //axios.put('/majors/' + this.state.major_id, diffBody)
+    },
+          onfailure: function(googleUser) {
+              console.log("error: signin failed")
+          }
+        },
+      );
 
 
-    });
-    //window.auth2.grantOfflineAccess().then(window.signInCallback);
-    /*
-    
-    */
+      });
+      //window.auth2.grantOfflineAccess().then(window.signInCallback);
+      /*
+      
+      */
+    }
   }
   
   constructor() {
