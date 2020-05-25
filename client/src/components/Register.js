@@ -73,21 +73,15 @@ function Register(props) {
               ...prev,
               ...user_data,
               occupation_ids: user_occupations,
-              // occupation_ids_get: user_occupations,
-              // major_ids_get: user_majors,
               major_ids: user_majors,
             };
           });
 
           // update 'initial' state
-          setInitialDetails((prev) => {
-            return {
+          setInitialDetails({
               occupation_ids: user_occupations,
-              // occupation_ids_get: user_occupations,
-              // major_ids_get: user_majors,
               major_ids: user_majors,
-            }
-          })
+          });
         })
         .catch(err => console.log(err));
     } 
@@ -204,10 +198,10 @@ function Register(props) {
       swe_id: userDetails.swe_id,
       gpa: userDetails.gpa,
       is_admin: userDetails.is_admin,
-      insert_major_ids: insert_major_ids,
-      remove_major_ids: remove_major_ids,
-      insert_occupation_ids: insert_occupation_ids,
-      remove_occupation_ids: remove_occupation_ids
+      insert_major_ids,
+      remove_major_ids,
+      insert_occupation_ids,
+      remove_occupation_ids,
     };
   
     axios.put(`/users/${user_id}`, body)
