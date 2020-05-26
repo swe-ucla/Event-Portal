@@ -78,8 +78,8 @@ class App extends Component {
 	render() {
 		return (
 			<>
-				<NavBar />
 				<Router history={history}>
+					<NavBar />
 					<Route path='/checkout' component={Checkout} />
 					<Route path='/post' component={ExamplePostForm} />
 					<Route path='/put' component={ExamplePutForm} />
@@ -88,8 +88,8 @@ class App extends Component {
 					<Route path='/register' component={Register_Google} />
 					<Route path='/profile' component={Profile} />
 					<Route path='/registerEWI' component={RegisterEWI} />
+					<Footer />
 				</Router>
-				<Footer />
 			</>
 		);
 	}
