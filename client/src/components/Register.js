@@ -20,6 +20,7 @@ import {
 	useMajors,
 	useOccupations,
 	useCheckboxes,
+	useSelect,
 } from '../utils/misc-hooks.js';
 
 // const GOOGLE_BUTTON_ID = 'google-sign-in-button';
@@ -97,57 +98,6 @@ function Register(props) {
 		});
 	};
 
-	// handle generic checkbox changes
-	const handleCheckboxChange = event => {
-		const value = parseInt(event.target.value);
-		const name = event.target.name;
-		const field = name.substr(0, name.length - 1);
-
-		setUserDetails(prev => {
-			let removed = false;
-			const prevIds = prev[name];
-			// if the id exists in the array of ids then remove it
-			let ids = prevIds.filter(id => {
-				if (id[field] === value) {
-					removed = true;
-				}
-				return id[field] !== value;
-			});
-
-			// if the id is not found in ids then add it
-			if (!removed) {
-				ids.push({
-					[field]: value,
-				});
-			}
-			console.log(ids);
-
-			// return the updated state
-			return {
-				...prev,
-				[name]: [...ids],
-			};
-		});
-	};
-
-	// handle in occupation select field changes
-	const handleOccupationChange = event => {
-		const target = event.target;
-		console.log(target.value);
-
-		// update state
-		setUserDetails(prev => {
-			return {
-				...prev,
-				occupation_ids: [
-					{
-						occupation_id: parseInt(target.value),
-					},
-				],
-			};
-		});
-	};
-
 	// handle POST request for new users
 	const addUser = () => {
 		// TODO: add support from server to handle the fields in userDetails
@@ -208,17 +158,11 @@ function Register(props) {
 	} = userDetails;
 
 	// map occupations to select options
-	let occupation_names = [];
-	for (let id in occupations) {
-		occupation_names.push(
-			<MenuItem key={id} value={id}>
-				{occupations[id]}
-			</MenuItem>,
-		);
-	}
+	const { handleSelectChange, renderSelectOptions } = useSelect(setUserDetails);
+	let occupation_names = renderSelectOptions(occupations, 'occupations');
 
-	const { renderCheckboxes } = useCheckboxes(setUserDetails);
 	// map majors to checkboxes
+	const { renderCheckboxes } = useCheckboxes(setUserDetails);
 	let major_names = renderCheckboxes(majors, major_ids, 'major_ids');
 
 	return (
@@ -273,11 +217,11 @@ function Register(props) {
 						fullWidth
 						className={classes.select}
 						value={occupation_ids[0] ? occupation_ids[0].occupation_id : 1}
-						onChange={handleOccupationChange}
+						onChange={handleSelectChange}
 						margin='normal'
 						inputProps={{
-							name: 'occupation_id',
-							id: 'occupation_id',
+							name: 'occupation_ids',
+							id: 'occupation_ids',
 						}}
 					>
 						{occupation_names}

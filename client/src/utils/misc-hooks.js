@@ -3,6 +3,7 @@ import axios from 'axios';
 
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
+import MenuItem from '@material-ui/core/MenuItem';
 
 export const useMajors = initialState => {
 	const [majors, setMajors] = useState(initialState);
@@ -62,7 +63,7 @@ export const useDiets = initialState => {
 			.get('/diet')
 			.then(result => {
 				let diet_data = {};
-				diet_data.forEach(diet => {
+				result.data.forEach(diet => {
 					diet_data[diet.id] = diet.type;
 				});
 				console.log(diet_data);
@@ -183,7 +184,7 @@ export const useCheckboxes = setDetails => {
 						/>
 					}
 					label={ids[id]}
-					key={id}
+					key={`${field}-${id}`}
 				/>,
 			);
 		}
@@ -192,5 +193,41 @@ export const useCheckboxes = setDetails => {
 
 	return {
 		renderCheckboxes,
+	};
+};
+
+export const useSelect = setDetails => {
+	const handleSelectChange = event => {
+		const value = parseInt(event.target.value);
+		const name = event.target.name;
+		const field = name.substr(0, name.length - 1);
+
+		setDetails(prev => {
+			return {
+				...prev,
+				[name]: [
+					{
+						[field]: value,
+					},
+				],
+			};
+		});
+	};
+
+	const renderSelectOptions = (ids, name) => {
+		let select_options = [];
+		for (let id in ids) {
+			select_options.push(
+				<MenuItem key={`${name}-${id}`} value={id}>
+					{ids[id]}
+				</MenuItem>,
+			);
+		}
+		return select_options;
+	};
+
+	return {
+		handleSelectChange,
+		renderSelectOptions,
 	};
 };
