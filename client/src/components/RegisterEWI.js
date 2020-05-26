@@ -23,6 +23,7 @@ import {
 	useMajors,
 	useCompanies,
 	useCheckboxes,
+	useSelect,
 } from '../utils/misc-hooks.js';
 
 function RegisterEWI(props) {
@@ -109,24 +110,6 @@ function RegisterEWI(props) {
 		});
 	};
 
-	// handle in occupation select field changes
-	const handleOccupationChange = event => {
-		const target = event.target;
-		console.log(target.value);
-
-		// update state
-		setUserDetails(prev => {
-			return {
-				...prev,
-				occupation_ids: [
-					{
-						occupation_id: parseInt(target.value),
-					},
-				],
-			};
-		});
-	};
-
 	// handle POST request for new users
 	const addUser = () => {
 		console.log(userDetails);
@@ -182,15 +165,11 @@ function RegisterEWI(props) {
 		company_ids,
 	} = userDetails;
 
+	const { handleSelectChange, renderSelectOptions } = useSelect(setUserDetails);
+
 	// map occupations to select options
-	let occupation_names = [];
-	for (let id in occupations) {
-		occupation_names.push(
-			<MenuItem key={id} value={id}>
-				{occupations[id]}
-			</MenuItem>,
-		);
-	}
+	let occupation_names = renderSelectOptions(occupations, 'occupations');
+	let company_names = renderSelectOptions(companies, 'companies');
 
 	// create checkbox components
 	const { renderCheckboxes } = useCheckboxes(setUserDetails);
@@ -254,11 +233,11 @@ function RegisterEWI(props) {
 						fullWidth
 						className={classes.select}
 						value={occupation_ids[0] ? occupation_ids[0].occupation_id : 1}
-						onChange={handleOccupationChange}
+						onChange={handleSelectChange}
 						margin='normal'
 						inputProps={{
-							name: 'occupation_id',
-							id: 'occupation_id',
+							name: 'occupation_ids',
+							id: 'occupation_ids',
 						}}
 					>
 						{occupation_names}
@@ -333,7 +312,11 @@ function RegisterEWI(props) {
               required fullWidth
               className={classes.select}
               value={this.state.first_choice_company || ''}
-              onChange={this.handleChange('first_choice_company')}
+              onChange={handleSelectChange}
+              inputProps={{
+                name: 'occupation_ids',
+                id: 'occupation_ids',
+              }}
               margin='normal'>
               {company_names}
             </Select>
