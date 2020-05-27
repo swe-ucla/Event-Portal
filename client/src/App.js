@@ -14,6 +14,7 @@ import Register_Google from './components/Register_Google.js';
 import RegisterEWI from './components/RegisterEWI.js';
 import Profile from './components/Profile.js';
 import EditProfile from './components/EditProfile.js';
+import UsersSummary from './components/UsersSummary.js';
 
 /* Auth imports */
 
@@ -88,6 +89,7 @@ class App extends Component {
 					<Route path='/register' component={Register_Google} />
 					<Route path='/profile' component={Profile} />
 					<Route path='/registerEWI' component={RegisterEWI} />
+					<Route path='/users/admin' component={UsersSummary} />
 					<Footer />
 				</Router>
 			</>
