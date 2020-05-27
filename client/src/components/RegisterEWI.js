@@ -100,6 +100,23 @@ function RegisterEWI(props) {
 		};
 	}, [user_id, setUserDetails]);
 
+	/* 
+  // TOKEN AUTHENTICATION
+  useEffect(() => {
+    const itemStr = localStorage.getItem("token")
+    const item = JSON.parse(itemStr)
+      axios.get(`/users/search?email=` + item.value) 
+      .then(result => {
+        this.setState({
+          user_id: result.data[0].id
+        });
+      })
+      .catch(err => {
+        console.log(err);      
+      });
+  }, [])
+  */
+
 	const handleChange = event => {
 		const target = event.target;
 		setUserDetails(prev => {
