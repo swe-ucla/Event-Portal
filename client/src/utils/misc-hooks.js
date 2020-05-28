@@ -163,6 +163,17 @@ export const useCheckboxes = setDetails => {
 		});
 	};
 
+	/*
+	 **	this method takes three arguments and returns an array of checkboxes
+	 **	ids: the object containing ids corresponding to checkbox values/names
+	 **		i.e. the object returned by useMajors hook
+	 **	state: the piece of state corresponding with all currently selected checkboxes
+	 **		always an array of objects containing an id field
+	 **		i.e. major_ids = [{major_id: 1}, {major_id: 5}, ...]
+	 **	name: the name of the piece of state being updated
+	 **		always in the form: "state_ids"
+	 **		i.e. "major_ids", "diet_ids", etc
+	 */
 	const renderCheckboxes = (ids, state, name) => {
 		const field = name.substr(0, name.length - 1);
 		let checkboxes = [];
@@ -191,6 +202,7 @@ export const useCheckboxes = setDetails => {
 		return checkboxes;
 	};
 
+	// this hook returns the renderCheckboxes method
 	return {
 		renderCheckboxes,
 	};
