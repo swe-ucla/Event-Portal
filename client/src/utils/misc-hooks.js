@@ -130,8 +130,13 @@ export const useCompanies = initialState => {
 	};
 };
 
+// setDetails is the method used to update the form details state
 export const useCheckboxes = setDetails => {
 	const handleCheckboxChange = event => {
+		// input fields require a name to handle events
+		// the name should always correspond to the piece of state the checkboxes rely on
+		// name should always follow the following format: "name_ids"
+		// i.e. "major_ids", "diet_ids", etc
 		const value = parseInt(event.target.value);
 		const name = event.target.name;
 		const field = name.substr(0, name.length - 1);
@@ -163,6 +168,17 @@ export const useCheckboxes = setDetails => {
 		});
 	};
 
+	/*
+	 **	this method takes three arguments and returns an array of checkboxes
+	 **	ids: the object containing ids corresponding to checkbox values/names
+	 **		i.e. the object returned by useMajors hook
+	 **	state: the piece of state corresponding with all currently selected checkboxes
+	 **		always an array of objects containing an id field
+	 **		i.e. major_ids = [{major_id: 1}, {major_id: 5}, ...]
+	 **	name: the name of the piece of state being updated
+	 **		always in the form: "state_ids"
+	 **		i.e. "major_ids", "diet_ids", etc
+	 */
 	const renderCheckboxes = (ids, state, name) => {
 		const field = name.substr(0, name.length - 1);
 		let checkboxes = [];
@@ -191,6 +207,7 @@ export const useCheckboxes = setDetails => {
 		return checkboxes;
 	};
 
+	// this hook returns the renderCheckboxes method
 	return {
 		renderCheckboxes,
 	};
