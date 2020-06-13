@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-import { Typography } from '@material-ui/core';
+import { Typography, Checkbox } from '@material-ui/core';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -79,6 +79,9 @@ function UsersSummary(props) {
 			</TableCell>
 			<TableCell align='center'>{user.events}</TableCell>
 			<TableCell align='center'>{user.past}</TableCell>
+			<TableCell align='center'>
+				<Checkbox checked={user.past > 6} />
+			</TableCell>
 		</TableRow>
 	));
 
@@ -94,6 +97,7 @@ function UsersSummary(props) {
 								<TableCell>Name</TableCell>
 								<TableCell align='center'>Events Attending</TableCell>
 								<TableCell align='center'>Past Events Attended</TableCell>
+								<TableCell align='center'>Member</TableCell>
 							</TableRow>
 						</TableHead>
 						<TableBody>{entries}</TableBody>
