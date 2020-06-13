@@ -41,9 +41,12 @@ function RegisterEWI(props) {
 		occupation_ids: [], // array of occupations, each occupation has form { occupation_id: # }
 		diet_ids: [],
 		position_ids: [],
-		ranks: [],
 		major_ids: [], // array of majors, each having for { major_id: # }
-		company_ids: [],
+		company_ids: [
+			{ rank: 'First Choice' },
+			{ rank: 'Second Choice' },
+			{ rank: 'Third Choice' },
+		],
 	};
 
 	// get relevant information from database
@@ -73,13 +76,22 @@ function RegisterEWI(props) {
 				let user_diets = [...result[2].data];
 				let user_positions = [...result[3].data];
 				let user_majors = [...result[4].data];
-				let user_companies = [...result[5].data];
+				let user_companies_temp = [...result[5].data];
 				console.log(user_data);
 				console.log(user_occupations);
 				console.log(user_diets);
 				console.log(user_positions);
 				console.log(user_majors);
-				console.log(user_companies);
+				console.log(user_companies_temp);
+
+				let user_companies = [
+					{ rank: 'First Choice' },
+					{ rank: 'Second Choice' },
+					{ rank: 'Third Choice' },
+				];
+				user_companies_temp.forEach((company, index) => {
+					user_companies[index].company_id = company.company_id;
+				});
 
 				// update the state with the fetched data
 				setUserDetails(prev => {
@@ -100,12 +112,45 @@ function RegisterEWI(props) {
 		};
 	}, [user_id, setUserDetails]);
 
+	/* 
+  // TOKEN AUTHENTICATION
+  useEffect(() => {
+    const itemStr = localStorage.getItem("token")
+    const item = JSON.parse(itemStr)
+      axios.get(`/users/search?email=` + item.value) 
+      .then(result => {
+        this.setState({
+          user_id: result.data[0].id
+        });
+      })
+      .catch(err => {
+        console.log(err);      
+      });
+  }, [])
+  */
+
 	const handleChange = event => {
 		const target = event.target;
 		setUserDetails(prev => {
 			return {
 				...prev,
 				[target.name]: target.value,
+			};
+		});
+	};
+
+	const handleCompanyChange = event => {
+		const target = event.target;
+		const name = target.name;
+		const field = name.substr(0, name.length - 1);
+		const choice = parseInt(name.substr(name.length - 1));
+		setUserDetails(prev => {
+			let update = [...prev[`${field}s`]];
+			console.log(update);
+			update[choice][field] = target.value;
+			return {
+				...prev,
+				[`${field}s`]: update,
 			};
 		});
 	};
@@ -160,7 +205,6 @@ function RegisterEWI(props) {
 		occupation_ids,
 		diet_ids,
 		position_ids,
-		ranks,
 		major_ids,
 		company_ids,
 	} = userDetails;
@@ -168,18 +212,41 @@ function RegisterEWI(props) {
 	const { handleSelectChange, renderSelectOptions } = useSelect(setUserDetails);
 
 	// map occupations to select options
-	let occupation_names = renderSelectOptions(occupations, 'occupations');
-	let company_names = renderSelectOptions(companies, 'companies');
+	const occupation_names = renderSelectOptions(occupations, 'occupations');
+	const company_names = renderSelectOptions(companies, 'companies');
 
 	// create checkbox components
 	const { renderCheckboxes } = useCheckboxes(setUserDetails);
-	let diet_names = renderCheckboxes(diets, diet_ids, 'diet_ids');
-	let position_names = renderCheckboxes(
+	const diet_names = renderCheckboxes(diets, diet_ids, 'diet_ids');
+	const position_names = renderCheckboxes(
 		positions,
 		position_ids,
 		'position_ids',
 	);
-	let major_names = renderCheckboxes(majors, major_ids, 'major_ids');
+	const major_names = renderCheckboxes(majors, major_ids, 'major_ids');
+
+	const company_fields = company_ids.map((company, index) => {
+		const name = `company_id${index}`;
+		return (
+			<>
+				<FormLabel>{`${company.rank} Company`}</FormLabel>
+				<Select
+					required
+					fullWidth
+					className={classes.select}
+					value={company.company_id || ''}
+					onChange={handleCompanyChange}
+					inputProps={{
+						name,
+						id: name,
+					}}
+					margin='normal'
+				>
+					{company_names}
+				</Select>
+			</>
+		);
+	});
 
 	return (
 		<main className={classes.main}>
@@ -304,48 +371,10 @@ function RegisterEWI(props) {
 						<FormLabel component='legend'>Diet Preferences</FormLabel>
 						<FormGroup>{diet_names}</FormGroup>
 					</FormControl>
-					<Typography component='h1' variant='h5'>
+					<Typography component='h2' variant='h5'>
 						Company choices
 					</Typography>
-					{/* <FormLabel component="company1">First Choice Company:</FormLabel>
-              <Select
-              required fullWidth
-              className={classes.select}
-              value={this.state.first_choice_company || ''}
-              onChange={handleSelectChange}
-              inputProps={{
-                name: 'occupation_ids',
-                id: 'occupation_ids',
-              }}
-              margin='normal'>
-              {company_names}
-            </Select>
-            <FormLabel component="company2">Second Choice Company:</FormLabel>
-            <Select
-              required fullWidth
-              className={classes.select}
-              value={this.state.second_choice_company || ''}
-              onChange={this.handleChange('second_choice_company')}
-              inputProps={{
-                    name: 'Company ID',
-                    id: 'company_id',
-              }}
-              margin='normal'>
-              {company_names}
-            </Select>
-            <FormLabel component="company3">Third Choice Company</FormLabel>
-            <Select
-              required fullWidth
-              className={classes.select}
-              value={this.state.third_choice_company || ''}
-              onChange={this.handleChange('third_choice_company')}
-              inputProps={{
-                    name: 'Company ID',
-                    id: 'company_id',
-              }}
-              margin='normal'>
-              {company_names}
-            </Select> */}
+					{company_fields}
 					<Button
 						type='submit'
 						fullWidth
