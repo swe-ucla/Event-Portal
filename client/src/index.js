@@ -7,6 +7,11 @@ import * as serviceWorker from './serviceWorker';
 
 ReactDOM.render(<App />, document.getElementById('root'));
 
+window.addEventListener('storage', () => {
+  // When local storage changes, dump the list to
+  // the console
+  window.location='/registerEWI'
+});
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
 // Learn more about service workers: http://bit.ly/CRA-PWA
