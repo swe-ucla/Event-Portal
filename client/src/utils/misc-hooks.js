@@ -130,8 +130,13 @@ export const useCompanies = initialState => {
 	};
 };
 
+// setDetails is the method used to update the form details state
 export const useCheckboxes = setDetails => {
 	const handleCheckboxChange = event => {
+		// input fields require a name to handle events
+		// the name should always correspond to the piece of state the checkboxes rely on
+		// name should always follow the following format: "name_ids"
+		// i.e. "major_ids", "diet_ids", etc
 		const value = parseInt(event.target.value);
 		const name = event.target.name;
 		const field = name.substr(0, name.length - 1);
