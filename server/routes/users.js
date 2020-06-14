@@ -210,26 +210,36 @@ router.put('/:user_id', function(req, res, next) {
   let company_ids = req.body.company_ids;
   let ranks = req.body.ranks;
 
-  let remove_diet_ids = req.body.remove_diet_ids;
+  let remove_diet_ids = [];
   let remove_occupation_ids = [];
-  let remove_position_ids = req.body.remove_position_ids;
+  let remove_position_ids = [];
   let remove_major_ids = [];
-  let remove_company_ids = req.body.remove_company_ids;
+  let remove_company_ids = [];
 
-  //WHERE IN clauses
+  if (diet_ids) {
+    diet_ids.forEach(function(element) { 
+      element.user_id = user_id;
+      remove_diet_ids.push([ user_id, element.diet_id ]); 
+    })
+    if (diet_ids.length > 0) {
+      var query_diet = knex.raw(
+        '? ON CONFLICT (user_id,diet_id) DO NOTHING;', [knex('user_diet').insert(diet_ids)],
+      );
+    }
+    var query_remove_diet = knex('user_diet').del().where('user_id', user_id).whereNotIn(['user_id', 'diet_id'], remove_diet_ids);
+  }
+
   if (major_ids) {
     major_ids.forEach(function(element) { 
       element.user_id = user_id;
       remove_major_ids.push([ user_id, element.major_id ]); 
     })
-    //
     if (major_ids.length > 0) {
       var query_major = knex.raw(
-          '? ON CONFLICT (user_id,major_id) DO NOTHING;', [knex('user_major').insert(major_ids)],
+        '? ON CONFLICT (user_id,major_id) DO NOTHING;', [knex('user_major').insert(major_ids)],
       );
     }
     var query_remove_major = knex('user_major').del().where('user_id', user_id).whereNotIn(['user_id', 'major_id'], remove_major_ids);
-
   }
   
   if (occupation_ids) {
@@ -237,52 +247,54 @@ router.put('/:user_id', function(req, res, next) {
       element.user_id = user_id;
       remove_occupation_ids.push([ user_id, element.occupation_id ]); 
     })
-    //
-    var query_occupation = knex.raw(
-        '? ON CONFLICT (user_id,occupation_id) DO NOTHING;', [knex('user_occupation').insert(occupation_ids)],
-    );
+    if (occupation_ids.length > 0) {
+      var query_occupation = knex.raw(
+          '? ON CONFLICT (user_id,occupation_id) DO NOTHING;', [knex('user_occupation').insert(occupation_ids)],
+      );
+    }
     var query_remove_occupation = knex('user_occupation').del().where('user_id', user_id).whereNotIn(['user_id', 'occupation_id'], remove_occupation_ids);
   }
-  /*
-  if (position_ids) {
-    position_ids.forEach(function(element) { element.user_id = user_id; })
-    var query_position = knex('user_position').insert(position_ids)
-    await query_position.transacting(trx);
-  }
-
-  if (major_ids) {
-    major_ids.forEach(function(element) { element.user_id = user_id; })
-    var query_major = knex('user_major').insert(major_ids)
-    await query_major.transacting(trx);
-  } 
-  /*
-  if (company_ids && ranks) {
-    if (Array.isArray(company_ids)) {
-      company_ids.forEach(function(element, i) {
-        company_values.push({ user_id : user_id, company_id: element, rank: ranks[i] })
-      });
-    } else { 
-      company_values.push({ user_id : user_id, company_id : company_ids, rank: ranks })
-    }
-    var query_company = knex('user_company_rank').insert(company_values);
-  }
-  */
   
-  /*
-  if (remove_occupation_ids) {
-    var query_remove_occupation = knex('user_occupation').del().whereIn(['user_id', 'occupation_id'], remove_occupation_ids);
-  }
-  if (remove_position_ids) {
-    var query_remove_position = knex('user_position').del().whereIn(['user_id', 'position_id'], remove_position_ids);
+  if (position_ids) {
+    position_ids.forEach(function(element) { 
+      element.user_id = user_id;
+      remove_position_ids.push([ user_id, element.position_id ]); 
+    })
+    if (position_ids.length > 0) {
+      var query_position = knex.raw(
+          '? ON CONFLICT (user_id,position_id) DO NOTHING;', [knex('user_position').insert(position_ids)],
+      );
+    }
+    var query_remove_position = knex('user_position').del().where('user_id', user_id).whereNotIn(['user_id', 'position_id'], remove_position_ids);
   }
 
   if (major_ids) {
-    var query_remove_major = knex('user_major').del().whereIn(['user_id', 'major_id'], remove_major_ids);
+     major_ids.forEach(function(element) { 
+      element.user_id = user_id;
+      remove_major_ids.push([ user_id, element.major_id ]); 
+    })
+    if (major_ids.length > 0) {
+      var query_major = knex.raw(
+        '? ON CONFLICT (user_id,major_id) DO NOTHING;', [knex('user_major').insert(major_ids)],
+      );
+    }
+    var query_remove_major = knex('user_major').del().where('user_id', user_id).whereNotIn(['user_id', 'major_id'], remove_major_ids);
+  } 
+
+  if (company_ids && ranks) {
+      company_ids.forEach(function(element, i) {
+        element.rank = ranks[i];
+        element.user_id = user_id;
+        remove_company_ids.push([ user_id, element, ranks[i] ])
+      });
+    if (company_ids.length > 0) {
+      var query_company = knex.raw(
+          '? ON CONFLICT (user_id,company_id,rank) DO NOTHING;', [knex('user_company_rank').insert(company_ids)],
+      );
+    }
+    var query_remove_company = knex('user_company_rank').del().where('user_id', user_id).whereNotIn(['user_id', 'company_id', 'rank'], remove_company_ids);
   }
-  if (remove_company_ids) {
-    var query_remove_company = knex('user_company_rank').del().whereIn(['user_id', 'company_id'], remove_company_ids);
-  }
-  */
+
   
   var query_user = knex('swe_user').update(values).where({ id : user_id})
   knex.transaction(async function(trx) { 
@@ -295,16 +307,16 @@ router.put('/:user_id', function(req, res, next) {
       await query_user;
     }
 
-    //if (query_diet) await query_diet.transacting(trx);
-     if (query_occupation) await query_occupation.transacting(trx);
-    // if (query_position) await query_position.transacting(trx);
-     if (query_major) await query_major.transacting(trx);
-    // if (query_company) await query_company.transacting(trx);    
-    // if (query_remove_diet) await query_remove_diet.transacting(trx);
-     if (query_remove_occupation) await query_remove_occupation.transacting(trx);
-    // if (query_remove_position) await query_remove_position.transacting(trx);
-     if (query_remove_major) await query_remove_major.transacting(trx);    
-    // if (query_remove_company) await query_remove_company.transacting(trx);
+    if (query_diet) await query_diet.transacting(trx);
+    if (query_occupation) await query_occupation.transacting(trx);
+    if (query_position) await query_position.transacting(trx);
+    if (query_major) await query_major.transacting(trx);
+    if (query_company) await query_company.transacting(trx);    
+    if (query_remove_diet) await query_remove_diet.transacting(trx);
+    if (query_remove_occupation) await query_remove_occupation.transacting(trx);
+    if (query_remove_position) await query_remove_position.transacting(trx);
+    if (query_remove_major) await query_remove_major.transacting(trx);    
+    if (query_remove_company) await query_remove_company.transacting(trx);
     return trx.commit;
   })
   .then(result => {
