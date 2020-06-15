@@ -27,11 +27,6 @@ const history = createBrowserHistory();
 history.listen(location => {
 	ReactGA.set({ page: location.pathname });
 	ReactGA.pageview(location.pathname);
-	// ReactGA.event({
-	//   category: "Pageview",
-	//   action: "Page: " + location.pathname + location.search,
-	//   label: "Page: " + location.pathname + location.search,
-	// });
 });
 
 function getWithExpiry(key) {
@@ -60,9 +55,7 @@ class App extends Component {
 		for (var i = 0; i < localStorage.length; i++) {
 			console.log(
 				localStorage.key(i) +
-					'=[' +
-					localStorage.getItem(localStorage.key(i)) +
-					']',
+					'=[' + localStorage.getItem(localStorage.key(i)) + ']',
 			);
 		}
 
@@ -78,21 +71,19 @@ class App extends Component {
 
 	render() {
 		return (
-			<>
-				<Router history={history}>
-					<NavBar />
-					<Route path='/checkout' component={Checkout} />
-					<Route path='/post' component={ExamplePostForm} />
-					<Route path='/put' component={ExamplePutForm} />
-					<Route path='/delete' component={ExampleDeleteForm} />
-					<Route path='/registerbasic' component={Register} />
-					<Route path='/register' component={Register_Google} />
-					<Route path='/profile' component={Profile} />
-					<Route path='/registerEWI' component={RegisterEWI} />
-					<Route path='/users/admin' component={UsersSummary} />
-					<Footer />
-				</Router>
-			</>
+			<Router history={history}>
+				<NavBar />
+				<Route path='/checkout' component={Checkout} />
+				<Route path='/post' component={ExamplePostForm} />
+				<Route path='/put' component={ExamplePutForm} />
+				<Route path='/delete' component={ExampleDeleteForm} />
+				<Route path='/registerbasic' component={Register} />
+				<Route path='/register' component={Register_Google} />
+				<Route path='/profile' component={Profile} />
+				<Route path='/registerEWI' component={RegisterEWI} />
+				<Route path='/users/admin' component={UsersSummary} />
+				<Footer />
+			</Router>
 		);
 	}
 }

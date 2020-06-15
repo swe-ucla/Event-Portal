@@ -23,7 +23,6 @@ import {
 	useSelect,
 } from '../utils/misc-hooks.js';
 
-// const GOOGLE_BUTTON_ID = 'google-sign-in-button';
 
 function Register(props) {
 	const user_id = 3;
@@ -115,12 +114,6 @@ function Register(props) {
 
 	const updateUser = () => {
 		console.log(userDetails);
-
-		// let insert_major_ids = userDetails.major_ids.filter(x => !initialDetails.major_ids.find(y => y.major_id === x.major_id))
-		// let remove_major_ids = initialDetails.major_ids.filter(x => !userDetails.major_ids.find(y => y.major_id === x.major_id))
-		// let insert_occupation_ids = userDetails.occupation_ids.filter(x => !initialDetails.occupation_ids.find(y => y.occupation_id === x.occupation_id))
-		// let remove_occupation_ids = initialDetails.occupation_ids.filter(x => !userDetails.occupation_ids.find(y => y.occupation_id === x.occupation_id))
-
 		axios
 			.put(`/users/${user_id}`, userDetails)
 			.then(result => {
@@ -227,8 +220,8 @@ function Register(props) {
 						{occupation_names}
 					</Select>
 					{/* <FormHelperText error className={classes.formHelperText}>
-              {errorMessage}
-            </FormHelperText> */}
+              			{errorMessage}
+            		</FormHelperText> */}
 					<TextField
 						fullWidth
 						id='email'

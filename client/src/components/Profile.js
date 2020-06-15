@@ -23,7 +23,6 @@ class Profile extends Component {
 
   // Called when component has been initialized
   componentDidMount() {
-    //let user_map = {}
     this.getUser();
     this.getDiet();
     console.log(this.state)
@@ -31,7 +30,7 @@ class Profile extends Component {
 
   // Called when a component is being removed from the DOM
   componentWillUnmount() {
-    //this.props.onRef(null); //removed this
+  
   }
 
   // Call GET function for current user
@@ -52,11 +51,6 @@ class Profile extends Component {
         })
       })
       .catch(err => console.log(err));
-      console.log('this is the state')
-      console.log(this.state)
-      //console.log(user_map)
-      
-      console.log(this.state)
   }
 
   getDiet = () => {
@@ -87,8 +81,6 @@ class Profile extends Component {
       
   }
   render() {
-    console.log('OIOI')
-    console.log(this.state.diet)
     const { classes } = this.props;
 
     var first_name = <p key={this.state.user.first_name}>First Name: {this.state.user.first_name}</p>
@@ -99,11 +91,6 @@ class Profile extends Component {
     var diet_elements = Object.keys(this.state.diet).map((key, index) => (
       <p key={index}> {this.state.diet[key]} </p>
     ))
-    /*
-    var diet_elements = this.state.diet.map(diet_entry => {
-        return <p key={diet_entry}>{diet_entry}</p>
-      });
-      */
 
   
 

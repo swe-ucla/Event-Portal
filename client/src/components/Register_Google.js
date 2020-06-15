@@ -31,18 +31,11 @@ const history = createBrowserHistory();
 history.listen(location => {
   ReactGA.set({ page: location.pathname });
   ReactGA.pageview(location.pathname);
- ReactGA.event({
-   category: "Pageview",
-  action: "Page: " + location.pathname + location.search,
-   label: "Page: " + location.pathname + location.search,
- });
 });
 
 
 
 class Register extends Component {
-
-   
 
   componentDidMount() {
     this.getMajors();
@@ -51,9 +44,7 @@ class Register extends Component {
     if (localStorage && localStorage.getItem('token') != null)
         window.location='/registerEWI'
     else {
-
       localStorage.clear()
-
 
       window.gapi.load('auth2', function() {
           window.auth2 = window.gapi.auth2.init({
@@ -67,51 +58,45 @@ class Register extends Component {
         });
         window.auth2.disconnect();
       
-      window.gapi.signin2.render(
-        GOOGLE_BUTTON_ID,
-        {
-          ux_mode: 'redirect',
-          scope: 'email',
-          width: 350,
-          height: 50,
-          longtitle: true,
-          theme: 'dark',
-          onsuccess: function(googleUser) {
+        window.gapi.signin2.render(
+          GOOGLE_BUTTON_ID,
+          {
+            ux_mode: 'redirect',
+            scope: 'email',
+            width: 350,
+            height: 50,
+            longtitle: true,
+            theme: 'dark',
+            onsuccess: function(googleUser) {
+              console.log("hello");
+              const profile = googleUser.getBasicProfile();
+              console.log("Email: " + profile.getEmail());
+              console.log("Name: " + profile.getName());
+              
+              let first_and_last = profile.getName();
+              email = profile.getEmail();
+              let namearr = first_and_last.split(" ");
+              first_name = namearr[0];
+              last_name = namearr[1];
 
-        console.log("hello");
-        const profile = googleUser.getBasicProfile();
-        console.log("Email: " + profile.getEmail());
-        console.log("Name: " + profile.getName());
-        
-        let first_and_last = profile.getName();
-        email = profile.getEmail();
-        let namearr = first_and_last.split(" ");
-        first_name = namearr[0];
-        last_name = namearr[1];
+              var id_token = googleUser.getAuthResponse().id_token;
+              console.log(id_token)
 
-          var id_token = googleUser.getAuthResponse().id_token;
-          console.log(id_token)
+               
 
-         
-
-          const now = new Date()
-          const item = {
-            value : profile.getEmail(),
-            expiry: now.getTime() + 60*2
-          }
-          // - Save the value of email and expiry in localStorage
-          localStorage.setItem('token', JSON.stringify(item));
-          console.log(localStorage)
-          
-      
-    },
-          onfailure: function(googleUser) {
+              const now = new Date()
+              const item = {
+                value : profile.getEmail(),
+                expiry: now.getTime() + 60*2
+              }
+              // - Save the value of email and expiry in localStorage
+              localStorage.setItem('token', JSON.stringify(item));
+            },
+            onfailure: function(googleUser) {
               console.log("error: signin failed")
-          }
-        },
-      );
-
-
+            }
+          },
+        );
       });
     }
   }
@@ -144,83 +129,12 @@ class Register extends Component {
   }
 
 
-
-
-  addUser = () => {
-    if (!this.state.phone_number) {
-      // Do not add major if no name specified
-      console.log('ERROR: fill out phone number field.');
-      return;
-    }
-
-    console.log(this.state.mids)
-
-    this.state.mids.forEach(function(mid){ 
-      if (mid.name == this.state.major_name){
-        this.state.major_id = mid.major_id
-      }
-    })
-
-
-    let body = {
-      first_name: first_name,
-      last_name: last_name,
-      password: "",
-      email: email,
-      phone: this.state.phone_number,
-      university_id: this.state.ucla_id ? this.state.ucla_id : null,
-      is_admin: false,
-      major_id: this.state.major_id
-    };
-
-    // Make POST request to add major
-    axios.post('/users/register', body)
-      .then(result => {
-        // Update displayed major names
-        //this.users.getUsers();
-
-        
-        // Clear form values 
-        this.setState({
-          phone_number: '',
-          ucla_id: null,
-          check1: true,
-          check2: false,
-          check3: false,
-          errorMessage: ''
-        });
-      })
-      .catch(err => {
-        // TODO: use user-friendly error message
-        console.log(err.response.data)
-        this.setState({
-          errorMessage: err.response.data.message,
-        })
-      })
-  }
-
   handleSubmit = (event) => {
-    this.addUser();
+    //this.addUser();
     // Prevent site refresh after submission
     event.preventDefault();
   }
 
-/*
-  handleChange = name => event => {
-    this.setState({
-      [name]: event.target.value,
-    });
-    if (name === 'major_id') {
-      this.getMajorByID(event.target.value);
-    }
-  };
-  */
-
-  handleChange = name => event => {
-    this.setState({
-      [name]: event.target.value,
-    });
-  };
 
   onclickFunc = () => {
     this.props.history.push('/registerEWI')
