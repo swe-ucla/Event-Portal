@@ -6,7 +6,6 @@ var router = express.Router();
 var knex = require('../db/knex');
 var util = require('../util');
 
-
 // GET test string to verify that Users server is running.
 router.get('/ping', function(req, res, next) {
   res.send('pong - Users API');
@@ -148,6 +147,22 @@ router.post('/register', function(req, res, next) {
 
 // Login a user
 router.put('/login', function(req, res, next) {
+  var app = express()
+
+  // Test enviroment session setup
+  var sess = {
+    secret: 'keyboard cat',
+    cookie: {}
+  }
+
+  // Production environment session setup
+  if (app.get('env') === 'production') {
+    app.set('trust proxy', 1) // trust first proxy
+    sess.cookie.secure = true // serve secure cookies
+  }
+
+  app.use(session(sess))
+
   knex('swe_user').where({ email: req.body.email, password: req.body.password })
     .then(result => {
       res.send(util.message('Successfully logged in user with email: ' + req.body.email));

@@ -106,27 +106,6 @@ function RegisterEWI(props) {
 		};
 	}, [user_id, setUserDetails]);
 
-
-  // TOKEN AUTHENTICATION
-
-  // useEffect(() => {
-  //   const itemStr = localStorage.getItem("token");
-  //   const item = JSON.parse(itemStr);
-    
-  //     axios.get(`/users/search?email=` + item.value) 
-  //     .then(result => {
-  //       this.setState({
-  //         user_id: result.data[0].id
-  //       });
-  //     })
-  //     .catch(err => {
-  //       console.log(err);      
-  //     });
-  // }, [user_id]);
-
-
- 
-
 	const handleChange = event => {
 		const target = event.target;
 		setUserDetails(prev => {
@@ -354,13 +333,12 @@ function RegisterEWI(props) {
 						onChange={handleChange}
 						margin='normal'
 					/>
-					<Typography component='h2' variant='h5'>
-						Evening with Industry
-					</Typography>
 					<FormControl component='fieldset' className={classes.formControl}>
 						<FormLabel component='legend'>Select your major(s)</FormLabel>
 						<FormGroup>{major_names}</FormGroup>
-
+						<Typography component='h2' variant='h5'>
+						Evening with Industry
+						</Typography>
 						<FormLabel component='legend'>
 							Select job level you are seeking
 						</FormLabel>
@@ -390,5 +368,3 @@ function RegisterEWI(props) {
 }
 
 export default withStyles(ExamplePostFormStyles)(RegisterEWI);
-
-
