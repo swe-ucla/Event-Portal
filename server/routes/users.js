@@ -200,6 +200,8 @@ router.put('/:user_id', function(req, res, next) {
     phone: req.body.phone,
     university_id: req.body.university_id,
     is_admin: req.body.is_admin,
+    swe_id: req.body.swe_id,
+    gpa: req.body.gpa
   }
 
   let user_id = req.params.user_id;
@@ -303,7 +305,9 @@ router.put('/:user_id', function(req, res, next) {
          req.body.email || 
          req.body.phone || 
          req.body.university_id || 
-         req.body.is_admin) {
+         req.body.is_admin ||
+         req.body.swe_id || 
+         req.body.gpa) {
       await query_user;
     }
 
