@@ -1,44 +1,44 @@
-import React, { Component } from 'react';
-import axios from 'axios';
-import MenuItem from '@material-ui/core/MenuItem';
-import { withStyles } from '@material-ui/core/styles';
-import Typography from '@material-ui/core/Typography';
-import TextField from '@material-ui/core/TextField';
-import Button from '@material-ui/core/Button';
-import FormLabel from '@material-ui/core/FormLabel';
-import FormControl from '@material-ui/core/FormControl';
-import FormGroup from '@material-ui/core/FormGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import FormHelperText from '@material-ui/core/FormHelperText';
-import InputLabel from '@material-ui/core/InputLabel';
-import Select from '@material-ui/core/Select';
-import Checkbox from '@material-ui/core/Checkbox';
-import Paper from '@material-ui/core/Paper';
+import React, { Component } from "react";
+import axios from "axios";
+import MenuItem from "@material-ui/core/MenuItem";
+import { withStyles } from "@material-ui/core/styles";
+import Typography from "@material-ui/core/Typography";
+import TextField from "@material-ui/core/TextField";
+import Button from "@material-ui/core/Button";
+import FormLabel from "@material-ui/core/FormLabel";
+import FormControl from "@material-ui/core/FormControl";
+import FormGroup from "@material-ui/core/FormGroup";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import FormHelperText from "@material-ui/core/FormHelperText";
+import InputLabel from "@material-ui/core/InputLabel";
+import Select from "@material-ui/core/Select";
+import Checkbox from "@material-ui/core/Checkbox";
+import Paper from "@material-ui/core/Paper";
 
-import Radio from '@material-ui/core/Radio';
-import RadioGroup from '@material-ui/core/RadioGroup';
+import Radio from "@material-ui/core/Radio";
+import RadioGroup from "@material-ui/core/RadioGroup";
 
-import ExamplePostFormStyles from '../styles/ExamplePostForm.js';
-import CompaniesStyles from '../styles/CompaniesForm.js';
-import ExampleGet from '../components/ExampleGet.js';
+import ExamplePostFormStyles from "../styles/ExamplePostForm.js";
+import CompaniesStyles from "../styles/CompaniesForm.js";
+import ExampleGet from "../components/ExampleGet.js";
 
 class CompaniesForm extends Component {
   constructor() {
     super();
 
     // Initiate state
-    this.state = { 
-      name: '',
-      description: '',
-      website: '',
-      errorMessage: '',
-      citizenship: 'N',
+    this.state = {
+      name: "",
+      description: "",
+      website: "",
+      errorMessage: "",
+      citizenship: "N",
       majors: {},
       positions: {},
       allMajors: {},
       allPositions: {}
     };
- //   const [citizenship, setCitizen] = React.useState(''),
+    //   const [citizenship, setCitizen] = React.useState(''),
 
     this.handleChange = this.handleChange.bind(this);
     // this.handleChange = event => {
@@ -46,7 +46,7 @@ class CompaniesForm extends Component {
     // };
   }
 
-  async componentDidMount(){
+  async componentDidMount() {
     //console.log("1")
     // let response1 = await this.getAllMajors();
     // //console.log("2")
@@ -100,7 +100,7 @@ class CompaniesForm extends Component {
 
     if (!this.state.name) {
       // Do not add major if no name specified
-      console.log('ERROR: fill out Company Name field.');
+      console.log("ERROR: fill out Company Name field.");
       return;
     }
 
@@ -110,7 +110,7 @@ class CompaniesForm extends Component {
     let allMajors = this.state.allMajors;
     for (let property in majors) {
       if (majors.hasOwnProperty(property)) {
-        if(majors[property] === true){
+        if (majors[property] === true) {
           majorIDs.push(allMajors[property]);
         } else {
           removeMajorIDs.push(allMajors[property]);
@@ -124,7 +124,7 @@ class CompaniesForm extends Component {
     let positions = this.state.positions;
     for (let property in positions) {
       if (positions.hasOwnProperty(property)) {
-        if(positions[property] === true){
+        if (positions[property] === true) {
           positionIDs.push(allPositions[property]);
         } else {
           removePositionIDs.push(allPositions[property]);
@@ -140,154 +140,164 @@ class CompaniesForm extends Component {
       name: this.state.name,
       description: this.state.description,
       website: this.state.website,
-      citizenship_requirement: this.state.citizenship ? 'Y' : 'N', //change?
-      major_id: majorIDs,
+      citizenship_requirement: this.state.citizenship ? "Y" : "N", //change?
+      major_id: majorIDs
       //position_id: positionIDs,
       //remove_position_id: removePositionIDs,
       //remove_major_id: removeMajorIDs,
     };
 
     // Make PUT request to update company data
-    axios.put('/companies/1', body)
+    axios
+      .put("/companies/" + this.props.location.companyid, body)
       .then(result => {
         // any post submission handling (maybe a confirmation message?)
       })
       .catch(err => {
         // TODO: use user-friendly error message
-        console.log(err.response.data)
+        console.log(err.response.data);
         this.setState({
-          errorMessage: err.response.data.message,
-        })
+          errorMessage: err.response.data.message
+        });
       });
-  }
+  };
 
   getEverything = () => {
     var options = {
       params: {
-        sort: 'id'
+        sort: "id"
       }
-    }
+    };
     let majorsChecked = {};
     let positionsChecked = {};
-    axios.get('/majors', options)
+    axios
+      .get("/majors", options)
       .then(result => {
         let majorsEnum = {};
         //let majorsChecked = {};
-        result.data.forEach(function(major) { 
+        result.data.forEach(function(major) {
           majorsEnum[major.name] = major.id;
           majorsChecked[major.name] = false;
         });
 
-        this.setState({ 
+        this.setState({
           allMajors: majorsEnum,
           majors: majorsChecked
         });
-        console.log(this.state.allMajors)
-        axios.get('/positions', options)
+        console.log(this.state.allMajors);
+        axios
+          .get("/positions", options)
           .then(result => {
             let positionsEnum = {};
-            result.data.forEach(function(position) { 
+            result.data.forEach(function(position) {
               positionsEnum[position.role] = position.id;
               positionsChecked[position.role] = false;
             });
             // maybe skip intermediate state updates
-            this.setState({ 
+            this.setState({
               allPositions: positionsEnum,
               positions: positionsChecked
             });
             let idToMajor = {};
             console.log(this.state.allMajors);
             Object.keys(this.state.allMajors).forEach(key => {
-              console.log(key)
+              console.log(key);
               idToMajor[this.state.allMajors[key]] = key;
-            })
+            });
             console.log(idToMajor);
-            axios.get('/companies/1/majors')
-            .then(result => {
-              let majs = result.data;
-              console.log(majs)
-              for (let m in majs) {
-                console.log(majs[m].major_id)
-                console.log(idToMajor[majs[m].major_id])
-                majorsChecked[idToMajor[majs[m].major_id]] = true;
-              }
-              this.setState({
-                majors: majorsChecked
-              });
-              console.log(this.state.majors);
-              axios.get('/companies/1/positions')
+            axios
+              .get("/companies/" + this.props.location.companyid + "/majors")
               .then(result => {
-                let idToPosition = {};
-                console.log(this.state.allPositions);
-                Object.keys(this.state.allPositions).forEach(key => {
-                  console.log(key)
-                  idToPosition[this.state.allPositions[key]] = key;
-                })
-                let pos = result.data;
-                for (let p in pos) {
-                  positionsChecked[idToPosition[pos[p].position_id]] = true;
+                let majs = result.data;
+                console.log(majs);
+                for (let m in majs) {
+                  console.log(majs[m].major_id);
+                  console.log(idToMajor[majs[m].major_id]);
+                  majorsChecked[idToMajor[majs[m].major_id]] = true;
                 }
+                this.setState({
+                  majors: majorsChecked
+                });
+                console.log(this.state.majors);
+                axios
+                  .get(
+                    "/companies/" + this.props.location.companyid + "/positions"
+                  )
+                  .then(result => {
+                    let idToPosition = {};
+                    console.log(this.state.allPositions);
+                    Object.keys(this.state.allPositions).forEach(key => {
+                      console.log(key);
+                      idToPosition[this.state.allPositions[key]] = key;
+                    });
+                    let pos = result.data;
+                    for (let p in pos) {
+                      positionsChecked[idToPosition[pos[p].position_id]] = true;
+                    }
+                  })
+                  .catch(err => console.log(err)); //work on error handling!
               })
-              .catch(err => console.log(err)); //work on error handling!
-            })
-            .catch(err => console.log(err));
+              .catch(err => console.log(err));
           })
           .catch(err => console.log(err));
-        })
-        .catch(err => console.log(err));
-       axios.get('/companies/1/id')
+      })
+      .catch(err => console.log(err));
+    axios
+      .get("/companies/" + this.props.location.companyid + "/id")
       .then(result => {
         let nam = result.data[0].name;
         let web = result.data[0].website;
         let desc = result.data[0].description;
         let cit_req = result.data[0].citizenship_requirement;
-        console.log(nam)
+        console.log(nam);
         this.setState({
           name: nam,
-          description: desc,   
+          description: desc,
           website: web,
-          citizenship: cit_req 
+          citizenship: cit_req
         });
       })
       .catch(err => console.log(err));
-  }
+  };
 
- getCompanyData = async() => {
+  getCompanyData = async () => {
     //invert mapping of enum, yielding mapping from id to name
     let idToMajor = {};
     console.log(this.state.allMajors);
     Object.keys(this.state.allMajors).forEach(key => {
-      console.log(key)
+      console.log(key);
       idToMajor[this.state.allMajors[key]] = key;
-    })
+    });
     console.log(idToMajor);
 
-    axios.get('/companies/1/id')
+    axios
+      .get("/companies/" + this.props.location.companyid + "/id") // "/companies/1/id"
       .then(result => {
         let nam = result.data[0].name;
         let web = result.data[0].website;
         let desc = result.data[0].description;
         let cit_req = result.data[0].citizenship_requirement;
-        console.log(nam)
+        console.log(nam);
         this.setState({
           name: nam,
-          description: desc,   
+          description: desc,
           website: web,
-          citizenship: cit_req 
+          citizenship: cit_req
         });
       })
       .catch(err => console.log(err));
-      axios.get('/companies/1/majors')
+    axios
+      .get("/companies/" + this.props.location.companyid + "majors") ///companies/1/majors
       .then(result => {
         let majs = result.data;
         let majorsChecked = {};
-        console.log(majs)
+        console.log(majs);
         for (let am in this.state.allMajors) {
           majorsChecked[idToMajor[am.major_id]] = false;
         }
         for (let m in majs) {
-          console.log(majs[m].major_id)
-          console.log(idToMajor[majs[m].major_id])
+          console.log(majs[m].major_id);
+          console.log(idToMajor[majs[m].major_id]);
           majorsChecked[idToMajor[majs[m].major_id]] = true;
         }
         this.setState({
@@ -296,70 +306,71 @@ class CompaniesForm extends Component {
         console.log(this.majors);
       })
       .catch(err => console.log(err));
-      //majorsChecked[major.name] = false;
-      return 1;
-  }
+    //majorsChecked[major.name] = false;
+    return 1;
+  };
 
-  getAllMajors = async() => {
+  getAllMajors = async () => {
     var options = {
       params: {
-        sort: 'id'
+        sort: "id"
       }
-    }
-    axios.get('/majors', options)
+    };
+    axios
+      .get("/majors", options)
       .then(result => {
         let majorsEnum = {};
         let majorsChecked = {};
-        result.data.forEach(function(major) { 
+        result.data.forEach(function(major) {
           majorsEnum[major.name] = major.id;
           majorsChecked[major.name] = false;
         });
 
-        this.setState({ 
+        this.setState({
           allMajors: majorsEnum,
           majors: majorsChecked
         });
-        console.log(this.state.allMajors)
+        console.log(this.state.allMajors);
       })
       .catch(err => console.log(err));
-      return 1;
-  }
+    return 1;
+  };
 
-  getAllPositions = async() => {
-      var options = {
-        params: {
-          sort: 'id'
-        }
+  getAllPositions = async () => {
+    var options = {
+      params: {
+        sort: "id"
       }
-      axios.get('/positions', options)
-        .then(result => {
-          let positionsEnum = {};
-          let positionsChecked = {};
-          result.data.forEach(function(position) { 
-            positionsEnum[position.role] = position.id;
-            positionsChecked[position.role] = false;
-          });
+    };
+    axios
+      .get("/positions", options)
+      .then(result => {
+        let positionsEnum = {};
+        let positionsChecked = {};
+        result.data.forEach(function(position) {
+          positionsEnum[position.role] = position.id;
+          positionsChecked[position.role] = false;
+        });
 
+        this.setState({
+          allPositions: positionsEnum,
+          positions: positionsChecked
+        });
+      })
+      .catch(err => console.log(err));
+    return 1;
+  };
 
-          this.setState({ 
-            allPositions: positionsEnum,
-            positions: positionsChecked
-          });
-        })
-        .catch(err => console.log(err));
-        return 1;
-    }
-
-  handleSubmit = (event) => {
+  handleSubmit = event => {
     this.changeCompany();
     // Prevent site refresh after submission
     event.preventDefault();
-  }
+  };
 
   handleChange = name => event => {
-    console.log("Tried")
+    console.log("Tried");
     this.setState({
-      [name]: event.target.value,
+      [name]: event.target.value
     });
   };
 
@@ -374,41 +385,44 @@ class CompaniesForm extends Component {
 
   render() {
     const { classes } = this.props;
-    const { citizenship_requirement } = this.state;
+    const { citizenship_requirement } = this.state.citizenship;
     //const error = [check1, check2, check3].filter(v => v).length !== 2;
     const allMajors = this.state.allMajors;
     const majors = this.state.majors;
     const allPositions = this.state.allPositions;
     const positions = this.state.positions;
 
-   //console.log(allMajors);
-    
+    //console.log(allMajors);
+
     const majorChecks = Object.getOwnPropertyNames(majors).map(elem => {
-      return (<FormControlLabel
-                  control={
-                    <Checkbox 
-                      checked={majors[elem]}
-                      onChange={this.handleCheckChange('majors')} 
-                      value={elem}
-                    />
-                  }
-                  label={elem}
-                />)
-    })
+      return (
+        <FormControlLabel
+          control={
+            <Checkbox
+              checked={majors[elem]}
+              onChange={this.handleCheckChange("majors")}
+              value={elem}
+            />
+          }
+          label={elem}
+        />
+      );
+    });
 
     const positionChecks = Object.getOwnPropertyNames(positions).map(elem => {
-      return (<FormControlLabel
-                  control={
-                    <Checkbox 
-                      checked={positions[elem]}
-                      onChange={this.handleCheckChange('positions')} 
-                      value={elem}
-                    />
-                  }
-                  label={elem}
-                />)
-    })
-
+      return (
+        <FormControlLabel
+          control={
+            <Checkbox
+              checked={positions[elem]}
+              onChange={this.handleCheckChange("positions")}
+              value={elem}
+            />
+          }
+          label={elem}
+        />
+      );
+    });
 
     return (
       <main className={classes.main}>
@@ -418,60 +432,58 @@ class CompaniesForm extends Component {
           </Typography>
           <form className={classes.form} onSubmit={this.handleSubmit}>
             <TextField
-              required fullWidth
-              id='name'
-              label='Company Name'
+              required
+              fullWidth
+              id="name"
+              label="Company Name"
               className={classes.textField}
-              placeholder=''
-              value={this.state.name || ''}
-              onChange={this.handleChange('name')}
-              margin='normal'
+              placeholder=""
+              value={this.state.name || ""}
+              onChange={this.handleChange("name")}
+              margin="normal"
             />
-            <TextField fullWidth
-              id='website'
-              label='Company Website'
+            <TextField
+              fullWidth
+              id="website"
+              label="Company Website"
               className={classes.textField}
-              placeholder='e.g. www.company.com'
-              value={this.state.website || ''}
-              onChange={this.handleChange('website')}
-              margin='normal'
+              placeholder="e.g. www.company.com"
+              value={this.state.website || ""}
+              onChange={this.handleChange("website")}
+              margin="normal"
             />
             <FormLabel>Majors Hiring:</FormLabel>
             <FormGroup>
-              <div>
-                {majorChecks}
-               </div>
+              <div>{majorChecks}</div>
             </FormGroup>
             <FormLabel>Positions Hiring:</FormLabel>
             <FormGroup>
-              <div>
-              {positionChecks}
-              </div>
+              <div>{positionChecks}</div>
             </FormGroup>
             <FormHelperText error className={classes.formHelperText}>
               {this.state.errorMessage}
             </FormHelperText>
             <FormControl className={classes.formControl}>
-            <FormLabel id="demo-simple-select-label">Citizenship</FormLabel>
+              <FormLabel id="demo-simple-select-label">Citizenship</FormLabel>
               <Select
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"
                 value={this.state.citizenship}
-                onChange={this.handleChange('citizenship')}
+                onChange={this.handleChange("citizenship")}
               >
-                <MenuItem value={'Y'}>Yes</MenuItem>
-                <MenuItem value={'N'}>No</MenuItem>
+                <MenuItem value={"Y"}>Yes</MenuItem>
+                <MenuItem value={"N"}>No</MenuItem>
               </Select>
             </FormControl>
             <TextField
               fullWidth
-              id='description'
-              label='Company Description'
+              id="description"
+              label="Company Description"
               className={classes.textField}
-              placeholder=''
-              value={this.state.description || ''}
-              onChange={this.handleChange('description')}
-              margin='normal'
+              placeholder=""
+              value={this.state.description || ""}
+              onChange={this.handleChange("description")}
+              margin="normal"
             />
             <Button
               type="submit"
