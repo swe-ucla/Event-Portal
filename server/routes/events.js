@@ -36,6 +36,9 @@ router.get('/', function(req, res, next) {
         if (req.query.end_date) {
           queryBuilder.where('ends_at', '<', req.query.end_date);
         }
+        if (req.query.attendance_code) {
+          queryBuilder.where('attendance_code', '=', req.query.attendance_code);
+        }
       })
       .orderBy('starts_at', 'asc');
   }
@@ -77,30 +80,13 @@ router.get('/locations', function(req, res, next) {
     .catch(err => { return next(err) });
 });
 
-// GET event by event_id
+// GET event_id by event
 router.get('/:event_id/id', function(req, res, next) {
   if (isNaN(req.params.event_id)) {
     util.throwError(400, "Event ID must be a number.");
   }
 
   knex('event').select().where({ fb_id: req.params.event_id })
-    .then(result => {
-      if(result.length) {
-        res.json(result);
-      } else {
-        res.status(404).json('No events with matching event ID found.');
-      }
-    })
-    .catch(err => { return next(err) });
-});
-
-// GET event by attendance_code
-router.get('/:attendance_code/attendance_code', function(req, res, next) {
-  if (isNaN(req.params.attendance_code)) {
-    util.throwError(400, "Attendance code must be a valid string.");
-  }
-
-  knex('event').select().where({ attendance_code: req.params.attendance_code })
     .then(result => {
       if(result.length) {
         res.json(result);

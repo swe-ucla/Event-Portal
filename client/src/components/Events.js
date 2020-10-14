@@ -243,7 +243,42 @@ class Events extends Component {
   }
 
   handlePopUpSubmit = (inputValue) => {
-    console.log(inputValue);
+    let options = {
+      params: {
+        attendance_code: inputValue,
+      }
+    }
+    
+    axios.get("/events", options)
+    .then(result => {
+      let eventsData = result.data.map(function(event) {
+        return {
+          fb_id: event.fb_id,
+          name: event.name,
+          starts_at: event.starts_at,
+          ends_at: event.ends_at,
+          attendance_code: event.attendance_code,
+          location_id: event.location_id,
+          location: event.location_id,
+          description: event.description,
+          fb_event: event.fb_event,
+          picture: event.picture,
+          is_featured: event.is_featured,
+          updated_at: event.updated_at,
+          created_at: event.created_at,
+          period: event.period,
+          week: event.week,
+        };
+      });
+      
+      // TO-DO: display "checked in"
+      // TO-DO: add to user's checked in list
+      console.log(eventsData);
+    })
+    .catch(
+      // display not found icon
+      err => console.log(err)
+    );
   }
 
   render() {
