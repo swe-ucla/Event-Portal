@@ -13,20 +13,36 @@ router.get('/ping', function(req, res, next) {
 
 // GET all events
 router.get('/', function(req, res, next) {
-  let limit = req.query.limit;
-  let start_date = req.query.start_date;
-  var query = knex('event').select();
-  if (limit) {
-    query = knex('event').select().limit(limit);
+  let query;
+  if (req.query.reverse) {
+    let subquery = knex('event')
+      .select()
+      .orderBy('starts_at', 'desc')
+      .where('ends_at', '<', req.query.end_date)
+      .limit(10)
+      .as('t1')
+    query = knex.select('*').from(subquery).orderBy('starts_at', 'asc');
   }
-  if (start_date) {
-    console.log('test')
-    // >= to avoid missing events
-    query = knex('event').where('starts_at', '>=', start_date).orderBy('starts_at', 'asc');
+  else {
+    query = knex('event')
+      .select()
+      .modify((queryBuilder) => {
+        if (req.query.limit) {
+          queryBuilder.limit(req.query.limit);
+        }
+        if (req.query.start_date) {
+          queryBuilder.where('starts_at', '>=', req.query.start_date);
+        }
+        if (req.query.end_date) {
+          queryBuilder.where('ends_at', '<', req.query.end_date);
+        }
+        if (req.query.attendance_code) {
+          queryBuilder.where('attendance_code', '=', req.query.attendance_code);
+        }
+      })
+      .orderBy('starts_at', 'asc');
   }
-  if (limit && start_date) {
-    query = knex('event').where('starts_at', '>=', start_date).orderBy('starts_at', 'asc').limit(limit);
-  }
+  
   query
     .then(result => {
       if (result.length) {
@@ -64,7 +80,7 @@ router.get('/locations', function(req, res, next) {
     .catch(err => { return next(err) });
 });
 
-// GET event by event_id
+// GET event_id by event
 router.get('/:event_id/id', function(req, res, next) {
   if (isNaN(req.params.event_id)) {
     util.throwError(400, "Event ID must be a number.");
@@ -87,13 +103,14 @@ router.post('/', function(req, res, next) {
   	fb_id: req.body.event_id, 
   	name: req.body.name, 
   	starts_at: req.body.starts_at, 
-  	ends_at: req.body.ends_at,
+    ends_at: req.body.ends_at,
+    attendance_code: req.body.attendance_code,
   	period: req.body.period,
   	location_id: req.body.location_id,
   	description: req.body.description,
   	fb_event: req.body.fb_event,
   	picture: req.body.picture,
-  	is_featured: req.body.is_featured
+    is_featured: req.body.is_featured
   };
   
   if (!req.body.event_id) util.throwError(400, "Missing 'event_id' parameter.");
@@ -101,6 +118,7 @@ router.post('/', function(req, res, next) {
   if (!req.body.starts_at) util.throwError(400, "Missing 'starts_at' parameter.");
   if (!req.body.ends_at) util.throwError(400, "Missing 'ends_at' parameter.");
   if (!req.body.period) util.throwError(400, "Missing 'period' parameter.");
+  if (!req.body.attendance_code) util.throwError(400, "Missing 'attendance_code' parameter.");
 
   let category_ids = req.body.categories;
   let category_values = [];
@@ -167,13 +185,14 @@ router.put('/:event_id', function(req, res, next) {
 	let values = {
   	name: req.body.name, 
   	starts_at: req.body.starts_at, 
-  	ends_at: req.body.ends_at,
+    ends_at: req.body.ends_at,
+    attendance_code: req.body.attendance_code,
   	period: req.body.period,
   	location_id: req.body.location_id,
   	description: req.body.description,
   	fb_event: req.body.fb_event,
   	picture: req.body.picture,
-  	is_featured: req.body.is_featured
+    is_featured: req.body.is_featured
   };
 
   if (!values.name && !values.starts_at && !values.ends_at && !values.period 

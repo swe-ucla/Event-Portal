@@ -1,9 +1,11 @@
 import React, { Component } from "react";
 import EventRow from "./EventRow.js";
+import PopUp from "./PopUp.js"
 import axios from "axios";
 import { withStyles } from "@material-ui/core/styles";
 import EventsStyles from "../styles/Events.js";
 import Divider from "@material-ui/core/Divider";
+import Modal from '@material-ui/core/Modal'
 
 class Events extends Component {
   _isMounted = false;
@@ -11,19 +13,23 @@ class Events extends Component {
   constructor() {
     super();
 
-    this.getEvents = this.getEvents.bind(this);
     this.state = {
       eventsByDayArray: {},
       loading: false,
-      date: "",
+      date: "", // TO-DO: change to today's date. E.G.: 2019-03-02T15:30:00.000Z
       prevY: 0,
+      popUp: false,
     };
+
+    this.getEvents = this.getEvents.bind(this);
+    this.handlePastEvents = this.handlePastEvents.bind(this);
+    this.handleOpenPopUp = this.handleOpenPopUp.bind(this);
+    this.handleClosePopUp = this.handleClosePopUp.bind(this);
   }
 
   componentDidMount() {
     this._isMounted = true;
     this.getEvents();
-
     let options = {
       root: null,
       rootMargin: "0px",
@@ -42,7 +48,17 @@ class Events extends Component {
     this._isMounted = false;
   }
 
-  handleObserver(entities, observer) {
+  getFirstDate = () => {
+    for (let start_date in this.state.eventsByDayArray) {
+      if (this.state.eventsByDayArray.hasOwnProperty(start_date)) {
+        let event = this.state.eventsByDayArray[start_date];
+        let first_date = event[0].starts_at;
+        return first_date;
+      }
+    }
+  }
+
+  handleObserver(entities) {
     const y = entities[0].boundingClientRect.y;
     if (this.state.prevY > y) {
       let lastDate;
@@ -57,8 +73,9 @@ class Events extends Component {
     this.setState({ prevY: y });
   }
 
-  getEvents(date) {
+  getEvents(start = this.state.date, end = null, reverse = null) {
     this.setState({ loading: true });
+
     axios
       .get("/locations")
       .then(result => {
@@ -70,10 +87,12 @@ class Events extends Component {
         let options = {
           params: {
             sort: "date",
-            limit: '6', // max number of days loaded (lazy loading)
-            start_date: date,
+            limit: 6, // max number of days loaded (lazy loading)
+            start_date: start,
+            end_date: end,
+            reverse: reverse,
           }
-        };
+        }
 
         axios
           .get("/events", options)
@@ -84,6 +103,7 @@ class Events extends Component {
                 name: event.name,
                 starts_at: event.starts_at,
                 ends_at: event.ends_at,
+                attendance_code: event.attendance_code,
                 location_id: event.location_id,
                 location: event.location_id
                   ? locationsData[event.location_id].name
@@ -95,7 +115,7 @@ class Events extends Component {
                 updated_at: event.updated_at,
                 created_at: event.created_at,
                 period: event.period,
-                week: event.week
+                week: event.week,
               };
             });
 
@@ -119,17 +139,25 @@ class Events extends Component {
                   }
                   memo[new Date(date)].push(event);
                 }
-
                 return memo;
               }, {});
             }
+            this.setState({ loading: false });
 
             let eventsArray = groupByDate(eventsData);
+            if (reverse) {
+              this.setState({
+                eventsByDayArray: {...eventsArray, ...this.state.eventsByDayArray}
+              });
+            } else {
+              this.setState({
+                eventsByDayArray: {...this.state.eventsByDayArray, ...eventsArray}
+              });
+            }
 
             this.setState({
-              eventsByDayArray: {...this.state.eventsByDayArray, ...eventsArray}
-            });
-            this.setState({ loading: false });
+              date: this.getFirstDate()
+            })
           })
           .catch(err => console.log(err));
       })
@@ -190,25 +218,98 @@ class Events extends Component {
     return eventRows;
   };
 
+  handlePastEvents = () => {
+    if (this.state.eventsByDayArray.length === 0)
+      return;
+
+    /* Get the date of the very first event. */
+    let first_date = this.getFirstDate();
+    
+    /* Get all previous 10 events. */
+    this.getEvents(null, first_date, true);
+    this.renderEventRows();
+  }
+
+  handleOpenPopUp = () => {
+    this.setState({
+      popUp: true,
+    })
+  }
+
+  handleClosePopUp = () => {
+    this.setState ({
+      popUp: false,
+    })
+  }
+
+  handlePopUpSubmit = (inputValue) => {
+    let options = {
+      params: {
+        attendance_code: inputValue,
+      }
+    }
+    
+    axios.get("/events", options)
+    .then(result => {
+      let eventsData = result.data.map(function(event) {
+        return {
+          fb_id: event.fb_id,
+          name: event.name,
+          starts_at: event.starts_at,
+          ends_at: event.ends_at,
+          attendance_code: event.attendance_code,
+          location_id: event.location_id,
+          location: event.location_id,
+          description: event.description,
+          fb_event: event.fb_event,
+          picture: event.picture,
+          is_featured: event.is_featured,
+          updated_at: event.updated_at,
+          created_at: event.created_at,
+          period: event.period,
+          week: event.week,
+        };
+      });
+      
+      // TO-DO: display "checked in"
+      // TO-DO: add to user's checked in list
+      console.log(eventsData);
+    })
+    .catch(
+      // display not found icon
+      err => console.log(err)
+    );
+  }
+
   render() {
     const { classes } = this.props;
-    // TO-DO: formatting
     const loadingCSS = {
       height: "100px",
       margin: "30px"
     }
+    
     const loadingTextCSS = { display: this.state.loading ? "block" : "none" };
-
+  
     return (
       <div className={classes.container}>
         <div className={classes.whiteBackground}>
+          <button className={classes.pastEventsButton} onClick={this.handlePastEvents}>
+            <svg width="25" height="10" viewBox="0 0 35 19" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect width="23.9152" height="3.82643" rx="1.91322" transform="matrix(-0.728645 -0.684891 0.728645 -0.684891 32.2119 19)" fill="#C4C4C4"/>
+              <rect width="23.9152" height="3.82643" rx="1.91322" transform="matrix(0.728645 -0.684891 0.728645 0.684891 0 16.3793)" fill="#C4C4C4"/>
+            </svg>
+            <p className={classes.buttonLabel}>see past events</p>
+          </button>
+          <button className={classes.checkInButton} onClick={this.handleOpenPopUp}>
+            Check In
+          </button>
+          <Modal open={this.state.popUp} onClose={this.handleClosePopUp} >
+            <PopUp onPopUpSubmit={this.handlePopUpSubmit}/>
+          </Modal>
           <div className={classes.events}>{this.renderEventRows()}</div>
-        </div>
-        <div
-          ref = {loadingRef => (this.loadingRef = loadingRef)}
-          style={loadingCSS}
-        >
-          <span style={loadingTextCSS}>Loading...</span>
+          <div ref = {loadingRef => (this.loadingRef = loadingRef)} style={loadingCSS}>
+            <span style={loadingTextCSS}>Loading...</span>
+          </div>
         </div>
       </div>
     );

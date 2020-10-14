@@ -162,6 +162,7 @@ CREATE TABLE event (
     name VARCHAR (100) NOT NULL,
     starts_at TIMESTAMP NOT NULL,
     ends_at TIMESTAMP NOT NULL,
+    attendance_code VARCHAR (50),
     period time_period NOT NULL,
     week week_number,
     location_id INT REFERENCES location(id) ON DELETE CASCADE,
@@ -404,7 +405,7 @@ CREATE TRIGGER update_timestamp BEFORE UPDATE
 \copy position (id,role) FROM '/docker-entrypoint-initdb.d/data/misc/position.csv' DELIMITER ',' CSV HEADER;
 
 \copy company (id,name,website,logo,citizenship_requirement,description) FROM '/docker-entrypoint-initdb.d/data/company/company.csv' DELIMITER ',' CSV HEADER;
-\copy event (fb_id,name,starts_at,ends_at,period,week,location_id,description,fb_event,picture,is_featured)  FROM '/docker-entrypoint-initdb.d/data/event/event.csv' DELIMITER ',' CSV HEADER;
+\copy event (fb_id,name,starts_at,ends_at,attendance_code,period,week,location_id,description,fb_event,picture,is_featured)  FROM '/docker-entrypoint-initdb.d/data/event/event.csv' DELIMITER ',' CSV HEADER;
 \copy swe_user (id,first_name,last_name,password,email,phone,university_id,is_admin)  FROM '/docker-entrypoint-initdb.d/data/user/swe_user.csv' DELIMITER ',' CSV HEADER;
 
 \copy company_contact (company_id,contact_id) FROM '/docker-entrypoint-initdb.d/data/company/company_contact.csv' DELIMITER ',' CSV HEADER;
@@ -440,4 +441,3 @@ SELECT setval('category_id_seq', (SELECT MAX(id) FROM category));
 SELECT setval('swe_user_id_seq', (SELECT MAX(id) FROM swe_user));
 SELECT setval('occupation_id_seq', (SELECT MAX(id) FROM occupation));
 SELECT setval('diet_id_seq', (SELECT MAX(id) FROM diet));
-
