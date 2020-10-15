@@ -140,11 +140,11 @@ class CompaniesForm extends Component {
       name: this.state.name,
       description: this.state.description,
       website: this.state.website,
-      citizenship_requirement: this.state.citizenship ? "Y" : "N", //change?
-      major_id: majorIDs
-      //position_id: positionIDs,
-      //remove_position_id: removePositionIDs,
-      //remove_major_id: removeMajorIDs,
+      citizenship_requirement: this.state.citizenship,
+      major_id: majorIDs,
+      position_id: positionIDs,
+      remove_position_id: removePositionIDs,
+      remove_major_id: removeMajorIDs
     };
 
     // Make PUT request to update company data

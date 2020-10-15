@@ -101,7 +101,7 @@ class CompaniesForm extends Component {
       name: this.state.name,
       description: this.state.description,
       website: this.state.website,
-      citizenship_requirement: this.state.citizenship ? "Y" : "N", //change
+      citizenship_requirement: this.state.citizenship, // ? "Y" : "N", //change
       major_id: majorIDs,
       position_id: positionIDs
     };
@@ -184,6 +184,7 @@ class CompaniesForm extends Component {
     this.addCompany();
     // Prevent site refresh after submission
     event.preventDefault();
+    this.props.router.push("/companiesadmin");
   };
 
   handleChange = name => event => {
@@ -306,11 +307,12 @@ class CompaniesForm extends Component {
             />
             <br />
             <br />
-            <FormLabel id="demo-simple-select-label">Company Image</FormLabel>
+            {/* TODO: Upload company image/logo */}
+            {/* <FormLabel id="demo-simple-select-label">Company Image</FormLabel>
             <br />
             <Input type="file" disableUnderline="true" />
             <br />
-            <br />
+            <br /> */}
             <Button
               type="submit"
               fullWidth
