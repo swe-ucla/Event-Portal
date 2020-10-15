@@ -41,9 +41,6 @@ class CompaniesForm extends Component {
     //   const [citizenship, setCitizen] = React.useState(''),
 
     this.handleChange = this.handleChange.bind(this);
-    // this.handleChange = event => {
-    //   setCitizen(event.target.value);
-    // };
   }
 
   async componentDidMount() {
@@ -131,10 +128,6 @@ class CompaniesForm extends Component {
         }
       }
     }
-    console.log(majorIDs);
-    console.log(removeMajorIDs);
-    //console.log(removePositionIDs);
-    //console.log(majorIDs);
 
     let body = {
       name: this.state.name,
@@ -391,8 +384,6 @@ class CompaniesForm extends Component {
     const majors = this.state.majors;
     const allPositions = this.state.allPositions;
     const positions = this.state.positions;
-
-    //console.log(allMajors);
 
     const majorChecks = Object.getOwnPropertyNames(majors).map(elem => {
       return (

@@ -76,7 +76,6 @@ class AdminCompanyCard extends Component {
   //don't need to make this call for each card... extract out to row/company!
 
   mapIDToName = (idarray, namearray) => {
-    //console.log(namearray)
     let elements = idarray.map(elem => {
       return namearray[elem];
     });
@@ -85,7 +84,6 @@ class AdminCompanyCard extends Component {
 
   arrayToHTML = array => {
     let elements = array.map(elem => {
-      //console.log(elem)
       if (elem) {
         return <li> {elem} </li>;
       }

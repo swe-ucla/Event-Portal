@@ -414,7 +414,6 @@ router.put("/:company_id", function(req, res, next) {
     } else {
       companyPositions = { company_id: company_id, position_id: position_ids };
     }
-    // var queryPos = knex("company_position").insert(companyPositions);
     var queryPos = knex.raw(
       "? ON CONFLICT (company_id,position_id) DO NOTHING;",
       [knex("company_position").insert(companyPositions)]
@@ -434,7 +433,6 @@ router.put("/:company_id", function(req, res, next) {
       "? ON CONFLICT (company_id,major_id) DO NOTHING;",
       [knex("company_major").insert(companyMajors)]
     );
-    // var queryMajor = knex.raw(knex('company_major').insert(companyMajors).toString().replace(/^insert/i, 'insert ignore'));
   }
 
   let companyContacts = [];
