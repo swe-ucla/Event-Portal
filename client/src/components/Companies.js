@@ -26,16 +26,6 @@ class Companies extends Component {
 		super(props)
 	}
 
-	/*
-	componentDidMount() {
-		this.props.onRef(this); 
-	}
-	
-	componentWillUnmount() {
-    	this.props.onRef(null);
-  	}
-  	*/
-
 	render() {
 	    const { classes } = this.props;
 
