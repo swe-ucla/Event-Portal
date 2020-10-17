@@ -112,7 +112,6 @@ router.post('/register', function(req, res, next) {
         }
         if (occupation_ids) {
           occupation_ids.forEach(function(element) { element.user_id = user_id; })
-          console.log(occupation_ids)
           var query_occupation = knex('user_occupation').insert(occupation_ids)
         }
         if (position_ids) {
@@ -129,16 +128,12 @@ router.post('/register', function(req, res, next) {
         if (company_ids && ranks) {
           company_rank_values.forEach(function(element) { element.user_id = user_id; })
           var query_company = knex('user_company_rank').insert(company_rank_values)
-          console.log(company_rank_values)
           await query_company.transacting(trx);
         }
         return trx.commit;
       })
   })
   .then(function() {
-    //console.log(major_values)
-    console.log(major_ids)
-    console.log(occupation_values)
     res.send(util.message('Successfully inserted user'));
   })
   .catch(err => {return next(err) });
@@ -147,22 +142,6 @@ router.post('/register', function(req, res, next) {
 
 // Login a user
 router.put('/login', function(req, res, next) {
-  var app = express()
-
-  // Test enviroment session setup
-  var sess = {
-    secret: 'keyboard cat',
-    cookie: {}
-  }
-
-  // Production environment session setup
-  if (app.get('env') === 'production') {
-    app.set('trust proxy', 1) // trust first proxy
-    sess.cookie.secure = true // serve secure cookies
-  }
-
-  app.use(session(sess))
-
   knex('swe_user').where({ email: req.body.email, password: req.body.password })
     .then(result => {
       res.send(util.message('Successfully logged in user with email: ' + req.body.email));
