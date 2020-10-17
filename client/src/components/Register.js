@@ -63,10 +63,6 @@ function Register(props) {
 					let user_occupations = [...result[1].data];
 					let user_majors = [...result[2].data];
 
-					// console.log(user_data);
-					// console.log(user_occupations);
-					// console.log(user_majors);
-
 					// update the state with the fetched data
 					setUserDetails(prev => {
 						return {

@@ -41,8 +41,6 @@ class ExamplePutForm extends Component {
       initial_phone_number: null,
       phone_number: null,
 
-      //can't change the email
-
       errorMessage: ''
     };
   }
@@ -88,14 +86,6 @@ class ExamplePutForm extends Component {
         })
       })
       .catch(err => console.log(err));
-    /*
-    axios.get('/majors/ids')
-      .then(result => {
-        let mids = result.data.map(function(major) { return major.id });
-        this.setState({ mids: mids });
-      })
-      .catch(err => console.log(err));
-      */
   }
 
   getMajorByID = (mid) => {
@@ -126,7 +116,6 @@ class ExamplePutForm extends Component {
   // Update major of specified ID
   updateMajor = () => {
   
-
     let initialBody = {
       //name: this.state.initial_name,
       university_id: this.state.initial_ucla_id,
@@ -165,8 +154,6 @@ class ExamplePutForm extends Component {
           errorMessage: err.response.data.message,
         })
       });
-
-      //this.getUsers();
   }
 
   // On submit, update major in database
@@ -185,7 +172,6 @@ class ExamplePutForm extends Component {
     }
   };
 
-  //EMAIL etc
   render() {
     const { classes } = this.props;
     var mids = this.state.mids.map(mid => {

@@ -11,7 +11,6 @@ import ExamplePutForm from './components/ExamplePutForm.js'
 import ExampleDeleteForm from './components/ExampleDeleteForm.js'
 
 import Register from './components/Register.js';
-import Register_Google from './components/Register_Google.js';
 import RegisterEWI from './components/RegisterEWI.js';
 import Profile from './components/Profile.js';
 import EditProfile from './components/EditProfile.js';
