@@ -100,16 +100,16 @@ router.get('/:event_id/id', function(req, res, next) {
 // Add a single event
 router.post('/', function(req, res, next) {
   let values = { 
-  	fb_id: req.body.event_id, 
-  	name: req.body.name, 
-  	starts_at: req.body.starts_at, 
+    fb_id: req.body.event_id, 
+    name: req.body.name, 
+    starts_at: req.body.starts_at, 
     ends_at: req.body.ends_at,
     attendance_code: req.body.attendance_code,
-  	period: req.body.period,
-  	location_id: req.body.location_id,
-  	description: req.body.description,
-  	fb_event: req.body.fb_event,
-  	picture: req.body.picture,
+    period: req.body.period,
+    location_id: req.body.location_id,
+    description: req.body.description,
+    fb_event: req.body.fb_event,
+    picture: req.body.picture,
     is_featured: req.body.is_featured
   };
   

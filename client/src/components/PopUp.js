@@ -26,7 +26,6 @@ class PopUp extends Component {
 
     render() {
         const { classes } = this.props;
-
         return (
             <div className={classes.popUp} tabIndex={-1}>
                 <form className={classes.popUpForm} onSubmit={this.handleSubmit}>
@@ -40,6 +39,5 @@ class PopUp extends Component {
         )
     }
 }
-
 
 export default withStyles(PopUpStyles)(PopUp);

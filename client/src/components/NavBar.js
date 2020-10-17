@@ -34,6 +34,3 @@ const NavBar = (props) => {
   )
 }
 export default withStyles(NavBarStyles)(NavBar);
-
-
-
