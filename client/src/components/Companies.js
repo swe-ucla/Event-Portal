@@ -19,8 +19,6 @@ import CompaniesCardList from './CompaniesCardList.js';
 import CompaniesStyles from '../styles/Companies.js';
 
 
-const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
-//const app = express();
 class Companies extends Component {
 	constructor(props) {
 		super(props)
