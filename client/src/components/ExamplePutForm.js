@@ -25,8 +25,6 @@ class ExamplePutForm extends Component {
       mids: [],
       major_id: null,
       name: '',
-      major_name: '',
-      major: '',
       ucla_id: null,
       initial_name: '',
       initial_ucla_id: null,
@@ -138,8 +136,7 @@ class ExamplePutForm extends Component {
       [name]: event.target.value,
     });
     if (name === 'major_id') {
-      
-      //this.getMajorByID(event.target.value);
+      this.getMajorByID(event.target.value);
     }
   };
 
@@ -162,7 +159,7 @@ class ExamplePutForm extends Component {
                 <Select
                   fullWidth
                   className={classes.select}
-                  value={this.state.major_name || ''}
+                  value={this.state.major_id || ''}
                   onChange={this.handleChange('major_id')}
                   inputProps={{
                     name: 'Major ID',
