@@ -51,7 +51,7 @@ router.post('/login', function(req, res, next) {
 
 // GET user for current session.
 router.get('/session', function(req, res, next) {
-  knex('swe_user').select().where({ email: req.session.email })
+  knex('swe_user').select('id').where({ email: req.session.email })
     .then(result => {
       if (result.length) {
         res.json(result);
