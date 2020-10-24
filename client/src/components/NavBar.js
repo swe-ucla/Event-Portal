@@ -24,6 +24,7 @@ const NavBar = (props) => {
         <Button component={Link} to="/post">POST</Button>
         <Button component={Link} to="/put">PUT</Button>
         <Button component={Link} to="/delete">DELETE</Button>
+        <Button component={Link} to="/events">EVENTS</Button>
         <Button component={Link} to="/registerbasic">PROFILE</Button>
         <Button component={Link} to="/registerEWI">PROFILE(EWI)</Button>
         <Button component={Link} to="/users/admin">PROFILE SUMMARY(ADMIN)</Button>
@@ -36,6 +37,3 @@ const NavBar = (props) => {
   )
 }
 export default withStyles(NavBarStyles)(NavBar);
-
-
-
