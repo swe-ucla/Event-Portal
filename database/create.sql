@@ -207,6 +207,8 @@ CREATE TABLE swe_user (
     email VARCHAR (255) UNIQUE NOT NULL,
     phone VARCHAR (20),
     university_id VARCHAR (9) UNIQUE,
+    swe_id VARCHAR (7) UNIQUE DEFAULT NULL,
+    gpa VARCHAR (4) DEFAULT NULL,
     is_admin BOOL DEFAULT false,
     last_login_at TIMESTAMP,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,

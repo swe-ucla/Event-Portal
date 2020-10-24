@@ -11,6 +11,12 @@ import ExamplePutForm from './components/ExamplePutForm.js'
 import ExampleDeleteForm from './components/ExampleDeleteForm.js'
 import Events from './components/Events.js'
 
+import Register from './components/Register.js';
+import RegisterEWI from './components/RegisterEWI.js';
+import Profile from './components/Profile.js';
+import EditProfile from './components/EditProfile.js';
+import UsersSummary from './components/UsersSummary.js';
+
 require('typeface-roboto');
 
 ReactGA.initialize('UA-139728260-1', { debug: true });
@@ -36,14 +42,17 @@ class App extends Component {
   render() {
     return (
       <Router history={history}>
-        <NavBar />
-        <Footer />
-        
+        <NavBar />        
         <Route path="/checkout" component={Checkout} />
         <Route path="/post" component={ExamplePostForm} />
         <Route path="/put" component={ExamplePutForm} />
         <Route path="/delete" component={ExampleDeleteForm} />
         <Route path="/events" component={Events} />
+				<Route path='/registerbasic' component={Register} />
+				<Route path='/profile' component={Profile} />
+				<Route path='/registerEWI' component={RegisterEWI} />
+				<Route path='/users/admin' component={UsersSummary} />
+				<Footer />
       </Router>
     )
   }

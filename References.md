@@ -178,3 +178,4 @@
   - https://blog.eq8.eu/article/common-aws-elasticbeansalk-docker-issues-and-solutions.html
   - https://stackoverflow.com/questions/48069600/aws-elastic-beanstalk-container-link-not-working
   - https://kylewbanks.com/blog/debugging-docker-containers-on-elastic-beanstalk
+  - https://dev.to/vvo/upserts-in-knex-js-1h4o
