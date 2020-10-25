@@ -9,7 +9,7 @@ versions/
 
 ## Database Data ##
 
-database/postgres
+database/postgres/
 
 ## REACT ##
 

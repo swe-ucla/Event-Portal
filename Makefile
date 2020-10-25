@@ -19,6 +19,8 @@ prod:
 stop:
 	docker-compose down
 
+##################           LOCAL POSTGRES DATABASE          ##################
+
 # Sets CONTAINER_ID variable with ID of postgres container.
 # := means CONTAINER_ID will only be set if output is non-empty.
 # -q option for quiet output with only the container ID.
@@ -28,24 +30,24 @@ CONTAINER_ID := $(shell docker ps -qf "name=$(POSTGRES_IMAGE)")
 # Dependency of `pg` target that requires CONTAINER_ID to be set.
 check-id:
 ifndef CONTAINER_ID
-	$(error CONTAINER_ID is undefined. Try `make ps` and modify POSTGRES_IMAGE in .env file.)
+	$(error CONTAINER_ID is undefined. Try `docker ps` and modify POSTGRES_IMAGE in .env file.)
 endif
 
 # Connects to psql shell of Postgres container when running `dev` target.
 pg: check-id
-	docker exec -ti $(CONTAINER_ID) psql -U $(POSTGRES_USER)
+	docker exec -ti $(CONTAINER_ID) psql -U $(POSTGRES_USER) -d $(POSTGRES_DB)
 
-# Zips database/postgres/pgdata for updating sample data
-zip-data:
-	cd ./database/postgres/; \
-	zip -ru ../pgdata.zip ./pgdata/ -x *.DS_Store; \
-	echo "To unzip run: make db-data"
-
-
-# Unzips database/pgdata.zip and moves to postgres/pgdata
-db-data:
+# Store current db data.
+store:
 	cd ./database/; \
-	unzip -o ./pgdata.zip -d ./postgres/
+	zip -ru ./postgres.zip ./postgres/ -x *.DS_Store; \
+	echo "To unzip and restore run: make restore"
+
+# Restore saved data.
+restore:
+	cd ./database/; \
+	-rm -r ./database/postgres/; \
+	unzip -o ./postgres.zip
 
 ##################       AWS Elastic Beanstalk Deployment     ##################
 

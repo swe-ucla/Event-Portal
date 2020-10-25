@@ -1,0 +1,176 @@
+id,code,major,abbreviation,department,department_abbreviation,school,division,updated_at,created_at
+1,008V,African American Studies B.A.,AFR AMER,African American Studies,AF AMER,LS,SS
+2,0030,American Indian Studies B.A.,AMER IND,American Indian Studies,AM IND,LS,SS
+3,0064,Anthropology B.A.,ANTHRO,Anthropology,ANTHRO,LS,SS
+4,0065,Anthropology B.S.,ANTH-BS,Anthropology,ANTHRO,LS,SS
+5,00A1,Architectural Studies B.A.,ARCH STD,Architecture and Urban Design,ARCH&UD,AA,AA
+6,0090,Art B.A.,ART,Art,ART,AA,AA
+7,0093,Art History B.A.,ART HIST,Art History,ART HIS,LS,HU
+8,0453,Individual Field of Concentration B.A.,IND FLD,Arts and Architecture-General,AA-GEN,AA,AA
+9,0100,Asian American Studies B.A.,ASIA AM,Asian American Studies,ASIA AM,LS,SS
+10,0442,Asian Humanities B.A.,ASIA HUM,Asian Languages and Cultures,ASIA LC,LS,HU
+11,00CW,Asian Languages and Linguistics BA,ASIAN LL,Asian Languages and Cultures,ASIA LC,LS,HU
+12,0443,Asian Religions B.A.,ASIA REL,Asian Languages and Cultures,ASIA LC,LS,HU
+13,0162,Chinese B.A.,CHINESE,Asian Languages and Cultures,ASIA LC,LS,HU
+14,0480,Japanese B.A.,JAPANESE,Asian Languages and Cultures,ASIA LC,LS,HU
+15,0818,Korean B.A.,KOREAN,Asian Languages and Cultures,ASIA LC,LS,HU
+16,002E,Atmospheric and Oceanic Sciences B.S.,A&O SCIS,Atmospheric and Oceanic Sciences,A&O SCI,LS,PS
+17,00E3,Atmospheric and Oceanic Sciences/Mathematics B.S.,AOS/MATH,Atmospheric and Oceanic Sciences,A&O SCI,LS,PS
+18,0589,"Atmospheric, Oceanic, and Environmental Sciences B.S. (pre-18W)",AO&ES,Atmospheric and Oceanic Sciences,A&O SCI,LS,PS
+19,00DQ,Climate Science B.S.,CLMT SCI,Atmospheric and Oceanic Sciences,A&O SCI,LS,PS
+20,0288,Bioengineering B.S.,BIOENGR,Bioengineering,BIOENGR,EN,EN
+21,0294,Chemical Engineering B.S.,CHM ENGR,Chemical and Biomolecular Engineering,CHM&BE,EN,EN
+22,0111,Biochemistry B.S.,BIOCHEM,Chemistry and Biochemistry,CHEM,LS,PS
+23,0153,Chemistry B.S.,CHEM,Chemistry and Biochemistry,CHEM,LS,PS
+24,0155,Chemistry/Materials Science B.S.,CHEM-MAT,Chemistry and Biochemistry,CHEM,LS,PS
+25,0158,General Chemistry B.S.,GEN CHEM,Chemistry and Biochemistry,CHEM,LS,PS
+26,0626,Chicana and Chicano Studies B.A.,CHN STDS,Chicana and Chicano Studies,CHICANO,LS,SS
+27,0300,Civil Engineering B.S.,CIV ENGR,Civil and Environmental Engineering,C&EE,EN,EN
+28,0169,Classical Civilization B.A.,CLAS CIV,Classics,CLASSIC,LS,HU
+29,0414,Greek B.A.,GREEK,Classics,CLASSIC,LS,HU
+30,0625,Greek and Latin B.A.,GRK&LATN,Classics,CLASSIC,LS,HU
+31,0495,Latin B.A.,LATIN,Classics,CLASSIC,LS,HU
+32,0181,Communication Studies B.A.,COM STDS,Communication Studies,COMM ST,LS,SS
+33,0192,Comparative Literature B.A.,COMP LIT,Comparative Literature,COM LIT,LS,HU
+34,00A3,Computational and Systems Biology B.S.,C&S BIOL,Computational and Systems Biology,C&S BIO,LS,LF
+35,00A4,Pre-Computational and Systems Biology,PRE CS B,Computational and Systems Biology,C&S BIO,LS,LF
+36,0193,Computer Science and Engineering B.S.,C S&ENGR,Computer Science,COM SCI,EN,EN
+37,0201,Computer Science B.S.,COM SCI,Computer Science,COM SCI,EN,EN
+38,0207,Design | Media Arts B.A.,DESMA,Design | Media Arts,DESMA,AA,AA
+39,001C,Earth and Environmental Science B.A.,E&E SCI,"Earth, Planetary, and Space Sciences",EPS SCI,LS,PS
+40,049G,Engineering Geology B.S.,ENGR GEO,"Earth, Planetary, and Space Sciences",EPS SCI,LS,PS
+41,0402,Geology B.S.,GEOLOGY,"Earth, Planetary, and Space Sciences",EPS SCI,LS,PS
+42,0398,Geology/Engineering Geology B.S.Ê(Pre-15 Summer),GEO/ENGR,"Earth, Planetary, and Space Sciences",EPS SCI,LS,PS
+43,0401,Geology/Paleobiology B.S. (Pre-15 Summer),GEO/PALE,"Earth, Planetary, and Space Sciences",EPS SCI,LS,PS
+44,0405,Geophysics B.S.,GEOPHYS,"Earth, Planetary, and Space Sciences",EPS SCI,LS,PS
+45,0407,Geophysics/Applied Geophysics B.S.Ê(Pre-15 Summer),GEO AP G,"Earth, Planetary, and Space Sciences",EPS SCI,LS,PS
+46,0404,Geophysics/Geophysics and Space Physics B.S.Ê(Pre-15 Summer),GEOPH&SP,"Earth, Planetary, and Space ,,Sciences",EPS SCI,LS,PS
+47,0123,Biology B.S.,BIOLOGY,Ecology and Evolutionary Biology,EE BIOL,LS,LF
+48,0122,"Ecology, Behavior, and Evolution B.S.",ECOL B&E,Ecology and Evolutionary Biology,EE BIOL,LS,LF
+49,0537,Marine Biology B.S.,MAR BIO,Ecology and Evolutionary Biology,EE BIOL,LS,LF
+50,0144,Business Economics B.A.,BUS ECON,Economics,ECON,LS,SS
+51,0246,Economics B.A.,ECON,Economics,ECON,LS,SS
+52,0714,Pre-Business Economics,PRE B EC,Economics,ECON,LS,SS
+53,0728,Pre-Economics,PRE ECON,Economics,ECON,LS,SS
+54,0302,Computer Engineering B.S.,COM ENGR,Electrical and Computer Engineering,EC ENGR,EN,EN
+55,0303,Electrical Engineering B.S.,ELE ENGR,Electrical and Computer Engineering,EC ENGR,EN,EN
+56,02B0,Undeclared-Engineering and Applied Science,UN-E&AS,Engineering and Applied Science,ENGR,EN,EN
+57,0761,American Literature and Culture B.A.,AMER LIT,English,ENGL,LS,HU
+58,0345,English B.A.,ENGLISH,English,ENGL,LS,HU
+59,0351,Environmental Science B.S.,ENVIRON,Environment and Sustainability,ENVIRON,LS,GS
+60,0472,Ethnomusicology B.A.,ETHNOMUS,Ethnomusicology,ETHNMUS,MU,MU
+61,0473,Film and Television B.A.,FILM&TV,"Film, Television, and Digital Media",FTV&DM,TF,TF
+62,0388,French and Linguistics B.A.,FR&LING,French and Francophone Studies,FR FRNC,LS,HU
+63,0387,French B.A.,FRENCH,French and Francophone Studies,FR FRNC,LS,HU
+64,006L,Gender Studies B.A.,GEN STD,Gender Studies,GEN STD,LS,SS
+65,0396,Geography B.A.,GEOG,Geography,GEOG,LS,SS
+66,0491,Geography/Environmental Studies B.A.,GEOG-ENV,Geography,GEOG,LS,SS
+67,0408,German B.A.,GERMAN,Germanic Languages,GERMAN,LS,HU
+68,00ED,Global Jazz Studies B.A.,GJ STDS,Global Jazz Studies,GJ STDS,MU,MU
+69,0492,Global Studies B.A.,GLBL ST,Global Studies,GLBL ST,LS,IS
+70,002D,Pre-Global Studies,PRE GLBL,Global Studies,GLBL ST,LS,IS
+71,0429,History B.A.,HISTORY,History,HIST,LS,SS
+72,0767,Pre-History,PRE HIST,History,HIST,LS,SS
+73,0949,Undeclared-Humanities,UN-HUM,Humanities-General,HU-GEN,LS,HU
+74,0671,Physiological Science B.S.,PHY SCI,Integrative Biology and Physiology,INT B&P,LS,LF
+75,006M,African and Middle Eastern Studies B.A.,AME STD,International and Area Studies,I A STD,LS,IS
+76,0096,Asian Studies B.A.,ASIA STD,International and Area Studies,I A STD,LS,IS
+77,0762,European Studies B.A.,EUR STDS,International and Area Studies,I A STD,LS,IS
+78,003K,Latin American Studies B.A.,LAS-BA,International and Area Studies,I A STD,LS,IS
+79,006X,Pre-African and Middle Eastern Studies,PRE AMES,International and Area Studies,I A STD,LS,IS
+80,006W,Pre-Asian Studies,PRE ASIA,International and Area Studies,I A STD,LS,IS
+81,006V,Pre-European Studies,PRE EURO,International and Area Studies,I A STD,LS,IS
+82,006U,Pre-Latin American Studies,PRE LAS,International and Area Studies,I A STD,LS,IS
+83,0991,International Development Studies B.A.,INT DEV,International Development Studies,INTL DV,LS,IS
+84,004X,Pre-International Development Studies,PRE INTL,International Development Studies,INTL DV,LS,IS
+85,0478,Italian and Special Fields B.A.,IT&SP FD,Italian,ITALIAN,LS,HU
+86,0477,Italian B.A.,ITALIAN,Italian,ITALIAN,LS,HU
+87,0452,Individual Field of Concentration B.A.,IND F/CO,Letters and Science-General,LS-GEN,LS,GS
+88,0452,Individual Field of Concentration B.S.,IND F/CO,Letters and Science-General,LS-GEN,LS,GS
+89,0000,Undeclared,UNDECLAR,Letters and Science-General,LS-GEN,LS,GS
+90,0944,Undeclared-Life Science,UN-L SCI,Life Sciences-General,LF-GEN,LS,LF
+91,0074,Applied Linguistics B.A.,APP LING,Linguistics,LING,LS,HU
+92,0496,Linguistics and Anthropology B.A.,LING&ANT,Linguistics,LING,LS,HU
+93,052A,Linguistics and Asian Languages and Cultures B.A.,LING&ALC,Linguistics,LING,LS,HU
+94,0499,Linguistics and Computer Science B.A.,LING&C S,Linguistics,LING,LS,HU
+95,0514,Linguistics and English B.A.,LING&ENL,Linguistics,LING,LS,HU
+96,0515,Linguistics and French B.A.,LING&FR,Linguistics,LING,LS,HU
+97,0516,Linguistics and Italian B.A.,LING&IT,Linguistics,LING,LS,HU
+98,0517,Linguistics and Philosophy B.A.,LING&PHI,Linguistics,LING,LS,HU
+99,0518,Linguistics and Psychology B.A.,LING&PSY,Linguistics,LING,LS,HU
+100,0500,Linguistics and Scandinavian Languages B.A.,LING&SCA,Linguistics,LING,LS,HU
+101,0511,Linguistics and Spanish B.A.,LING&SP,Linguistics,LING,LS,HU
+102,0510,Linguistics B.A.,LING,Linguistics,LING,LS,HU
+103,0336,Materials Engineering B.S.,MAT ENGR,Materials Science and Engineering,MAT SCI,EN,EN
+104,0072,Applied Mathematics B.S.,APP MATH,Mathematics,MATH,LS,PS
+105,008D,Financial Actuarial Mathematics B.S.,F A MATH,Mathematics,MATH,LS,PS
+106,0540,Mathematics B.S.,MATH,Mathematics,MATH,LS,PS
+107,000G,Mathematics For Teaching B.S.,MATH TCH,Mathematics,MATH,LS,PS
+108,0536,Mathematics of Computation B.S.,MATH/COM,Mathematics,MATH,LS,PS
+109,0545,Mathematics/Applied Science B.S.,MATH-APP,Mathematics,MATH,LS,PS
+110,006Q,Pre-Applied Mathematics,PRE AP M,Mathematics,MATH,LS,PS
+111,008E,Pre-Financial Actuarial Mathematics,PRE FAM,Mathematics,MATH,LS,PS
+112,0737,Pre-Mathematics,PRE MATH,Mathematics,MATH,LS,PS
+113,006P,Pre-Mathematics For Teaching,PRE M T,Mathematics,MATH,LS,PS
+114,006R,Pre-Mathematics of Computation,PRE M C,Mathematics,MATH,LS,PS
+115,006S,Pre-Mathematics/Applied Science,PRE M/AP,Mathematics,MATH,LS,PS
+116,054B,Mathematics/Atmospheric and Oceanic Sciences B.S. (pre-18F),MATH/AO,Mathematics/Atmospheric and Oceanic Sciences (pre-18F),MATH/AO,LS,PS
+117,0778,Mathematics/Economics B.S.,MATH/EC,Mathematics/Economics,MATH/EC,LS,PS
+118,006T,Pre-Mathematics/Economics,PRE M/EC,Mathematics/Economics,MATH/EC,LS,PS
+119,0279,Aerospace Engineering B.S.,AEROSPCE,Mechanical and Aerospace Engineering,MECH&AE,EN,EN
+120,0330,Mechanical Engineering B.S.,MECHANIC,Mechanical and Aerospace Engineering,MECH&AE,EN,EN
+121,0440,"Microbiology, Immunology, and Molecular Genetics B.S.",MIMG,"Microbiology, Immunology, and Molecular ,,Genetics",MIMG,LS/MD,BB
+122,0439,"Pre-Microbiology, Immunology, & Molecular Genetics",PRE MIMG,"Microbiology, Immunology, and Molecular ,,Genetics",MIMG,LS/MD,BB
+123,0644,"Molecular, Cell, and Developmental Biology B.S.",MCD BIO,"Molecular, Cell, and Developmental Biology",MCD BIO,LS,LF
+124,0579,Music B.A.,MUSIC,Music,MUSC,MU,MU
+125,00DR,Music Education B.A.,MSC EDUC,Music,MUSC,MU,MU
+126,0584,Music History B.A. (Pre-18S),MUS HST,Musicology,MUSCLG,MU,MU
+127,0604,Musicology B.A.Ê,MUSCLOGY,Musicology,MUSCLG,MU,MU
+128,007X,Ancient Near East and Egyptology B.A.,ANE&EGYP,Near Eastern Languages and Cultures,NR EAST,LS,HU
+129,0081,Arabic B.A.,ARABIC,Near Eastern Languages and Cultures,NR EAST,LS,HU
+130,0464,Iranian Studies B.A.,IRANIAN,Near Eastern Languages and Cultures,NR EAST,LS,HU
+131,0482,Jewish Studies B.A.,JEWISH,Near Eastern Languages and Cultures,NR EAST,LS,HU
+132,0571,Middle Eastern Studies B.A.,M E STD,Near Eastern Languages and Cultures,NR EAST,LS,HU
+133,0594,Neuroscience B.S.,NEUROSCI,Neuroscience,NEUROSC,LS,LF
+134,0597,Nursing B.S.,NURSING,Nursing,NURSING,NS,NS
+135,059E,Nursing-Prelicensure B.S.,NURS-PR,Nursing,NURSING,NS,NS
+136,0651,Philosophy B.A.,PHILOS,Philosophy,PHILOS,LS,HU
+137,0945,Undeclared-Physical Science,UN-P SCI,Physical Sciences-General,PS-GEN,LS,PS
+138,0101,Astrophysics B.S.,ASTRPHYS,Physics and Astronomy,PHY&AST,LS,PS
+139,0126,Biophysics B.S.,BIOPHYS,Physics and Astronomy,PHY&AST,LS,PS
+140,0285,Physics B.A.,PHYS-BA,Physics and Astronomy,PHY&AST,LS,PS
+141,0666,Physics B.S.,PHYSICS,Physics and Astronomy,PHY&AST,LS,PS
+142,0699,Political Science B.A.,POL SCI,Political Science,POL SCI,LS,SS
+143,0752,Pre-Political Science,PRE PO S,Political Science,POL SCI,LS,SS
+144,0179,Cognitive Science B.S.,COG SCI,Psychology,PSYCH,LS,LF
+145,0725,Pre-Cognitive Science,PRE COG,Psychology,PSYCH,LS,LF
+146,0756,Pre-Psychobiology,PRE PSYB,Psychology,PSYCH,LS,LF
+147,0754,Pre-Psychology,PRE PSYC,Psychology,PSYCH,LS,LF
+148,0777,Psychobiology B.S.,PSYBIOL,Psychology,PSYCH,LS,LF
+149,0780,Psychology B.A.,PSYCH,Psychology,PSYCH,LS,LF
+150,00DU,Pre-Public Affairs,PRE PA,Letters and Science-General,LS-GEN,LS,GS
+151,00DT,Public Affairs,PUB AFF,Public Affairs,PUB AFF,PA,PA
+152,0890,Study of Religion B.A.,STD REL,"Religion, Study of",RELIGN,LS,HU
+153,00CX,Nordic Studies B.A.,NORSTDS,Scandinavian Section,SCAND,LS,HU
+154,003V,Scandinavian Languages and Cultures B.A.,SCAND LC,Scandinavian Section,SCAND,LS,HU
+155,00A0,Central and East European Languages and Cultures B.A.,CEE L&C,"Slavic, East European, and Eurasian Languages and Cultures",SEEELC,LS,HU
+156,0826,Russian Language and Literature B.A.,RUSS L&L,"Slavic, East European, and Eurasian Languages and Cultures",SEEELC,LS,HU
+157,0824,Russian Studies B.A.,RUSS STD,"Slavic, East European, and Eurasian Languages and Cultures",SEEELC,LS,HU
+158,0948,Undeclared-Social Science,UN-S SCI,Social Sciences-General,SS-GEN,LS,SS
+159,005J,Human Biology and Society B.A.,HM BS-AB,Society and Genetics,SOC GEN,LS,LF
+160,0055,Human Biology and Society B.S.,HM BS-BS,Society and Genetics,SOC GEN,LS,LF
+161,005K,Pre-Human Biology and Society,PR HB-AB,Society and Genetics,SOC GEN,LS,LF
+162,0058,Pre-Human Biology and Society,PR HB-BS,Society and Genetics,SOC GEN,LS,LF
+163,000X,Pre-Sociology,PRE SOC,Sociology,SOCIOL,LS,SS
+164,0867,Sociology B.A.,SOCIOL,Sociology,SOCIOL,LS,SS
+165,0711,Portuguese B.A.,PORT,Spanish and Portuguese,SPAN,LS,HU
+166,000W,Spanish and Community and Culture B.A.,SPAN C&C,Spanish and Portuguese,SPAN,LS,HU
+167,0878,Spanish and Linguistics B.A.,SPAN&LIN,Spanish and Portuguese,SPAN,LS,HU
+168,0881,Spanish and Portuguese B.A.,SPAN&POR,Spanish and Portuguese,SPAN,LS,HU
+169,0882,Spanish B.A.,SPANISH,Spanish and Portuguese,SPAN,LS,HU
+170,0757,Pre-Statistics,PRE STAT,Statistics,STATS,LS,PS
+171,0891,Statistics B.S.,STATS,Statistics,STATS,LS,PS
+172,0902,Theater B.A.,THEATER,Theater,THEATER,TF,TF
+173,0453,Individual Field of Concentration B.A.,IND FLD,"Theater, Film, and Television-General",TF-GEN,TF,TF
+174,0210,Dance B.A.,DANCE,World Arts and Cultures/Dance,WAC/DAN,AA,AA
+175,0932,World Arts and Cultures B.A.,WLD ARTS,World Arts and Cultures/Dance,WAC/DAN,AA,AA

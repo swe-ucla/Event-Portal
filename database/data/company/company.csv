@@ -1,0 +1,40 @@
+id,name,website,logo,citizenship_requirement,description
+1,Accenture,accenture.com,logo,Y,description
+2,"Air Force Test Center, Air Force Civilian Service",afciviliancareers.com,logo,Y,description
+3,Amgen Inc.,amgen.com,logo,N,description
+4,Arconic,arconic.com,logo,Y,description
+5,Boeing,boeing.com,logo,Depends on the Position,description
+6,Booz Allen Hamilton,bah.com,logo,Y,description
+7,California Energy Commission,energy.ca.gov,logo,Y,description
+8,Fehr & Peers,fehrandpeers.com,logo,N,description
+9,Fluor Enterprises Inc.,fluor.com,logo,,description
+10,FM Global,fmglobal.com,logo,Y,description
+11,Gilead,gilead.com,logo,N,description
+12,HRL Labs,hrl.com,logo,Y,description
+13,ho,honda.com,logo,Y,description
+14,Intel Corporation,intel.com,logo,N,description
+15,L3 Technologies,l3t.com,logo,Y,description
+16,Marathon Petroleum,marathonpetroleum.com,logo,Y,description
+17,Maxim Integrated,maximintegrated.com,logo,N,description
+18,Micron Technology,micron.com,logo,N,description
+19,Microsoft,microsoft.com,logo,N,description
+20,Midmark,midmark.com,logo,Y,description
+21,Northrop Grumman,northropgrumman.com,logo,Y,description
+22,PepsiCo,pepsico.com,logo,Y,description
+23,pSemi Corporation,psemi.com,logo,N,description
+24,Raytheon,raytheon.com,logo,Y,description
+25,Redfin,redfin.com,logo,N,description
+26,Sandia National Laboratories,sandia.gov,logo,Y,description
+27,Symantec,symantec.com,logo,N,description
+28,The Aerospace Corporation,aerospace.org,logo,Y,description
+29,The Metropolitan Water District of Southern California,mwdh2o.com,logo,Y,description
+30,The Whiting-Turner Contracting Company,whiting-turner.com,logo,Y,description
+31,Torrance Refining Company LLC,torrancerefinery.com,logo,Depends on the Position,description
+32,TrellisWare Technologies,trellisware.com,logo,Y,description
+33,U.S. Army Corps of Engineers,usace.army.mil,logo,Y,description
+34,Viasat Inc.,viasat.com,logo,Y,description
+35,Visa,usa.visa.com,logo,Y,description
+36,WorleyParsons,worleyparsons.com,logo,N,description
+37,Xilinx,xilinx.com,logo,N,description
+38,ZS Associates,zs.com,logo,Y,description
+39,Facebook,facebook.com,logo,Y,description

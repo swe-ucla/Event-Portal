@@ -13,6 +13,13 @@ import Companies from './components/Companies.js'
 import CompaniesForm from './components/CompaniesForm.js'
 import CompaniesUpdateForm from './components/CompaniesUpdateForm.js'
 import CompaniesAdmin from './components/CompaniesAdmin.js'
+import Events from './components/Events.js'
+
+import Register from './components/Register.js';
+import RegisterEWI from './components/RegisterEWI.js';
+import Profile from './components/Profile.js';
+import EditProfile from './components/EditProfile.js';
+import UsersSummary from './components/UsersSummary.js';
 
 require('typeface-roboto');
 
@@ -39,7 +46,7 @@ class App extends Component {
   render() {
     return (
       <Router history={history}>
-        <NavBar />
+        <NavBar />        
         <Route path="/checkout" component={Checkout} />
         <Route path="/post" component={ExamplePostForm} />
         <Route path="/put" component={ExamplePutForm} />
@@ -48,7 +55,12 @@ class App extends Component {
         <Route path="/companiesform" component={CompaniesForm} />
         <Route path="/companiesupdateform" component={CompaniesUpdateForm} />
         <Route path="/companiesadmin" component={CompaniesAdmin} />
-        <Footer />
+        <Route path="/events" component={Events} />
+				<Route path='/registerbasic' component={Register} />
+				<Route path='/profile' component={Profile} />
+				<Route path='/registerEWI' component={RegisterEWI} />
+				<Route path='/users/admin' component={UsersSummary} />
+				<Footer />
       </Router>
     )
   }

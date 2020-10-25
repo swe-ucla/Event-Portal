@@ -1,0 +1,4 @@
+id,first_name,last_name,password,email,phone,university_id,is_admin,updated_at,created_at
+1,Katrina,Wijaya,pwd,kwijaya@ucla.edu,+1(650)704-2418,704598596,true
+2,TrinaKat,Wij,password,kwijaya@gmail.com,+16507042418,123456789,
+3,first,last,p,email,phone,111222333,false
