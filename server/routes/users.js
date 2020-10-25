@@ -72,8 +72,6 @@ router.post('/register', function(req, res, next) {
   let company_ids = req.body.company_id;
   let major_ids = req.body.major_id;
   let ranks = req.body.rank;
-  let swe_id = req.body.swe_id;
-  let gpa = req.body.gpa;
 
   values = {
     first_name: req.body.first_name,
@@ -85,6 +83,8 @@ router.post('/register', function(req, res, next) {
     is_admin: req.body.is_admin,
     swe_id: req.body.swe_id,
     gpa: req.body.gpa,
+    is_national_swe_member: req.body.is_national_swe_member,
+    is_international: req.body.is_international,
   }
 
   if (company_ids && ranks) {
@@ -195,7 +195,9 @@ router.put('/:user_id', function(req, res, next) {
     university_id: req.body.university_id,
     is_admin: req.body.is_admin,
     swe_id: req.body.swe_id,
-    gpa: req.body.gpa
+    gpa: req.body.gpa,
+    is_national_swe_member: req.body.is_national_swe_member,
+    is_international: req.body.is_international
   }
 
   let user_id = req.params.user_id;
@@ -301,7 +303,9 @@ router.put('/:user_id', function(req, res, next) {
          req.body.university_id || 
          req.body.is_admin ||
          req.body.swe_id || 
-         req.body.gpa) {
+         req.body.gpa ||
+         req.body.is_international ||
+         req.body.is_national_swe_member) {
       await query_user;
     }
 
