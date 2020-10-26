@@ -212,6 +212,8 @@ CREATE TABLE swe_user (
     is_admin BOOL DEFAULT false,
     is_national_swe_member BOOL DEFAULT false,
     is_international BOOL DEFAULT false,
+    additional_diet VARCHAR (255),
+    schedule_conflicts VARCHAR (255),
     last_login_at TIMESTAMP,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
