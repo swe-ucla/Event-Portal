@@ -27,17 +27,20 @@ import {
 } from '../utils/misc-hooks.js';
 
 function RegisterEWI(props) {
-	const user_id = 3;
+	const user_id = 2;
 	const INITIAL_USER = {
-		email: '',
 		first_name: '',
-		gpa: '',
 		last_name: '',
 		password: '',
+		email: '',
 		phone: '',
-		swe_id: '',
 		university_id: '',
+		swe_id: '',
 		is_admin: false,
+		is_national_swe_member: false,
+		is_internationl: false,
+		additional_diet: '',
+		schedule_conflicts: '',
 		occupation_ids: [], // array of occupations, each occupation has form { occupation_id: # }
 		diet_ids: [],
 		position_ids: [],
@@ -322,22 +325,11 @@ function RegisterEWI(props) {
 						onChange={handleChange}
 						margin='normal'
 					/>
-					<TextField
-						fullWidth
-						id='gpa'
-						name='gpa'
-						label='GPA'
-						className={classes.textField}
-						placeholder='e.g. 4.00'
-						value={gpa || ''}
-						onChange={handleChange}
-						margin='normal'
-					/>
 					<FormControl component='fieldset' className={classes.formControl}>
 						<FormLabel component='legend'>Select your major(s)</FormLabel>
 						<FormGroup>{major_names}</FormGroup>
 						<Typography component='h2' variant='h5'>
-						Evening with Industry
+							Evening with Industry
 						</Typography>
 						<FormLabel component='legend'>
 							Select job level you are seeking

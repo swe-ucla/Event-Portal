@@ -25,16 +25,15 @@ import {
 
 
 function Register(props) {
-	const user_id = 3;
+	const user_id = 1;
 	const INITIAL_USER = {
-		email: '',
 		first_name: '',
-		gpa: '',
 		last_name: '',
 		password: '',
+		email: '',
 		phone: '',
-		swe_id: '',
 		university_id: '',
+		swe_id: '',
 		is_admin: false,
 		occupation_ids: [], // array of occupations, each occupation has form { occupation_id: # }
 		major_ids: [], // array of majors, each having for { major_id: # }
@@ -248,17 +247,6 @@ function Register(props) {
 						className={classes.textField}
 						placeholder='e.g. 408900876'
 						value={swe_id || ''}
-						onChange={handleChange}
-						margin='normal'
-					/>
-					<TextField
-						fullWidth
-						id='gpa'
-						name='gpa'
-						label='GPA'
-						className={classes.textField}
-						placeholder='e.g. 4.00'
-						value={gpa || ''}
 						onChange={handleChange}
 						margin='normal'
 					/>
