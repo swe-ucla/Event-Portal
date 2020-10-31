@@ -23,6 +23,8 @@ class CompanyCard extends Component{
 
     this.getPositions = this.getPositions.bind(this);
     this.getMajors = this.getMajors.bind(this);
+//    this.getLocations = this.getLocations.bind(this);
+//    this.getYears = this.getYears.bind(this);
     this.arrayToHTML = this.arrayToHTML.bind(this);
     this.mapIDToName = this.mapIDToName.bind(this);
     this.state = {majors: [], positions: []}
@@ -71,6 +73,24 @@ class CompanyCard extends Component{
       .catch(err => console.log(err));
   }
 
+//  getLocations = () => {
+//    var options = {
+//        params: {
+//          sort: 'name'
+//        }
+//      }
+//    axios.get('/companies/' + this.props.company.id + '/locations')
+//      .then(result => {
+//        let locationData = result.data.map(function(locations) {
+//          return locations.location_id
+//        });
+//
+//        this.setState({
+//          locations: locationData,
+//        });
+//      })
+//      .catch(err => console.log(err));
+//  }
   //don't need to make this call for each card... extract out to row/company!
 
   mapIDToName = (idarray, namearray) => {
