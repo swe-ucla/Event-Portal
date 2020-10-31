@@ -85,6 +85,8 @@ function RegisterEWI(props) {
 					{ rank: 'First Choice' },
 					{ rank: 'Second Choice' },
 					{ rank: 'Third Choice' },
+					{ rank: 'Fourth Choice' },
+					{ rank: 'Fifth Choice' }
 				];
 				user_companies_temp.forEach((company, index) => {
 					user_companies[index].company_id = company.company_id;
@@ -119,15 +121,26 @@ function RegisterEWI(props) {
 		});
 	};
 
+	const handleCheckChange = event => {
+		const target = event.target;
+		setUserDetails(prev => {
+			return {
+				...prev,
+				[target.name]: target.checked
+			}
+		})
+	}
+
 	const handleCompanyChange = event => {
 		const target = event.target;
+		console.log(target)
 		const name = target.name;
 		const field = name.substr(0, name.length - 1);
 		const choice = parseInt(name.substr(name.length - 1));
 		setUserDetails(prev => {
 			let update = [...prev[`${field}s`]];
 			console.log(update);
-			update[choice][field] = target.value;
+			update[choice][field] = parseInt(target.value);
 			return {
 				...prev,
 				[`${field}s`]: update,
@@ -180,8 +193,11 @@ function RegisterEWI(props) {
 		phone,
 		university_id,
 		swe_id,
-		gpa,
 		is_admin,
+		is_national_swe_member,
+		is_international,
+		additional_diet,
+		schedule_conflicts,
 		occupation_ids,
 		diet_ids,
 		position_ids,
@@ -343,6 +359,46 @@ function RegisterEWI(props) {
 						Company choices
 					</Typography>
 					{company_fields}
+					<Typography component='h2' variant='h5'>
+						Additional Information
+					</Typography>
+					<FormLabel component="legend">Are you an international student?</FormLabel>
+					<FormControlLabel
+						control={<Checkbox
+							checked={is_international || false}
+							onChange={handleCheckChange}
+							name="is_international" />}
+						label="Yes"
+					/>
+					<FormLabel component="legend">Are you an national SWE member?</FormLabel>
+					<FormControlLabel
+						control={<Checkbox
+							checked={is_national_swe_member || false}
+							onChange={handleCheckChange}
+							name="is_national_swe_member" />}
+						label="Yes"
+					/>
+					<TextField
+						fullWidth
+						id='additional_diet'
+						name='additional_diet'
+						label='Additional Dietary Restrictions'
+						className={classes.textField}
+						value={additional_diet || ''}
+						onChange={handleChange}
+						margin='normal'
+					/>
+					<TextField
+						fullWidth
+						id='schedule_conflicts'
+						name='schedule_conflicts'
+						label='Schedule Conflicts'
+						className={classes.textField}
+						value={schedule_conflicts || ''}
+						placeholder='Please let us know if you have any schedule conflicts with the event'
+						onChange={handleChange}
+						margin='normal'
+					/>
 					<Button
 						type='submit'
 						fullWidth
