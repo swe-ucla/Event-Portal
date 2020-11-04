@@ -10,17 +10,13 @@ import FormControl from "@material-ui/core/FormControl";
 import FormGroup from "@material-ui/core/FormGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormHelperText from "@material-ui/core/FormHelperText";
-import InputLabel from "@material-ui/core/InputLabel";
 import Select from "@material-ui/core/Select";
 import Checkbox from "@material-ui/core/Checkbox";
 import Paper from "@material-ui/core/Paper";
-
-import Radio from "@material-ui/core/Radio";
-import RadioGroup from "@material-ui/core/RadioGroup";
-
-import ExamplePostFormStyles from "../styles/ExamplePostForm.js";
+import Input from "@material-ui/core/Input";
 import CompaniesStyles from "../styles/CompaniesForm.js";
-import ExampleGet from "../components/ExampleGet.js";
+import CardMedia from "@material-ui/core/CardMedia";
+
 
 class CompaniesForm extends Component {
   constructor() {
@@ -29,6 +25,7 @@ class CompaniesForm extends Component {
     // Initiate state
     this.state = {
       name: "",
+      logo: "",
       description: "",
       website: "",
       errorMessage: "",
@@ -133,6 +130,7 @@ class CompaniesForm extends Component {
       name: this.state.name,
       description: this.state.description,
       website: this.state.website,
+      logo: this.state.logo,
       citizenship_requirement: this.state.citizenship,
       major_id: majorIDs,
       position_id: positionIDs,
@@ -239,12 +237,14 @@ class CompaniesForm extends Component {
       .get("/companies/" + this.props.location.companyid + "/id")
       .then(result => {
         let nam = result.data[0].name;
+        let log = result.data[0].logo;
         let web = result.data[0].website;
         let desc = result.data[0].description;
         let cit_req = result.data[0].citizenship_requirement;
         console.log(nam);
         this.setState({
           name: nam,
+          logo: log,
           description: desc,
           website: web,
           citizenship: cit_req
@@ -267,12 +267,14 @@ class CompaniesForm extends Component {
       .get("/companies/" + this.props.location.companyid + "/id") // "/companies/1/id"
       .then(result => {
         let nam = result.data[0].name;
+        let log = result.data[0].logo;
         let web = result.data[0].website;
         let desc = result.data[0].description;
         let cit_req = result.data[0].citizenship_requirement;
         console.log(nam);
         this.setState({
           name: nam,
+          logo: log,
           description: desc,
           website: web,
           citizenship: cit_req
@@ -376,6 +378,16 @@ class CompaniesForm extends Component {
     console.log(this.state[name]);
   };
 
+  handleLogoChange = name => input => {
+    var reader = new FileReader();
+    const _this = this;
+    reader.onload = function(e) {
+      _this.setState({logo: e.target.result});
+    };
+
+    reader.readAsDataURL(input.target.files[0]);
+  }
+
   render() {
     const { classes } = this.props;
     const { citizenship_requirement } = this.state.citizenship;
@@ -476,6 +488,17 @@ class CompaniesForm extends Component {
               onChange={this.handleChange("description")}
               margin="normal"
             />
+            <FormLabel id="demo-simple-select-label">Company Image</FormLabel>
+            <br />
+            <Input type="file" disableUnderline="true" accept="image/*" onChange={this.handleLogoChange()}/>
+            <CardMedia
+              style={{width: '350px', height: '197px'}}
+              component="img"
+              image={this.state.logo}
+              title="Uploaded Image"
+            />
+            <br />
+            <br />
             <Button
               type="submit"
               fullWidth

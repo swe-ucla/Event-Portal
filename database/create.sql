@@ -66,7 +66,7 @@ CREATE TABLE company (
     id SERIAL PRIMARY KEY,
     name VARCHAR (100) UNIQUE NOT NULL,
     website VARCHAR (255) UNIQUE, 
-    logo VARCHAR (255),
+    logo text,
     citizenship_requirement requirement,
     description text,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
