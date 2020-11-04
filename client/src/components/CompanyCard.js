@@ -23,16 +23,18 @@ class CompanyCard extends Component{
 
     this.getPositions = this.getPositions.bind(this);
     this.getMajors = this.getMajors.bind(this);
-//    this.getLocations = this.getLocations.bind(this);
-//    this.getYears = this.getYears.bind(this);
+    this.getLocations = this.getLocations.bind(this);
+    this.getYears = this.getYears.bind(this);
     this.arrayToHTML = this.arrayToHTML.bind(this);
     this.mapIDToName = this.mapIDToName.bind(this);
-    this.state = {majors: [], positions: []}
+    this.state = {majors: [], positions: [], locations: [], years:[]}
   }
 
   componentDidMount() {
     this.getPositions();
     this.getMajors();
+    this.getLocations();
+    this.getYears();
   }
 
   getPositions = () => {
@@ -73,29 +75,49 @@ class CompanyCard extends Component{
       .catch(err => console.log(err));
   }
 
-//  getLocations = () => {
-//    var options = {
-//        params: {
-//          sort: 'name'
-//        }
-//      }
-//    axios.get('/companies/' + this.props.company.id + '/locations')
-//      .then(result => {
-//        let locationData = result.data.map(function(locations) {
-//          return locations.location_id
-//        });
-//
-//        this.setState({
-//          locations: locationData,
-//        });
-//      })
-//      .catch(err => console.log(err));
-//  }
+  getLocations = () => {
+    var options = {
+        params: {
+          sort: 'name'
+        }
+      }
+    axios.get('/companies/' + this.props.company.id + '/locations')
+      .then(result => {
+        let locationData = result.data.map(function(locations) {
+          return locations.loc_id
+        });
+
+        this.setState({
+          locations: locationData,
+        });
+      })
+      .catch(err => console.log(err));
+  }
+
+  getYears = () => {
+    var options = {
+        params: {
+          sort: 'name'
+        }
+      }
+    axios.get('/companies/' + this.props.company.id + '/years')
+      .then(result => {
+        let yearData = result.data.map(function(years) {
+          console.log(years.years_id);
+          return years.years_id
+        });
+
+        this.setState({
+          years: yearData,
+        });
+      })
+      .catch(err => console.log(err));
+  }
   //don't need to make this call for each card... extract out to row/company!
 
   mapIDToName = (idarray, namearray) => {
-    //console.log(namearray)
     let elements = idarray.map(elem => {
+    //console.log(elem);
       return namearray[elem];
     })
     return this.arrayToHTML(elements);
@@ -118,7 +140,13 @@ class CompanyCard extends Component{
     let allMajors = this.props.allMajors;
 
     let positions = this.state.positions;
-    let allPositions = this.props.allPositions
+    let allPositions = this.props.allPositions;
+
+    let locations = this.state.locations;
+    let allLocations = this.props.allLocations;
+
+    let years = this.state.years;
+    let allYears = this.props.allYears;
 
     let positionsDisplay = (<Typography>
             Positions: {this.mapIDToName(positions, allPositions)}
@@ -126,6 +154,14 @@ class CompanyCard extends Component{
     let majorsDisplay = (<Typography>
             Majors: {this.mapIDToName(majors, allMajors)}
           </Typography>)
+
+    let locationsDisplay = (<Typography>
+                Locations Hiring: {this.mapIDToName(locations, allLocations)}
+              </Typography>)
+
+    let yearsDisplay = (<Typography>
+                Years Hiring: {this.mapIDToName(years, allYears)}
+             </Typography>)
 
     return (
         <Card className={classes.card}>
@@ -149,6 +185,11 @@ class CompanyCard extends Component{
           <Typography>
             Citizenship Requirement: {this.props.company.citizenship_requirement}
           </Typography>
+          <Typography>
+             On-Site Interview: {this.props.company.interview}
+          </Typography>
+          {locationsDisplay}
+          {yearsDisplay}
         </CardContent>
       </Card>
     );

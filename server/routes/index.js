@@ -11,6 +11,8 @@ var occupations = require('./occupations');
 var positions = require('./positions');
 var uclamajors = require('./uclamajors');
 var users = require('./users');
+var years = require('./years');
+var hiring_locations = require('./hiringlocations');
 
 module.exports = (app) => {
   app.get('/test', function(req, res, next) {
@@ -30,4 +32,6 @@ module.exports = (app) => {
   app.use('/positions', positions);
   app.use('/uclamajors', uclamajors);
   app.use('/users', users);
+  app.use('/years',years);
+  app.use('/hiringlocations',hiring_locations);
 }

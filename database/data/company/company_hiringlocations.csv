@@ -8,6 +8,15 @@ company_id,loc_id,updated_at,created_at
 4,1
 4,3
 5,1
+5,3
+6,1
+6,3
+7,3
+8,1
+8,3
+9,1
+9,2
+9,3
 10,1
 10,3
 11,1
@@ -62,3 +71,8 @@ company_id,loc_id,updated_at,created_at
 36,3
 37,1
 37,2
+37,3
+38,1
+38,3
+39,1
+39,3
