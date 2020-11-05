@@ -10,18 +10,12 @@ import FormControl from "@material-ui/core/FormControl";
 import FormGroup from "@material-ui/core/FormGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormHelperText from "@material-ui/core/FormHelperText";
-import InputLabel from "@material-ui/core/InputLabel";
 import Select from "@material-ui/core/Select";
 import Checkbox from "@material-ui/core/Checkbox";
 import Paper from "@material-ui/core/Paper";
-
-import Radio from "@material-ui/core/Radio";
-import RadioGroup from "@material-ui/core/RadioGroup";
 import Input from "@material-ui/core/Input";
-
-import ExamplePostFormStyles from "../styles/ExamplePostForm.js";
 import CompaniesStyles from "../styles/CompaniesForm.js";
-import ExampleGet from "../components/ExampleGet.js";
+import CardMedia from "@material-ui/core/CardMedia";
 
 class CompaniesForm extends Component {
   constructor() {
@@ -39,13 +33,9 @@ class CompaniesForm extends Component {
       positions: {},
       allMajors: {},
       allPositions: {},
+      logo: "",
     };
-    //   const [citizenship, setCitizen] = React.useState(''),
-
     this.handleChange = this.handleChange.bind(this);
-    // this.handleChange = event => {
-    //   setCitizen(event.target.value);
-    // };
   }
 
   componentDidMount() {
@@ -100,6 +90,7 @@ class CompaniesForm extends Component {
 
     let body = {
       name: this.state.name,
+      logo: this.state.logo,
       description: this.state.description,
       website: this.state.website,
       citizenship_requirement: this.state.citizenship,
@@ -115,6 +106,7 @@ class CompaniesForm extends Component {
         this.setState({
           name: "",
           description: "",
+          logo: "",
           website: "",
           citizenship_requirement: "",
           errorMessage: ""
@@ -152,7 +144,6 @@ class CompaniesForm extends Component {
           allMajors: majorsEnum,
           majors: majorsChecked
         });
-        //console.log(this.state.allMajors)
       })
       .catch(err => console.log(err));
   };
@@ -204,6 +195,19 @@ class CompaniesForm extends Component {
     console.log(this.state[name]);
   };
 
+  // image upload 
+  handleLogoChange = name => input => {
+    console.log(input.target.files[0]);
+    var reader = new FileReader();
+    const _this = this;
+    reader.onload = function(e) {
+      _this.setState({logo: e.target.result});
+
+    };
+
+    reader.readAsDataURL(input.target.files[0]);
+  }
+
   render() {
     const { classes } = this.props;
     const { citizenship_requirement } = this.state;
@@ -212,8 +216,6 @@ class CompaniesForm extends Component {
     const majors = this.state.majors;
     const allPositions = this.state.allPositions;
     const positions = this.state.positions;
-
-    //console.log(allMajors);
 
     const majorChecks = Object.getOwnPropertyNames(majors).map(elem => {
       return (
@@ -308,12 +310,17 @@ class CompaniesForm extends Component {
             />
             <br />
             <br />
-            {/* TODO: Upload company image/logo */}
-            {/* <FormLabel id="demo-simple-select-label">Company Image</FormLabel>
+            <FormLabel id="demo-simple-select-label">Company Image</FormLabel>
             <br />
-            <Input type="file" disableUnderline="true" />
+            <Input type="file" disableUnderline="true" accept="image/*" onChange={this.handleLogoChange()}/>
+            <CardMedia
+              style={{width: '350px', height: '197px'}}
+              component="img"
+              image={this.state.logo}
+              title="Uploaded Image"
+            />
             <br />
-            <br /> */}
+            <br />
             <Button
               type="submit"
               fullWidth
