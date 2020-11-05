@@ -34,10 +34,11 @@ class CompaniesForm extends Component {
       website: "",
       errorMessage: "",
       citizenship: "N",
+      interview: "N",
       majors: {},
       positions: {},
       allMajors: {},
-      allPositions: {}
+      allPositions: {},
     };
     //   const [citizenship, setCitizen] = React.useState(''),
 
