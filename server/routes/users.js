@@ -211,12 +211,12 @@ router.put('/:user_id', function(req, res, next) {
   let position_ids = req.body.position_ids;
   let major_ids = req.body.major_ids;
   let company_ids = req.body.company_ids;
-  let ranks = req.body.ranks;
 
   let remove_diet_ids = [];
   let remove_occupation_ids = [];
   let remove_position_ids = [];
   let remove_major_ids = [];
+  let insert_company_ids = [];
   let remove_company_ids = [];
 
   if (diet_ids) {
@@ -276,6 +276,7 @@ router.put('/:user_id', function(req, res, next) {
       element.user_id = user_id;
       remove_major_ids.push([ user_id, element.major_id ]); 
     })
+    console.log(major_ids)
     if (major_ids.length > 0) {
       var query_major = knex.raw(
         '? ON CONFLICT (user_id,major_id) DO NOTHING;', [knex('user_major').insert(major_ids)],
@@ -283,12 +284,11 @@ router.put('/:user_id', function(req, res, next) {
     }
     var query_remove_major = knex('user_major').del().where('user_id', user_id).whereNotIn(['user_id', 'major_id'], remove_major_ids);
   } 
-
-  if (company_ids && ranks) {
-      company_ids.forEach(function(element, i) {
-        element.rank = ranks[i];
+  console.log(company_ids)
+  if (company_ids) {
+      company_ids.forEach(function(element) {
         element.user_id = user_id;
-        remove_company_ids.push([ user_id, element, ranks[i] ])
+        remove_company_ids.push([ user_id, element.company_id, element.rank ])
       });
     if (company_ids.length > 0) {
       var query_company = knex.raw(
