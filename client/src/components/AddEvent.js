@@ -18,15 +18,6 @@ import Checkbox from '@material-ui/core/Checkbox';
 import Autocomplete, { createFilterOptions } from '@material-ui/lab/Autocomplete';
 
 const filter = createFilterOptions();
-/*
-import 'date-fns';
-import DateFnsUtils from '@date-io/date-fns';
-import {
-  MuiPickersUtilsProvider,
-  KeyboardTimePicker,
-  KeyboardDatePicker,
-} from '@material-ui/pickers';*/
-
 
 /*
     - Name
@@ -189,8 +180,6 @@ function AddEvent(props) {
       setStreet(event.target.value);
   };
 
-
-
   const checkForErrors = () => {
     // check if name is empty
     setNameErr(name.length === 0);
@@ -238,6 +227,31 @@ function AddEvent(props) {
     return eventURL.substring(start, end);
   }
 
+  const resetFields = () => {
+    getLocations();
+    getAddresses();
+    getCategories();
+
+    setName('');
+    setNameErr(false);
+    setPeriod('');
+    setWeek('');
+    setIsEWI(false);
+    setIsFeatured(false);
+    setStartDate(new Date().toISOString().substring(0,10));
+    setStartTime("12:00");
+    setEndDate(new Date().toISOString().substring(0,10));
+    setEndTime("19:00");
+    setIsSameDay(true);
+    setDescription('');
+    setLocation(null);
+    setAddress(null);
+    setStreet('');
+    setLink('');
+    setImg('');
+    setCategories([]);
+  }
+
   const addEvent = async () => {
 
     /* TODO: do check for admin */
@@ -275,6 +289,7 @@ function AddEvent(props) {
           console.log("Address: " + responseStr);
           var index = responseStr.indexOf(':');
           addressID = parseInt(responseStr.substring(index+1));
+          setAddress((address) => ({'name': address.name, 'id': addressID}));
         }
 
         const locRes = await axios.post('/locations', {
@@ -287,9 +302,15 @@ function AddEvent(props) {
         console.log("Location: " + responseStr);
         var index = responseStr.indexOf(':');
         locID = parseInt(responseStr.substring(index+1));
+        setLocation((location) => ({'name': location.name, 'id': locID}));
       }
 
-      console.log(categories);
+      // pull out categories
+      let addedCategories = [];
+      for (var i = 0; i < categories.length; i++) {
+        if (categories[i])
+          addedCategories.push(i);
+      }
 
       axios.post('/events', {
         "event_id": id,
@@ -301,7 +322,7 @@ function AddEvent(props) {
         "fb_event": link,
         "picture": img,
         "is_featured": isFeatured,
-        "categories": categories,
+        "categories": addedCategories,
         "companies": [],
         "hosts": [],
         "period": period,
@@ -310,7 +331,7 @@ function AddEvent(props) {
       .then(function (response) {
         console.log(response);
         alert("Event " + id + ": '" + name + "' successfully added!");
-        // TODO: add force reload of pg
+        resetFields();
       })
       .catch(function (error) {
         console.log(error);
@@ -438,14 +459,14 @@ function AddEvent(props) {
           onChange={(e) => handleChange(e, "period")} 
           label="Period">
           {periods.map((option) => (
-            <MenuItem key={option.value} value={option.value}>
+            <MenuItem key={"period-" + option.value} value={option.value}>
               {option.label}
             </MenuItem>
           ))}
         </TextField>
         <TextField className={classes.week} select value={week} onChange={(e) => handleChange(e, "week")} label="Week">
           {weeks.map((option) => (
-            <MenuItem key={option.value} value={option.value}>
+            <MenuItem key={"week-" + option.value} value={option.value}>
               {option.label}
             </MenuItem>
           ))}
@@ -582,25 +603,26 @@ function AddEvent(props) {
       </div>
       <div>
         <FormLabel component="legend">Categories</FormLabel>
-        <FormGroup>
-          {dbCategories.map((category) => (
-            <FormControlLabel
-              control={<Checkbox 
-                onChange={() => {
-                  const index = categories.indexOf(category.id);
-                  console.log("check");
-                  if (index == -1)
-                    setCategories((categories) => [...categories, category.id]);
-                  else 
-                    setCategories((categories) => [...categories.slice(0, index), ...categories.slice(index+1)])
-                }}
-                key={category.name} 
-                name={category.name}
-              />}
-              label={category.name}
-            />
-          ))}
-        </FormGroup>
+        <div className={classes.categories}>
+          <FormGroup>
+            {dbCategories.map((category) => (
+              <FormControlLabel
+                control={<Checkbox 
+                  checked={categories[category.id]}
+                  onChange={() => {
+                    let newCategories = categories;
+                    newCategories[category.id] = newCategories[category.id] ? false : true;
+                    setCategories(newCategories);
+                    console.log(categories);
+                  }}
+                  name={category.name}
+                />}
+                key={"category-" + category.name} 
+                label={category.name}
+              />
+            ))}
+          </FormGroup>
+        </div>
       </div>
       <div className={classes.btnDiv}>
         <Button variant="contained" onClick={addEvent}>Add Event</Button>

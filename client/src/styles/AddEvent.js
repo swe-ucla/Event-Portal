@@ -21,19 +21,19 @@ const AddEventStyles = theme => ({
 	},
 	description: {
 	    //width: '95%',
-	    marginTop: '20px',
+		marginTop: '20px',
+		marginBottom: '20px',
 	},
 	btnDiv: {
 		margin: 'auto',
 		width: '200px',
 	},
 	categories: {
-		overflow: 'auto',
+		overflowY: 'scroll',
 		position: 'relative',
-    	maxHeight: '300px',
-    	maxWidth: '180px',
-    	width: '100%',
-    	border: '2px',
+    	height: '260px',
+		width: '100%',
+		marginBottom: '20px',
 	},
 });
 
