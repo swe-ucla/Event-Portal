@@ -9,6 +9,9 @@ import Checkout from './components/Checkout.js';
 import ExamplePostForm from './components/ExamplePostForm.js'
 import ExamplePutForm from './components/ExamplePutForm.js'
 import ExampleDeleteForm from './components/ExampleDeleteForm.js'
+
+import Login from './components/Login.js'
+
 import Companies from './components/Companies.js'
 import CompaniesForm from './components/CompaniesForm.js'
 import CompaniesUpdateForm from './components/CompaniesUpdateForm.js'
@@ -46,7 +49,8 @@ class App extends Component {
   render() {
     return (
       <Router history={history}>
-        <NavBar />        
+        <NavBar />
+        <Route path="/login" component={Login} />
         <Route path="/checkout" component={Checkout} />
         <Route path="/post" component={ExamplePostForm} />
         <Route path="/put" component={ExamplePutForm} />
