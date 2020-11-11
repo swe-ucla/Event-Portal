@@ -38,9 +38,6 @@ router.get('/', function(req, res, next) {
 
 // Login a user
 router.post('/login', function(req, res, next) {
-  console.log("hello");
-  console.log(req.body.email);
-  console.log(req.body.password);
   knex('swe_user').select().where({ email: req.body.email, password: req.body.password })
     .then(function() {
       req.session.email = req.body.email;
