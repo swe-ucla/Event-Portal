@@ -276,7 +276,7 @@ router.put('/:user_id', function(req, res, next) {
       element.user_id = user_id;
       remove_major_ids.push([ user_id, element.major_id ]); 
     })
-    console.log(major_ids)
+
     if (major_ids.length > 0) {
       var query_major = knex.raw(
         '? ON CONFLICT (user_id,major_id) DO NOTHING;', [knex('user_major').insert(major_ids)],
@@ -284,7 +284,7 @@ router.put('/:user_id', function(req, res, next) {
     }
     var query_remove_major = knex('user_major').del().where('user_id', user_id).whereNotIn(['user_id', 'major_id'], remove_major_ids);
   } 
-  console.log(company_ids)
+
   if (company_ids) {
       company_ids.forEach(function(element) {
         element.user_id = user_id;
