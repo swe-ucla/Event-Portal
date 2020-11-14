@@ -35,7 +35,7 @@ function UsersSummary(props) {
 						.then(result => {
 							console.log(result);
 							const user_data = { ...result[0].data[0] };
-							const { first_name, last_name } = user_data;
+							const { first_name, last_name, created_at } = user_data;
 							const events = [...result[1].data];
 							const past = [...result[2].data];
 							console.log(events);
@@ -46,8 +46,10 @@ function UsersSummary(props) {
 										id,
 										first_name,
 										last_name,
+										registration_date: new Intl.DateTimeFormat('en-US').format(new Date(created_at)),
 										events: events.length,
 										past: past.length,
+										paymentMade: false,
 									},
 								];
 							});
@@ -72,15 +74,44 @@ function UsersSummary(props) {
 		};
 	}, [setUsers, setLoading]);
 
+	const handleCheckChange = event => {
+		const target = event.target;
+		const name = target.name;
+		const id = parseInt(name.split('-')[1]);
+		setUsers(prev => {
+			const update = prev.map((user) => {
+				if (user.id === id) {
+					user.paymentMade = target.checked;
+				}
+				return user;
+			})
+			return update;
+		})
+	}
+
 	const entries = users.map(user => (
 		<TableRow key={user.id}>
 			<TableCell component='th' scope='row'>
 				{`${user.first_name} ${user.last_name}`}
 			</TableCell>
+			<TableCell align='center'>{user.registration_date}</TableCell>
 			<TableCell align='center'>{user.events}</TableCell>
 			<TableCell align='center'>{user.past}</TableCell>
 			<TableCell align='center'>
-				<Checkbox checked={user.past > 6} />
+				<Checkbox disabled checked={user.past > 6} />
+			</TableCell>
+			<TableCell align='center'>
+				<Checkbox
+					name={`payment-${user.id}`}
+					onChange={(event) => {
+						const confirmMsg = event.target.checked ?
+							`Are you sure you want to verify ${user.first_name} ${user.last_name}'s payment?` :
+							`Are you sure you want to revoke ${user.first_name} ${user.last_name}'s payment verification?`;
+						if (window.confirm(confirmMsg)) {
+							handleCheckChange(event);
+						}
+					}}
+					checked={user.paymentMade} />
 			</TableCell>
 		</TableRow>
 	));
@@ -90,20 +121,22 @@ function UsersSummary(props) {
 			{loading ? (
 				<Typography>Loading...</Typography>
 			) : (
-				<Paper>
-					<Table aria-label='summary table'>
-						<TableHead>
-							<TableRow>
-								<TableCell>Name</TableCell>
-								<TableCell align='center'>Events Attending</TableCell>
-								<TableCell align='center'>Past Events Attended</TableCell>
-								<TableCell align='center'>Member</TableCell>
-							</TableRow>
-						</TableHead>
-						<TableBody>{entries}</TableBody>
-					</Table>
-				</Paper>
-			)}
+					<Paper>
+						<Table aria-label='summary table'>
+							<TableHead>
+								<TableRow>
+									<TableCell>Name</TableCell>
+									<TableCell>Registration Date</TableCell>
+									<TableCell align='center'>Events Attending</TableCell>
+									<TableCell align='center'>Past Events Attended</TableCell>
+									<TableCell align='center'>Member</TableCell>
+									<TableCell align='center'>Payment Verified</TableCell>
+								</TableRow>
+							</TableHead>
+							<TableBody>{entries}</TableBody>
+						</Table>
+					</Paper>
+				)}
 		</>
 	);
 }
