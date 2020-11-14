@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="pgdata">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/database/pgdata.zip!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>
