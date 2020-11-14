@@ -1,6 +1,18 @@
 /* Route Prefix: /users */
 var express = require('express');
+
+// Session management
+var app = express();
+var session = require('express-session');
+app.set('trust proxy', 1);
+app.use(session({
+  secret: "***",
+  resave: false,
+  saveUninitialized: true,
+}));
+
 var router = express.Router();
+app.use(router);
 
 // Require database file (not node-postgres directly)
 var knex = require('../db/knex');
@@ -14,6 +26,29 @@ router.get('/ping', function(req, res, next) {
 // GET all users.
 router.get('/', function(req, res, next) {
   knex('swe_user').select('id')
+    .then(result => {
+      if (result.length) {
+        res.json(result);
+      } else {
+        util.throwError(404, 'No users found');
+      }
+    })
+    .catch(err => { return next(err) });
+});
+
+// Login a user
+router.post('/login', function(req, res, next) {
+  knex('swe_user').select().where({ email: req.body.email, password: req.body.password })
+    .then(function() {
+      req.session.email = req.body.email;
+      res.send(util.message('Successfully logged in user with email: ' + req.body.email));
+    })
+    .catch(err => {return next(err) });
+});
+
+// GET user for current session.
+router.get('/session', function(req, res, next) {
+  knex('swe_user').select('id').where({ email: req.session.email })
     .then(result => {
       if (result.length) {
         res.json(result);
@@ -137,16 +172,6 @@ router.post('/register', function(req, res, next) {
     res.send(util.message('Successfully inserted user'));
   })
   .catch(err => {return next(err) });
-});
-
-
-// Login a user
-router.put('/login', function(req, res, next) {
-  knex('swe_user').where({ email: req.body.email, password: req.body.password })
-    .then(result => {
-      res.send(util.message('Successfully logged in user with email: ' + req.body.email));
-    })
-    .catch(err => { return next(err) });
 });
 
 // GET user info by user_id
@@ -596,4 +621,4 @@ router.get('/filter', function(req, res, next) {
   }
 });
 
-module.exports = router;
+module.exports = app;

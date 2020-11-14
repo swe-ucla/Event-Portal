@@ -9,6 +9,13 @@ import Checkout from './components/Checkout.js';
 import ExamplePostForm from './components/ExamplePostForm.js'
 import ExamplePutForm from './components/ExamplePutForm.js'
 import ExampleDeleteForm from './components/ExampleDeleteForm.js'
+
+import Login from './components/Login.js'
+
+import Companies from './components/Companies.js'
+import CompaniesForm from './components/CompaniesForm.js'
+import CompaniesUpdateForm from './components/CompaniesUpdateForm.js'
+import CompaniesAdmin from './components/CompaniesAdmin.js'
 import Events from './components/Events.js'
 
 import Register from './components/Register.js';
@@ -42,11 +49,16 @@ class App extends Component {
   render() {
     return (
       <Router history={history}>
-        <NavBar />        
+        <NavBar />
+        <Route path="/login" component={Login} />
         <Route path="/checkout" component={Checkout} />
         <Route path="/post" component={ExamplePostForm} />
         <Route path="/put" component={ExamplePutForm} />
         <Route path="/delete" component={ExampleDeleteForm} />
+        <Route path="/companies" component={Companies} />
+        <Route path="/companiesform" component={CompaniesForm} />
+        <Route path="/companiesupdateform" component={CompaniesUpdateForm} />
+        <Route path="/companiesadmin" component={CompaniesAdmin} />
         <Route path="/events" component={Events} />
 				<Route path='/registerbasic' component={Register} />
 				<Route path='/profile' component={Profile} />
