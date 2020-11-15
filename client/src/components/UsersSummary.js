@@ -94,7 +94,7 @@ function UsersSummary(props) {
 			<TableCell component='th' scope='row'>
 				{`${user.first_name} ${user.last_name}`}
 			</TableCell>
-			<TableCell align='center'>{user.registration_date}</TableCell>
+			<TableCell>{user.registration_date}</TableCell>
 			<TableCell align='center'>{user.events}</TableCell>
 			<TableCell align='center'>{user.past}</TableCell>
 			<TableCell align='center'>
