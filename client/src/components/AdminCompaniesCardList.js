@@ -27,7 +27,9 @@ class AdminCompaniesCardList extends Component{
 		this.state = {
 			companies: [],
 			allMajors: {},
-			allPositions: {}
+			allPositions: {},
+			allLocations: {},
+			allYears: {}
 		}
 	}
 
@@ -36,7 +38,52 @@ class AdminCompaniesCardList extends Component{
 		this.getCompanies();
 		this.getAllMajors();
 		this.getAllPositions();
+		this.getAllLocations();
+		this.getAllYears();
 	}
+
+ getAllLocations = () => {
+    var options = {
+      params: {
+        sort: "id"
+      }
+    };
+    axios
+      .get("/hiringlocations", options)
+      .then(result => {
+        let hiring_locations = {};
+        result.data.forEach(function(hiring_location) {
+          hiring_locations[hiring_location.id] = hiring_location.location;
+        });
+
+        this.setState({
+          allLocations: hiring_locations
+        });
+      })
+      .catch(err => console.log(err));
+  };
+
+  getAllYears = () => {
+    var options = {
+      params: {
+        sort: "id"
+      }
+    };
+    axios
+      .get("/years", options)
+      .then(result => {
+        let years = {};
+        result.data.forEach(function(year) {
+          years[year.id] = year.name;
+        });
+
+        this.setState({
+          allYears: years
+        });
+      })
+      .catch(err => console.log(err));
+  };
+
 
 	getCompanies = () => {
   		var options = {
@@ -103,7 +150,7 @@ class AdminCompaniesCardList extends Component{
 			<div className={classNames(classes.layout, classes.cardGrid)}>
 	          <Grid container spacing={40}>
 		        	{list.map(companyCard =>{
-						return <Grid item key={companyCard.name} sm={6} md={4} lg={3}><AdminCompanyCard company={companyCard} allPositions={this.state.allPositions} allMajors={this.state.allMajors}/> </Grid>
+						return <Grid item key={companyCard.name} sm={6} md={4} lg={3}><AdminCompanyCard company={companyCard} allLocations = {this.state.allLocations} allYears = {this.state.allYears} allPositions={this.state.allPositions} allMajors={this.state.allMajors}/> </Grid>
 		        	})}
 	          </Grid>
         	</div>
