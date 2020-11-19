@@ -31,7 +31,9 @@ const NavBar = (props) => {
         <Button component={Link} to="/registerbasic">PROFILE</Button>
         <Button component={Link} to="/registerEWI">PROFILE(EWI)</Button>
         <Button component={Link} to="/users/admin">PROFILE SUMMARY(ADMIN)</Button>
-        <Button component={Link} to="/login" color="primary" variant="outlined">Login</Button>
+        <Button color="primary" variant="outlined">
+          Login
+        </Button>
       </Toolbar>
     </AppBar>
     </div>
