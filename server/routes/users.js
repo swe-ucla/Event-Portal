@@ -72,8 +72,7 @@ router.post('/register', function(req, res, next) {
   let company_ids = req.body.company_id;
   let major_ids = req.body.major_id;
   let ranks = req.body.rank;
-  let swe_id = req.body.swe_id;
-  let gpa = req.body.gpa;
+  let company_rank_values = []
 
   values = {
     first_name: req.body.first_name,
@@ -85,6 +84,10 @@ router.post('/register', function(req, res, next) {
     is_admin: req.body.is_admin,
     swe_id: req.body.swe_id,
     gpa: req.body.gpa,
+    is_national_swe_member: req.body.is_national_swe_member,
+    is_international: req.body.is_international,
+    additional_diet: req.body.additional_diet,
+    schedule_conflicts: req.body.schedule_conflicts
   }
 
   if (company_ids && ranks) {
@@ -195,7 +198,11 @@ router.put('/:user_id', function(req, res, next) {
     university_id: req.body.university_id,
     is_admin: req.body.is_admin,
     swe_id: req.body.swe_id,
-    gpa: req.body.gpa
+    gpa: req.body.gpa,
+    is_national_swe_member: req.body.is_national_swe_member,
+    is_international: req.body.is_international,
+    additional_diet: req.body.additional_diet,
+    schedule_conflicts: req.body.schedule_conflicts
   }
 
   let user_id = req.params.user_id;
@@ -204,12 +211,12 @@ router.put('/:user_id', function(req, res, next) {
   let position_ids = req.body.position_ids;
   let major_ids = req.body.major_ids;
   let company_ids = req.body.company_ids;
-  let ranks = req.body.ranks;
 
   let remove_diet_ids = [];
   let remove_occupation_ids = [];
   let remove_position_ids = [];
   let remove_major_ids = [];
+  let insert_company_ids = [];
   let remove_company_ids = [];
 
   if (diet_ids) {
@@ -269,6 +276,7 @@ router.put('/:user_id', function(req, res, next) {
       element.user_id = user_id;
       remove_major_ids.push([ user_id, element.major_id ]); 
     })
+
     if (major_ids.length > 0) {
       var query_major = knex.raw(
         '? ON CONFLICT (user_id,major_id) DO NOTHING;', [knex('user_major').insert(major_ids)],
@@ -277,11 +285,10 @@ router.put('/:user_id', function(req, res, next) {
     var query_remove_major = knex('user_major').del().where('user_id', user_id).whereNotIn(['user_id', 'major_id'], remove_major_ids);
   } 
 
-  if (company_ids && ranks) {
-      company_ids.forEach(function(element, i) {
-        element.rank = ranks[i];
+  if (company_ids) {
+      company_ids.forEach(function(element) {
         element.user_id = user_id;
-        remove_company_ids.push([ user_id, element, ranks[i] ])
+        remove_company_ids.push([ user_id, element.company_id, element.rank ])
       });
     if (company_ids.length > 0) {
       var query_company = knex.raw(
@@ -301,7 +308,11 @@ router.put('/:user_id', function(req, res, next) {
          req.body.university_id || 
          req.body.is_admin ||
          req.body.swe_id || 
-         req.body.gpa) {
+         req.body.gpa ||
+         req.body.is_international ||
+         req.body.is_national_swe_member ||
+         req.body.additional_diet ||
+         req.body.schedule_conflicts) {
       await query_user;
     }
 
