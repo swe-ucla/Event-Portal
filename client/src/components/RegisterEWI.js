@@ -150,6 +150,9 @@ function RegisterEWI(props) {
 
 	// handle POST request for new users
 	const addUser = () => {
+		// Add registration time as current time
+		userDetails.registered_at = new Date(Date.now()).toISOString();
+	
 		console.log(userDetails);
 		axios
 			.post('/users/register', userDetails)
@@ -162,6 +165,10 @@ function RegisterEWI(props) {
 	};
 
 	const updateUser = () => {
+		// Add registration time as the current time
+		userDetails.registered_at = new Date(Date.now()).toISOString();
+		console.log(Date.now())
+	
 		console.log(userDetails);
 		axios
 			.put(`/users/${user_id}`, userDetails)
@@ -201,6 +208,7 @@ function RegisterEWI(props) {
 		occupation_ids,
 		diet_ids,
 		position_ids,
+		registered_at,
 		major_ids,
 		company_ids,
 	} = userDetails;

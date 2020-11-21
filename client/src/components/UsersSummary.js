@@ -34,8 +34,10 @@ function UsersSummary(props) {
 						])
 						.then(result => {
 							console.log(result);
+							console.log("hello")
 							const user_data = { ...result[0].data[0] };
-							const { first_name, last_name, created_at } = user_data;
+							console.log(user_data)
+							const { first_name, last_name, registered_at, payment_made } = user_data;
 							const events = [...result[1].data];
 							const past = [...result[2].data];
 							console.log(events);
@@ -46,10 +48,10 @@ function UsersSummary(props) {
 										id,
 										first_name,
 										last_name,
-										registration_date: new Intl.DateTimeFormat('en-US').format(new Date(created_at)),
+										registration_date: new Intl.DateTimeFormat('en-US').format(new Date(registered_at)),
 										events: events.length,
 										past: past.length,
-										paymentMade: false,
+										payment_made: payment_made,
 									},
 								];
 							});
@@ -81,13 +83,26 @@ function UsersSummary(props) {
 		setUsers(prev => {
 			const update = prev.map((user) => {
 				if (user.id === id) {
-					user.paymentMade = target.checked;
+					user.payment_made = target.checked;
 				}
+				updateUserPayment(id, user, target.checked);
 				return user;
 			})
 			return update;
 		})
 	}
+
+	const updateUserPayment = (user_id, userDetails, payment_made) => {
+		userDetails.payment_made = payment_made
+		axios
+			.put(`/users/${user_id}`, userDetails)
+			.then(result => {
+				console.log(result);
+			})
+			.catch(err => {
+				console.log(err);
+			});
+	};
 
 	const entries = users.map(user => (
 		<TableRow key={user.id}>
