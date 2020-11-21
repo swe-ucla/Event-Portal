@@ -87,7 +87,9 @@ router.post('/register', function(req, res, next) {
     is_national_swe_member: req.body.is_national_swe_member,
     is_international: req.body.is_international,
     additional_diet: req.body.additional_diet,
-    schedule_conflicts: req.body.schedule_conflicts
+    schedule_conflicts: req.body.schedule_conflicts,
+    registered_at: req.body.registered_at,
+    payment_made: req.body.payment_made
   }
 
   if (company_ids && ranks) {
@@ -202,7 +204,9 @@ router.put('/:user_id', function(req, res, next) {
     is_national_swe_member: req.body.is_national_swe_member,
     is_international: req.body.is_international,
     additional_diet: req.body.additional_diet,
-    schedule_conflicts: req.body.schedule_conflicts
+    schedule_conflicts: req.body.schedule_conflicts,
+    registered_at: req.body.registered_at,
+    payment_made: req.body.payment_made
   }
 
   let user_id = req.params.user_id;

@@ -247,6 +247,8 @@ CREATE TABLE swe_user (
     additional_diet VARCHAR (255),
     schedule_conflicts VARCHAR (255),
     last_login_at TIMESTAMP,
+    registered_at TIMESTAMP DEFAULT NULL,
+    payment_made BOOL DEFAULT false,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
