@@ -27,6 +27,8 @@ class CompaniesCardList extends Component {
     this.getCompanies = this.getCompanies.bind(this);
     this.getAllMajors = this.getAllMajors.bind(this);
     this.getAllPositions = this.getAllPositions.bind(this);
+    this.getAllLocations = this.getAllLocations.bind(this);
+    this.getAllYears = this.getAllYears.bind(this);
     this.handleSearch = this.handleSearch.bind(this);
     this.search = this.search.bind(this);
 
@@ -34,6 +36,8 @@ class CompaniesCardList extends Component {
       companies: [],
       allMajors: {},
       allPositions: {},
+      allLocations: {},
+      allYears: {},
       searchText: ""
     };
   }
@@ -43,6 +47,8 @@ class CompaniesCardList extends Component {
     this.getCompanies();
     this.getAllMajors();
     this.getAllPositions();
+    this.getAllLocations();
+    this.getAllYears();
   }
 
   handleSearch = name => event => {
@@ -92,6 +98,48 @@ class CompaniesCardList extends Component {
 
         this.setState({
           allMajors: majors
+        });
+      })
+      .catch(err => console.log(err));
+  };
+
+  getAllLocations = () => {
+    var options = {
+      params: {
+        sort: "id"
+      }
+    };
+    axios
+      .get("/hiringlocations", options)
+      .then(result => {
+        let hiring_locations = {};
+        result.data.forEach(function(hiring_location) {
+          hiring_locations[hiring_location.id] = hiring_location.location;
+        });
+
+        this.setState({
+          allLocations: hiring_locations
+        });
+      })
+      .catch(err => console.log(err));
+  };
+
+  getAllYears = () => {
+    var options = {
+      params: {
+        sort: "id"
+      }
+    };
+    axios
+      .get("/years", options)
+      .then(result => {
+        let years = {};
+        result.data.forEach(function(year) {
+          years[year.id] = year.name;
+        });
+
+        this.setState({
+          allYears: years
         });
       })
       .catch(err => console.log(err));
@@ -157,6 +205,8 @@ class CompaniesCardList extends Component {
                     company={companyCard}
                     allPositions={this.state.allPositions}
                     allMajors={this.state.allMajors}
+                    allLocations={this.state.allLocations}
+                    allYears={this.state.allYears}
                   />{" "}
                 </Grid>
               );

@@ -10,17 +10,13 @@ import FormControl from "@material-ui/core/FormControl";
 import FormGroup from "@material-ui/core/FormGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormHelperText from "@material-ui/core/FormHelperText";
-import InputLabel from "@material-ui/core/InputLabel";
 import Select from "@material-ui/core/Select";
 import Checkbox from "@material-ui/core/Checkbox";
 import Paper from "@material-ui/core/Paper";
-
-import Radio from "@material-ui/core/Radio";
-import RadioGroup from "@material-ui/core/RadioGroup";
-
-import ExamplePostFormStyles from "../styles/ExamplePostForm.js";
+import Input from "@material-ui/core/Input";
 import CompaniesStyles from "../styles/CompaniesForm.js";
-import ExampleGet from "../components/ExampleGet.js";
+import CardMedia from "@material-ui/core/CardMedia";
+
 
 class CompaniesForm extends Component {
   constructor() {
@@ -29,14 +25,20 @@ class CompaniesForm extends Component {
     // Initiate state
     this.state = {
       name: "",
+      logo: "",
       description: "",
       website: "",
       errorMessage: "",
       citizenship: "N",
+      interview: "N",
       majors: {},
       positions: {},
+      years: {},
+      locations: {},
       allMajors: {},
-      allPositions: {}
+      allPositions: {},
+      allYears: {},
+      allLocations: {}
     };
     //   const [citizenship, setCitizen] = React.useState(''),
 
@@ -129,13 +131,47 @@ class CompaniesForm extends Component {
       }
     }
 
+    let yearIDs = [];
+    let removeYearIDs = [];
+    let years = this.state.years;
+    let allYears = this.state.allYears;
+    for (let property in years) {
+      if (years.hasOwnProperty(property)) {
+        if (years[property] === true) {
+          yearIDs.push(allYears[property]);
+        } else {
+          removeYearIDs.push(allYears[property]);
+        }
+      }
+    }
+
+    let locationIDs = [];
+    let removeLocationIDs = [];
+    let locations = this.state.locations;
+    let allLocations = this.state.allLocations;
+    for (let property in locations) {
+      if (locations.hasOwnProperty(property)) {
+        if (locations[property] === true) {
+          locationIDs.push(allLocations[property]);
+        } else {
+          removeLocationIDs.push(allLocations[property]);
+        }
+      }
+    }
+
     let body = {
       name: this.state.name,
       description: this.state.description,
       website: this.state.website,
+      logo: this.state.logo,
       citizenship_requirement: this.state.citizenship,
+      interview: this.state.interview,
+      year_id: yearIDs,
+      location_id: locationIDs,
       major_id: majorIDs,
       position_id: positionIDs,
+      remove_year_id: removeYearIDs,
+      remove_location_id: removeLocationIDs,
       remove_position_id: removePositionIDs,
       remove_major_id: removeMajorIDs
     };
@@ -163,6 +199,43 @@ class CompaniesForm extends Component {
     };
     let majorsChecked = {};
     let positionsChecked = {};
+    let yearsChecked = {};
+    let locationsChecked = {};
+    //years
+    axios
+      .get("/years", options)
+      .then(result => {
+        let yearsEnum = {};
+        //let majorsChecked = {};
+        result.data.forEach(function(year) {
+          yearsEnum[year.name] = year.id;
+          yearsChecked[year.name] = false;
+        });
+
+        this.setState({
+          allYears: yearsEnum,
+          years: yearsChecked
+        });
+       });
+        console.log(this.state.allYears);
+    //locations
+      axios
+      .get("/hiringlocations", options)
+      .then(result => {
+        let locationsEnum = {};
+        //let majorsChecked = {};
+        result.data.forEach(function(location) {
+          locationsEnum[location.location] = location.id;
+          locationsChecked[location.location] = false;
+        });
+
+        this.setState({
+          allLocations: locationsEnum,
+          locations: locationsChecked
+        });
+        });
+        console.log(this.state.allLocations);
+    //majors
     axios
       .get("/majors", options)
       .then(result => {
@@ -177,7 +250,9 @@ class CompaniesForm extends Component {
           allMajors: majorsEnum,
           majors: majorsChecked
         });
+        });
         console.log(this.state.allMajors);
+        //positions
         axios
           .get("/positions", options)
           .then(result => {
@@ -191,6 +266,48 @@ class CompaniesForm extends Component {
               allPositions: positionsEnum,
               positions: positionsChecked
             });
+           });
+            //locations
+            let idToLocation = {};
+            console.log(this.state.allLocations);
+            Object.keys(this.state.allLocations).forEach(key => {
+              console.log(key);
+              idToLocation[this.state.allLocations[key]] = key;
+            });
+            console.log(idToLocation);
+            axios
+              .get("/companies/" + this.props.location.companyid + "/locations")
+              .then(result => {
+                let locs = result.data;
+                console.log(locs);
+                for (let m in locs) {
+                  console.log(locs[m].loc_id);
+                  console.log(idToLocation[locs[m].loc_id]);
+                  locationsChecked[idToLocation[locs[m].loc_id]] = true;
+                }
+                this.setState({
+                  locations: locationsChecked
+                });
+                console.log(this.state.locations);
+                });
+            //years
+                axios
+                  .get(
+                    "/companies/" + this.props.location.companyid + "/years"
+                  )
+                  .then(result => {
+                    let idToYear = {};
+                    console.log(this.state.allYears);
+                    Object.keys(this.state.allYears).forEach(key => {
+                      console.log(key);
+                      idToYear[this.state.allYears[key]] = key;
+                    });
+                    let year = result.data;
+                    for (let p in year) {
+                      yearsChecked[idToYear[year[p].year_id]] = true;
+                    }
+                  });
+            //majors
             let idToMajor = {};
             console.log(this.state.allMajors);
             Object.keys(this.state.allMajors).forEach(key => {
@@ -212,6 +329,8 @@ class CompaniesForm extends Component {
                   majors: majorsChecked
                 });
                 console.log(this.state.majors);
+                });
+                //positions
                 axios
                   .get(
                     "/companies/" + this.props.location.companyid + "/positions"
@@ -229,30 +348,27 @@ class CompaniesForm extends Component {
                     }
                   })
                   .catch(err => console.log(err)); //work on error handling!
-              })
-              .catch(err => console.log(err));
-          })
-          .catch(err => console.log(err));
-      })
-      .catch(err => console.log(err));
     axios
       .get("/companies/" + this.props.location.companyid + "/id")
       .then(result => {
         let nam = result.data[0].name;
+        let log = result.data[0].logo;
         let web = result.data[0].website;
         let desc = result.data[0].description;
         let cit_req = result.data[0].citizenship_requirement;
+        let interv = result.data[0].interview;
         console.log(nam);
         this.setState({
           name: nam,
+          logo: log,
           description: desc,
           website: web,
-          citizenship: cit_req
+          citizenship: cit_req,
+          interview: interv
         });
       })
       .catch(err => console.log(err));
-  };
-
+    };
   getCompanyData = async () => {
     //invert mapping of enum, yielding mapping from id to name
     let idToMajor = {};
@@ -267,15 +383,19 @@ class CompaniesForm extends Component {
       .get("/companies/" + this.props.location.companyid + "/id") // "/companies/1/id"
       .then(result => {
         let nam = result.data[0].name;
+        let log = result.data[0].logo;
         let web = result.data[0].website;
         let desc = result.data[0].description;
         let cit_req = result.data[0].citizenship_requirement;
+        let interv = result.data[0].interview;
         console.log(nam);
         this.setState({
           name: nam,
+          logo: log,
           description: desc,
           website: web,
-          citizenship: cit_req
+          citizenship: cit_req,
+          interview: interv,
         });
       })
       .catch(err => console.log(err));
@@ -354,6 +474,55 @@ class CompaniesForm extends Component {
     return 1;
   };
 
+  getAllLocations = async () => {
+    var options = {
+      params: {
+        sort: "id"
+      }
+    };
+    axios
+      .get("/hiringlocations", options)
+      .then(result => {
+        let locationsEnum = {};
+        let locationsChecked = {};
+        result.data.forEach(function(location) {
+          locationsEnum[location.location] = location.id;
+          locationsChecked[location.location] = false;
+        });
+
+        this.setState({
+          allLocations: locationsEnum,
+          locations: locationsChecked
+        });
+      })
+      .catch(err => console.log(err));
+    return 1;
+  };
+   getAllYears = async () => {
+      var options = {
+        params: {
+          sort: "id"
+        }
+      };
+      axios
+        .get("/years", options)
+        .then(result => {
+          let yearsEnum = {};
+          let yearsChecked = {};
+          result.data.forEach(function(year) {
+            yearsEnum[year.name] = year.id;
+            yearsChecked[year.name] = false;
+          });
+
+          this.setState({
+            allYears: yearsEnum,
+            years: yearsChecked
+          });
+        })
+        .catch(err => console.log(err));
+      return 1;
+    };
+
   handleSubmit = event => {
     this.changeCompany();
     // Prevent site refresh after submission
@@ -376,14 +545,29 @@ class CompaniesForm extends Component {
     console.log(this.state[name]);
   };
 
+  handleLogoChange = name => input => {
+    var reader = new FileReader();
+    const _this = this;
+    reader.onload = function(e) {
+      _this.setState({logo: e.target.result});
+    };
+
+    reader.readAsDataURL(input.target.files[0]);
+  }
+
   render() {
     const { classes } = this.props;
     const { citizenship_requirement } = this.state.citizenship;
+    const {onsite_interview} = this.state.interview;
     //const error = [check1, check2, check3].filter(v => v).length !== 2;
     const allMajors = this.state.allMajors;
     const majors = this.state.majors;
     const allPositions = this.state.allPositions;
     const positions = this.state.positions;
+    const allLocations = this.state.allLocations;
+    const locations = this.state.locations;
+    const allYears = this.state.allYears;
+    const years = this.state.years;
 
     const majorChecks = Object.getOwnPropertyNames(majors).map(elem => {
       return (
@@ -392,6 +576,36 @@ class CompaniesForm extends Component {
             <Checkbox
               checked={majors[elem]}
               onChange={this.handleCheckChange("majors")}
+              value={elem}
+            />
+          }
+          label={elem}
+        />
+      );
+    });
+
+    const locationChecks = Object.getOwnPropertyNames(locations).map(elem => {
+          return (
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={locations[elem]}
+                  onChange={this.handleCheckChange("locations")}
+                  value={elem}
+                />
+              }
+              label={elem}
+            />
+          );
+        });
+
+const yearChecks = Object.getOwnPropertyNames(years).map(elem => {
+      return (
+        <FormControlLabel
+          control={
+            <Checkbox
+              checked={years[elem]}
+              onChange={this.handleCheckChange("years")}
               value={elem}
             />
           }
@@ -451,9 +665,18 @@ class CompaniesForm extends Component {
             <FormGroup>
               <div>{positionChecks}</div>
             </FormGroup>
+            <FormLabel>Locations Hiring To:</FormLabel>
+            <FormGroup>
+              <div>{locationChecks}</div>
+            </FormGroup>
+            <FormLabel>Years Hiring:</FormLabel>
+            <FormGroup>
+              <div>{yearChecks}</div>
+            </FormGroup>
             <FormHelperText error className={classes.formHelperText}>
               {this.state.errorMessage}
             </FormHelperText>
+            <div></div>
             <FormControl className={classes.formControl}>
               <FormLabel id="demo-simple-select-label">Citizenship</FormLabel>
               <Select
@@ -461,6 +684,16 @@ class CompaniesForm extends Component {
                 id="demo-simple-select"
                 value={this.state.citizenship}
                 onChange={this.handleChange("citizenship")}
+              >
+                <MenuItem value={"Y"}>Yes</MenuItem>
+                <MenuItem value={"N"}>No</MenuItem>
+              </Select>
+              <FormLabel id="demo-simple-select-label">On Site Interview</FormLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={this.state.interview}
+                onChange={this.handleChange("interview")}
               >
                 <MenuItem value={"Y"}>Yes</MenuItem>
                 <MenuItem value={"N"}>No</MenuItem>
@@ -476,6 +709,17 @@ class CompaniesForm extends Component {
               onChange={this.handleChange("description")}
               margin="normal"
             />
+            <FormLabel id="demo-simple-select-label">Company Image</FormLabel>
+            <br />
+            <Input type="file" disableUnderline="true" accept="image/*" onChange={this.handleLogoChange()}/>
+            <CardMedia
+              style={{width: '350px', height: '197px'}}
+              component="img"
+              image={this.state.logo}
+              title="Uploaded Image"
+            />
+            <br />
+            <br />
             <Button
               type="submit"
               fullWidth
