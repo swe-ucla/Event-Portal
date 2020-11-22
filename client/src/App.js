@@ -14,6 +14,7 @@ import CompaniesForm from './components/CompaniesForm.js'
 import CompaniesUpdateForm from './components/CompaniesUpdateForm.js'
 import CompaniesAdmin from './components/CompaniesAdmin.js'
 import Events from './components/Events.js'
+import EventsForm from './components/EventsForm.js'
 
 import Register from './components/Register.js';
 import RegisterEWI from './components/RegisterEWI.js';
@@ -56,6 +57,7 @@ class App extends Component {
         <Route path="/companiesupdateform" component={CompaniesUpdateForm} />
         <Route path="/companiesadmin" component={CompaniesAdmin} />
         <Route path="/events" component={Events} />
+        <Route path="/eventsform" component={EventsForm} />
 				<Route path='/registerbasic' component={Register} />
 				<Route path='/profile' component={Profile} />
 				<Route path='/registerEWI' component={RegisterEWI} />
