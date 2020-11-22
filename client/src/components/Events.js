@@ -215,7 +215,6 @@ class Events extends Component {
         dividerIndex++;
       }
     }
-    
     return eventRows;
   };
 
