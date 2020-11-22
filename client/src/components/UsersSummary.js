@@ -84,8 +84,8 @@ function UsersSummary(props) {
 			const update = prev.map((user) => {
 				if (user.id === id) {
 					user.payment_made = target.checked;
+					updateUserPayment(id, user, target.checked);
 				}
-				updateUserPayment(id, user, target.checked);
 				return user;
 			})
 			return update;
@@ -126,7 +126,7 @@ function UsersSummary(props) {
 							handleCheckChange(event);
 						}
 					}}
-					checked={user.paymentMade} />
+					checked={user.payment_made} />
 			</TableCell>
 		</TableRow>
 	));
