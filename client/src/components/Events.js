@@ -215,7 +215,7 @@ class Events extends Component {
         dividerIndex++;
       }
     }
-    console.log(this.state.eventsByDayArray)
+    
     return eventRows;
   };
 
