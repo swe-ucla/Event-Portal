@@ -29,3 +29,32 @@ export const useAdmin = initialState => {
 		admin,
 	};
 };
+
+export const useUserId = initialState => {
+	const [userId, setUserId] = useState(null);
+
+	useEffect(() => {
+		//axios.get('/users/session')
+		//.then(result => {
+			//result.data.forEach(function(user) {
+				axios.get('/users/'+ 3 + '/id')
+					.then(result => {
+						result.data.forEach(function(user) {
+							setUserId(user.id)
+						})
+					})
+					//.catch(err => console.log(err));
+			//})
+		//})
+		.catch(err => console.log(err));
+		return () => {
+			setUserId({});
+		};
+	}, []);
+
+	console.log(userId)
+
+	return {
+		userId,
+	};
+};
