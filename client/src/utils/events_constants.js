@@ -1,5 +1,5 @@
 const EventFields = {
-  FB_ID            : "fbid",
+  FB_ID           : "event_id",
   NAME            : "name",
   START_TIME      : "starts_at",
   END_TIME        : "ends_at", 

@@ -19,7 +19,6 @@ class Events extends Component {
       date: "", // TO-DO: change to today's date. E.G.: 2019-03-02T15:30:00.000Z
       prevY: 0,
       popUp: false,
-      checkedIn: false,
     };
 
     this.getEvents = this.getEvents.bind(this);
@@ -216,6 +215,7 @@ class Events extends Component {
         dividerIndex++;
       }
     }
+    console.log(this.state.eventsByDayArray)
     return eventRows;
   };
 
@@ -252,31 +252,33 @@ class Events extends Component {
     
     axios.get("/events", options)
     .then(result => {
-      let event_fb_id = result.data[0].fb_id;
-      let user_id = 3; // TO-DO: change user_id after OATH is settled
-
-      // TO-DO: UI components for success/failed
+      let eventsData = result.data.map(function(event) {
+        return {
+          fb_id: event.fb_id,
+          name: event.name,
+          starts_at: event.starts_at,
+          ends_at: event.ends_at,
+          attendance_code: event.attendance_code,
+          location_id: event.location_id,
+          location: event.location_id,
+          description: event.description,
+          fb_event: event.fb_event,
+          picture: event.picture,
+          is_featured: event.is_featured,
+          updated_at: event.updated_at,
+          created_at: event.created_at,
+          period: event.period,
+          week: event.week,
+        };
+      });
       
-      // Checkin user based on event ID.
-      console.log(this.state.checkedIn)
-      axios.post('/events/' + event_fb_id + '/checkin/' + user_id)
-      .then(response => {
-        alert('Checked in successfully!');
-        this.setState({
-          checkedIn: true
-        });
-      })
-      .catch(error => {
-        alert('Already checked in!');
-        this.setState({ checkedIn: true });
-        console.log(error);
-      })
+      // TO-DO: display "checked in"
+      // TO-DO: add to user's checked in list
+      console.log(eventsData);
     })
     .catch(
-      error => {
-        alert('Wrong submission code!')
-        console.log(error)
-      }
+      // display not found icon
+      err => console.log(err)
     );
   }
 
@@ -299,11 +301,11 @@ class Events extends Component {
             </svg>
             <p className={classes.buttonLabel}>see past events</p>
           </button>
-          <button disabled={this.state.checkedIn} className={classes.checkInButton} onClick={this.handleOpenPopUp}>
+          <button className={classes.checkInButton} onClick={this.handleOpenPopUp}>
             Check In
           </button>
           <Modal open={this.state.popUp} onClose={this.handleClosePopUp} >
-            <PopUp checkedIn={this.state.checkedIn} onPopUpSubmit={this.handlePopUpSubmit}/>
+            <PopUp onPopUpSubmit={this.handlePopUpSubmit}/>
           </Modal>
           <div className={classes.events}>{this.renderEventRows()}</div>
           <div ref = {loadingRef => (this.loadingRef = loadingRef)} style={loadingCSS}>

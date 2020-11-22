@@ -1,21 +1,15 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import MenuItem from "@material-ui/core/MenuItem";
-import { withStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import FormLabel from "@material-ui/core/FormLabel";
 import FormControl from "@material-ui/core/FormControl";
-import FormGroup from "@material-ui/core/FormGroup";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import FormHelperText from "@material-ui/core/FormHelperText";
 import Select from "@material-ui/core/Select";
-import Checkbox from "@material-ui/core/Checkbox";
 import Paper from "@material-ui/core/Paper";
-import Input from "@material-ui/core/Input";
-import CompaniesStyles from "../styles/CompaniesForm.js";
-import CardMedia from "@material-ui/core/CardMedia";
+import { withStyles } from "@material-ui/core/styles";
+import EventsFormStyles from "../styles/EventsForm.js";
 
 /* 
  * Constants 
@@ -127,6 +121,7 @@ const EventsForm = props => {
   useEffect(() => {
     const isValid = !fbId || (fbId.length == FB_ID_LEN && isNumeric(fbId));
     setFbIdError(!isValid);
+    console.log(fbIdError)
   }, [fbId])
 
   useEffect(() => {
@@ -180,8 +175,8 @@ const EventsForm = props => {
     // Otherwise, create POST request
     postEvent();
 
-    // TO-DO: prevent redirect
-
+    // Prevent redirect
+    event.preventDefault();
   }
 
   /*
@@ -189,153 +184,198 @@ const EventsForm = props => {
    * form are correct.
    */
   const postEvent = () => {
-    // TO-DO: Create POST request
+    // Define JSON body
+    let body = {
+      event_id: fbId,
+      name: name,
+      starts_at: startTime,
+      ends_at: endTime,
+      period: period,
+      location_id: locationId,
+      description: description,
+      fb_event: fbEvent,
+      picture: picture,
+      is_featured: isFeatured,
+      attendance_code: attendanceCode,
+    };
+    console.log(body);
+    
+    // POST
+    axios
+      .post("/events", body)
+      .then(() => {
+        // Flush input from current form
+        setFbId(false);
+        setName(false);
+        setStartTime(false);
+        setEndTime(false);
+        setAttendanceCode(false);
+        setPeriod(false);
+        setLocationId(false);
+        setDescription(false);
+        setFbEvent(false);
+        setPicture(false);
+        setIsFeatured(false);
+      })
+      .catch(err => {
+        console.log(err)
+      })
   }
-  
+
+  /*
+   * Expand style classes from props.
+   */
+  const { classes } = props;
+
+  /*
+   * HTML output for EventsForm.js
+   */
   return (
-    <Paper>
-      <Typography component="h1" variant="h5">
-        Add Event
-      </Typography>
-      <form onSubmit={handleSubmit}>
-        <TextField
-          error={fbIdError}
-          fullWidth
-          id="fb_id"
-          label = "Facebook ID"
-          margin="normal"
-          onChange={handleChange(EventFields.FB_ID)}
-          placeholder=""
-          required
-          value={fbId || ""}
-        />
-        <TextField
-          error={nameError}
-          fullWidth
-          id="name"
-          label = "Name"
-          margin="normal"
-          onChange={handleChange(EventFields.NAME)}
-          placeholder=""
-          required
-          value={name || ""}
-        />
-        <TextField
-          error={startTimeError}
-          fullWidth
-          id="startTime"
-          label = "Start Time"
-          margin="normal"
-          onChange={handleChange(EventFields.START_TIME)}
-          placeholder=""
-          required
-          value={startTime || ""}
-        />
-        <TextField
-          error={endTimeError}
-          fullWidth
-          id="endTime"
-          label = "End Time"
-          margin="normal"
-          onChange={handleChange(EventFields.END_TIME)}
-          placeholder=""
-          required
-          value={endTime || ""}
-        />
-        <TextField
-          error={attendanceCodeError}
-          fullWidth
-          id="attendanceCode"
-          label = "Attendance Code"
-          margin="normal"
-          onChange={handleChange(EventFields.ATTENDANCE_CODE)}
-          placeholder=""
-          required
-          value={attendanceCode || ""}
-        />
+    <div className={classes.eventsFormContainer}>
+      <Paper className={classes.eventsFormPaper}>
+        <Typography component="h1" variant="h5">
+          Add Event
+        </Typography>
+        <form onSubmit={handleSubmit}>
+          <TextField
+            error={fbIdError}
+            fullWidth
+            id="fb_id"
+            label = "Facebook ID"
+            margin="normal"
+            onChange={handleChange(EventFields.FB_ID)}
+            placeholder=""
+            required
+            value={fbId || ""}
+          />
+          <TextField
+            error={nameError}
+            fullWidth
+            id="name"
+            label = "Name"
+            margin="normal"
+            onChange={handleChange(EventFields.NAME)}
+            placeholder=""
+            required
+            value={name || ""}
+          />
+          <TextField
+            error={startTimeError}
+            fullWidth
+            id="startTime"
+            label = "Start Time"
+            margin="normal"
+            onChange={handleChange(EventFields.START_TIME)}
+            placeholder=""
+            required
+            value={startTime || ""}
+          />
+          <TextField
+            error={endTimeError}
+            fullWidth
+            id="endTime"
+            label = "End Time"
+            margin="normal"
+            onChange={handleChange(EventFields.END_TIME)}
+            placeholder=""
+            required
+            value={endTime || ""}
+          />
+          <TextField
+            error={attendanceCodeError}
+            fullWidth
+            id="attendanceCode"
+            label = "Attendance Code"
+            margin="normal"
+            onChange={handleChange(EventFields.ATTENDANCE_CODE)}
+            placeholder=""
+            required
+            value={attendanceCode || ""}
+          />
 
-        <FormControl>
-          <FormLabel>Period</FormLabel>
-          <Select
-            value={period || ""}
-            onChange={handleChange(EventFields.PERIOD)}
+          <FormControl>
+            <FormLabel>Period</FormLabel>
+            <Select
+              value={period || ""}
+              onChange={handleChange(EventFields.PERIOD)}
+            >
+              <MenuItem value={EventPeriods.FALL_QUARTER}>Fall Quarter</MenuItem>
+              <MenuItem value={EventPeriods.WINTER_BREAK}>Winter Break</MenuItem>
+              <MenuItem value={EventPeriods.WINTER_QUARTER}>Winter Quarter</MenuItem>
+              <MenuItem value={EventPeriods.SPRING_BREAK}>Spring Break</MenuItem>
+              <MenuItem value={EventPeriods.SPRING_QUARTER}>Spring Quarter</MenuItem>
+            </Select>
+          </FormControl>
+
+          <TextField
+            error={locationIdError}
+            fullWidth
+            id="locationID"
+            label = "Location ID"
+            margin="normal"
+            onChange={handleChange(EventFields.LOCATION_ID)}
+            placeholder=""
+            required
+            value={locationId || ""}
+          />
+
+          <TextField
+            fullWidth
+            id="description"
+            label = "Description"
+            margin="normal"
+            onChange={handleChange(EventFields.DESCRIPTION)}
+            placeholder=""
+            required
+            value={description || ""}
+          />
+
+          <TextField
+            error={fbEventError}
+            fullWidth
+            id="fbEvent"
+            label = "Facebook Event"
+            margin="normal"
+            onChange={handleChange(EventFields.FB_EVENT)}
+            placeholder=""
+            required
+            value={fbEvent || ""}
+          />
+
+          {/* TO-DO: Photo upload */}
+          <TextField
+            fullWidth
+            id="picture"
+            label = "Picture"
+            margin="normal"
+            onChange={handleChange(EventFields.PICTURE)}
+            placeholder=""
+            value={picture || ""}
+          />
+
+          <FormControl>
+            <FormLabel>Featured</FormLabel>
+            <Select
+              value={isFeatured || ""}
+              onChange={handleChange(EventFields.IS_FEATURED)}
+            >
+              <MenuItem value="Yes">Yes</MenuItem>
+              <MenuItem value="No">No</MenuItem>
+            </Select>
+          </FormControl>
+
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            color="primary"
           >
-            <MenuItem value={EventPeriods.FALL_QUARTER}>Fall Quarter</MenuItem>
-            <MenuItem value={EventPeriods.WINTER_BREAK}>Winter Break</MenuItem>
-            <MenuItem value={EventPeriods.WINTER_QUARTER}>Winter Quarter</MenuItem>
-            <MenuItem value={EventPeriods.SPRING_BREAK}>Spring Break</MenuItem>
-            <MenuItem value={EventPeriods.SPRING_QUARTER}>Spring Quarter</MenuItem>
-          </Select>
-        </FormControl>
-
-        <TextField
-          error={locationIdError}
-          fullWidth
-          id="locationID"
-          label = "Location ID"
-          margin="normal"
-          onChange={handleChange(EventFields.LOCATION_ID)}
-          placeholder=""
-          required
-          value={locationId || ""}
-        />
-
-        <TextField
-          fullWidth
-          id="description"
-          label = "Description"
-          margin="normal"
-          onChange={handleChange(EventFields.DESCRIPTION)}
-          placeholder=""
-          required
-          value={description || ""}
-        />
-
-        <TextField
-          error={fbEventError}
-          fullWidth
-          id="fbEvent"
-          label = "Facebook Event"
-          margin="normal"
-          onChange={handleChange(EventFields.FB_EVENT)}
-          placeholder=""
-          required
-          value={fbEvent || ""}
-        />
-
-        {/* TO-DO: Photo upload */}
-        <TextField
-          fullWidth
-          id="picture"
-          label = "Picture"
-          margin="normal"
-          onChange={handleChange(EventFields.PICTURE)}
-          placeholder=""
-          value={picture || ""}
-        />
-
-        <FormControl>
-          <FormLabel>Featured</FormLabel>
-          <Select
-            value={isFeatured || ""}
-            onChange={handleChange(EventFields.IS_FEATURED)}
-          >
-            <MenuItem value="Yes">Yes</MenuItem>
-            <MenuItem value="No">No</MenuItem>
-          </Select>
-        </FormControl>
-
-        <Button
-          type="submit"
-          fullWidth
-          variant="contained"
-          color="primary"
-        >
-          Submit Event
-        </Button>
-      </form>
-    </Paper>
+            Submit Event
+          </Button>
+        </form>
+      </Paper>
+    </div>
   )
 }
 
-export default withStyles(CompaniesStyles)(EventsForm);
+export default withStyles(EventsFormStyles)(EventsForm);
