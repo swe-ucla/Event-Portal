@@ -29,8 +29,6 @@ const NavBar = (props) => {
           <Button component={Link} to="/post">POST</Button>
           <Button component={Link} to="/put">PUT</Button>
           <Button component={Link} to="/delete">DELETE</Button>
-          <Button component={Link} to="/companies">Companies</Button>
-          <Button component={Link} to="/companiesform">Companies Form</Button>
           <Button component={Link} to="/companiesadmin">Admin View</Button>
           <Button component={Link} to="/events">EVENTS</Button>
           <Button component={Link} to="/registerbasic">PROFILE</Button>
@@ -55,8 +53,6 @@ const NavBar = (props) => {
           <Button component={Link} to="/put">PUT</Button>
           <Button component={Link} to="/delete">DELETE</Button>
           <Button component={Link} to="/companies">Companies</Button>
-          <Button component={Link} to="/companiesform">Companies Form</Button>
-          <Button component={Link} to="/companiesadmin">Admin View</Button>
           <Button component={Link} to="/events">EVENTS</Button>
           <Button component={Link} to="/registerbasic">PROFILE</Button>
           <Button component={Link} to="/registerEWI">PROFILE(EWI)</Button>
