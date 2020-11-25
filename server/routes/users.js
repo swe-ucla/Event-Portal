@@ -2,17 +2,7 @@
 var express = require('express');
 
 // Session management
-var app = express();
-var session = require('express-session');
-app.set('trust proxy', 1);
-app.use(session({
-  secret: "***",
-  resave: false,
-  saveUninitialized: true,
-}));
-
 var router = express.Router();
-app.use(router);
 
 // Require database file (not node-postgres directly)
 var knex = require('../db/knex');
@@ -621,4 +611,4 @@ router.get('/filter', function(req, res, next) {
   }
 });
 
-module.exports = app;
+module.exports = router;
