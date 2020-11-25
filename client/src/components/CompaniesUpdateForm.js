@@ -206,7 +206,6 @@ class CompaniesForm extends Component {
       .get("/years", options)
       .then(result => {
         let yearsEnum = {};
-        //let majorsChecked = {};
         result.data.forEach(function(year) {
           yearsEnum[year.name] = year.id;
           yearsChecked[year.name] = false;
@@ -217,137 +216,144 @@ class CompaniesForm extends Component {
           years: yearsChecked
         });
        });
-        console.log(this.state.allYears);
+      console.log(this.state.allYears);
     //locations
-      axios
-      .get("/hiringlocations", options)
-      .then(result => {
-        let locationsEnum = {};
-        //let majorsChecked = {};
-        result.data.forEach(function(location) {
-          locationsEnum[location.location] = location.id;
-          locationsChecked[location.location] = false;
-        });
+    axios
+    .get("/hiringlocations", options)
+    .then(result => {
+      let locationsEnum = {};
+      result.data.forEach(function(location) {
+        locationsEnum[location.location] = location.id;
+        locationsChecked[location.location] = false;
+      });
 
-        this.setState({
-          allLocations: locationsEnum,
-          locations: locationsChecked
-        });
-        });
-        console.log(this.state.allLocations);
+      this.setState({
+        allLocations: locationsEnum,
+        locations: locationsChecked
+      });
+      });
+      console.log(this.state.allLocations);
     //majors
     axios
-      .get("/majors", options)
-      .then(result => {
-        let majorsEnum = {};
-        //let majorsChecked = {};
-        result.data.forEach(function(major) {
-          majorsEnum[major.name] = major.id;
-          majorsChecked[major.name] = false;
-        });
+    .get("/majors", options)
+    .then(result => {
+      let majorsEnum = {};
+      result.data.forEach(function(major) {
+        majorsEnum[major.name] = major.id;
+        majorsChecked[major.name] = false;
+      });
 
-        this.setState({
-          allMajors: majorsEnum,
-          majors: majorsChecked
-        });
-        });
-        console.log(this.state.allMajors);
-        //positions
-        axios
-          .get("/positions", options)
-          .then(result => {
-            let positionsEnum = {};
-            result.data.forEach(function(position) {
-              positionsEnum[position.role] = position.id;
-              positionsChecked[position.role] = false;
-            });
-            // maybe skip intermediate state updates
-            this.setState({
-              allPositions: positionsEnum,
-              positions: positionsChecked
-            });
-           });
-            //locations
-            let idToLocation = {};
-            console.log(this.state.allLocations);
-            Object.keys(this.state.allLocations).forEach(key => {
-              console.log(key);
-              idToLocation[this.state.allLocations[key]] = key;
-            });
-            console.log(idToLocation);
-            axios
-              .get("/companies/" + this.props.location.companyid + "/locations")
-              .then(result => {
-                let locs = result.data;
-                console.log(locs);
-                for (let m in locs) {
-                  console.log(locs[m].loc_id);
-                  console.log(idToLocation[locs[m].loc_id]);
-                  locationsChecked[idToLocation[locs[m].loc_id]] = true;
-                }
-                this.setState({
-                  locations: locationsChecked
-                });
-                console.log(this.state.locations);
-                });
-            //years
-                axios
-                  .get(
-                    "/companies/" + this.props.location.companyid + "/years"
-                  )
-                  .then(result => {
-                    let idToYear = {};
-                    console.log(this.state.allYears);
-                    Object.keys(this.state.allYears).forEach(key => {
-                      console.log(key);
-                      idToYear[this.state.allYears[key]] = key;
-                    });
-                    let year = result.data;
-                    for (let p in year) {
-                      yearsChecked[idToYear[year[p].year_id]] = true;
-                    }
+      this.setState({
+        allMajors: majorsEnum,
+        majors: majorsChecked
+      });
+      console.log(this.state.allMajors);
+      axios
+        .get("/positions", options)
+        .then(result => {
+          let positionsEnum = {};
+          result.data.forEach(function(position) {
+            positionsEnum[position.role] = position.id;
+            positionsChecked[position.role] = false;
+          });
+          // maybe skip intermediate state updates
+          this.setState({
+            allPositions: positionsEnum,
+            positions: positionsChecked
+          });
+          let idToMajor = {};
+          console.log(this.state.allMajors);
+          Object.keys(this.state.allMajors).forEach(key => {
+            console.log(key);
+            idToMajor[this.state.allMajors[key]] = key;
+          });
+          console.log(idToMajor);
+          axios
+            .get("/companies/" + this.props.location.companyid + "/majors")
+            .then(result => {
+              let majs = result.data;
+              console.log(majs);
+              for (let m in majs) {
+                console.log(majs[m].major_id);
+                console.log(idToMajor[majs[m].major_id]);
+                majorsChecked[idToMajor[majs[m].major_id]] = true;
+              }
+              this.setState({
+                majors: majorsChecked
+              });
+              console.log(this.state.majors);
+              axios
+                .get(
+                  "/companies/" + this.props.location.companyid + "/positions"
+                )
+                .then(result => {
+                  let idToPosition = {};
+                  console.log(this.state.allPositions);
+                  Object.keys(this.state.allPositions).forEach(key => {
+                    console.log(key);
+                    idToPosition[this.state.allPositions[key]] = key;
                   });
-            //majors
-            let idToMajor = {};
-            console.log(this.state.allMajors);
-            Object.keys(this.state.allMajors).forEach(key => {
-              console.log(key);
-              idToMajor[this.state.allMajors[key]] = key;
-            });
-            console.log(idToMajor);
-            axios
-              .get("/companies/" + this.props.location.companyid + "/majors")
-              .then(result => {
-                let majs = result.data;
-                console.log(majs);
-                for (let m in majs) {
-                  console.log(majs[m].major_id);
-                  console.log(idToMajor[majs[m].major_id]);
-                  majorsChecked[idToMajor[majs[m].major_id]] = true;
-                }
-                this.setState({
-                  majors: majorsChecked
-                });
-                console.log(this.state.majors);
-                });
-                //positions
+                  let pos = result.data;
+                  for (let p in pos) {
+                    positionsChecked[idToPosition[pos[p].position_id]] = true;
+                  }
+                // new field
                 axios
-                  .get(
-                    "/companies/" + this.props.location.companyid + "/positions"
-                  )
-                  .then(result => {
-                    let idToPosition = {};
-                    console.log(this.state.allPositions);
-                    Object.keys(this.state.allPositions).forEach(key => {
-                      console.log(key);
-                      idToPosition[this.state.allPositions[key]] = key;
-                    });
-                    let pos = result.data;
-                    for (let p in pos) {
-                      positionsChecked[idToPosition[pos[p].position_id]] = true;
-                    }
+                .get("/companies/" + this.props.location.companyid + "/locations")
+                .then(result => {
+                  let idToLocation = {};
+                  console.log(this.state.allLocations);
+                  Object.keys(this.state.allLocations).forEach(key => {
+                    console.log(key);
+                    idToLocation[this.state.allLocations[key]] = key;
+                  });
+                  let locs = result.data;
+                  console.log(locs);
+                  for (let m in locs) {
+                    console.log(locs[m].loc_id);
+                    console.log(idToLocation[locs[m].loc_id]);
+                    locationsChecked[idToLocation[locs[m].loc_id]] = true;
+                  }
+                  this.setState({
+                    locations: locationsChecked
+                  });
+                  console.log(this.state.locations);
+                  axios
+                    .get(
+                      "/companies/" + this.props.location.companyid + "/years"
+                    )
+                    .then(result => {
+                      let idToYear = {};
+                      console.log(this.state.allYears);
+                      Object.keys(this.state.allYears).forEach(key => {
+                        console.log(key);
+                        idToYear[this.state.allYears[key]] = key;
+                      });
+                      let year = result.data;
+                      console.log(year);
+                      for (let p in year) {
+                        console.log(year[p]); 
+                        console.log(year[p].years_id);
+                        console.log(idToYear[year[p].years_id]);
+                        console.log(yearsChecked[idToYear[year[p].years_id]]);
+                        yearsChecked[idToYear[year[p].years_id]] = true;
+                      }
+                      this.setState({
+                        years: yearsChecked
+                      });
+                      console.log(yearsChecked)
+                    })
+                    .catch(err => console.log(err));
                   })
-                  .catch(err => console.log(err)); //work on error handling!
+                  .catch(err => console.log(err));
+                })
+                .catch(err => console.log(err)); //work on error handling!
+            })
+            .catch(err => console.log(err));
+        })
+        .catch(err => console.log(err));
+    })
+    .catch(err => console.log(err));
     axios
       .get("/companies/" + this.props.location.companyid + "/id")
       .then(result => {
@@ -369,6 +375,7 @@ class CompaniesForm extends Component {
       })
       .catch(err => console.log(err));
     };
+
   getCompanyData = async () => {
     //invert mapping of enum, yielding mapping from id to name
     let idToMajor = {};
@@ -416,6 +423,7 @@ class CompaniesForm extends Component {
         this.setState({
           majors: majorsChecked
         });
+        console.log("majoRS: \n");
         console.log(this.majors);
       })
       .catch(err => console.log(err));
@@ -518,6 +526,8 @@ class CompaniesForm extends Component {
             allYears: yearsEnum,
             years: yearsChecked
           });
+          console.log(this.state.years);
+          console.log(yearsChecked);
         })
         .catch(err => console.log(err));
       return 1;
