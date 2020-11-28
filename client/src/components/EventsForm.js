@@ -86,10 +86,10 @@ const EventsForm = props => {
         setName(event.target.value);
         break;
       case EventFields.STARTS_AT:
-        setStartTime(event.target.value);
+        setStartsAt(event.target.value);
         break;
       case EventFields.END_TIME:
-        setEndTime(event.target.value);
+        setEndsAt(event.target.value);
         break;
       case EventFields.ATTENDANCE_CODE:
         setAttendanceCode(event.target.value);
@@ -134,12 +134,12 @@ const EventsForm = props => {
       return true // TO-DO: Check timestamp format
     };
 
-    const isStartTimeValid = isValidTime(startTime);
-    const isEndTimeValid = isValidTime(endTime);
+    const isStartsAtValid = isValidTime(startsAt);
+    const isEndsAtValid = isValidTime(endsAt);
 
-    setStartTimeError(!isStartTimeValid);
-    setEndTimeError(!isEndTimeValid);
-  }, [startTime, endTime])
+    setStartsAtError(!isStartsAtValid);
+    setEndsAtError(!isEndsAtValid);
+  }, [startsAt, endsAt])
 
   useEffect(() => {
     const isValid = !attendanceCode || (attendanceCode.length < MAX_ATTENDANCE_CODE_CHARS && isAlphabetic(attendanceCode));
@@ -164,10 +164,10 @@ const EventsForm = props => {
   const handleSubmit = event => {
     // Do not post event if errors exist or a required field has not been
     // properly submitted.
-    if (!fbId || !name || !startTime || !endTime || !attendanceCode ||
+    if (!fbId || !name || !startsAt || !endsAt || !attendanceCode ||
         !period || !locationId || !description || !fbEvent || !picture ||
-        !isFeatured || fbIdError || nameError || startTimeError ||
-        endTimeError || attendanceCodeError || locationIdError ||
+        !isFeatured || fbIdError || nameError || startsAtError ||
+        endsAtError || attendanceCodeError || locationIdError ||
         fbEventError) {
       return
     }
@@ -188,8 +188,8 @@ const EventsForm = props => {
     let body = {
       event_id: fbId,
       name: name,
-      starts_at: startTime,
-      ends_at: endTime,
+      starts_at: startsAt,
+      ends_at: endsAt,
       period: period,
       location_id: locationId,
       description: description,
@@ -207,8 +207,8 @@ const EventsForm = props => {
         // Flush input from current form
         setFbId(false);
         setName(false);
-        setStartTime(false);
-        setEndTime(false);
+        setStartsAt(false);
+        setEndsAt(false);
         setAttendanceCode(false);
         setPeriod(false);
         setLocationId(false);
@@ -260,26 +260,26 @@ const EventsForm = props => {
             value={name || ""}
           />
           <TextField
-            error={startTimeError}
+            error={startsAtError}
             fullWidth
-            id="startTime"
+            id="startsAt"
             label = "Start Time"
             margin="normal"
             onChange={handleChange(EventFields.START_TIME)}
             placeholder=""
             required
-            value={startTime || ""}
+            value={startsAt || ""}
           />
           <TextField
-            error={endTimeError}
+            error={endsAtError}
             fullWidth
-            id="endTime"
+            id="endsAt"
             label = "End Time"
             margin="normal"
             onChange={handleChange(EventFields.END_TIME)}
             placeholder=""
             required
-            value={endTime || ""}
+            value={endsAt || ""}
           />
           <TextField
             error={attendanceCodeError}
