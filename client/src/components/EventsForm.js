@@ -39,8 +39,8 @@ const EventsForm = props => {
    */
   const [fbId, setFbId] = useState(false);
   const [name, setName] = useState(false);
-  const [startTime, setStartTime] = useState(false);
-  const [endTime, setEndTime] = useState(false);
+  const [startsAt, setStartsAt] = useState(false);
+  const [endsAt, setEndsAt] = useState(false);
   const [attendanceCode, setAttendanceCode] = useState(false);
   const [period, setPeriod] = useState(false);
   const [locationId, setLocationId] = useState(false);
@@ -51,8 +51,8 @@ const EventsForm = props => {
 
   const [fbIdError, setFbIdError] = useState(false);
   const [nameError, setNameError] = useState(false);
-  const [startTimeError, setStartTimeError] = useState(false);
-  const [endTimeError, setEndTimeError] = useState(false);
+  const [startsAtError, setStartsAtError] = useState(false);
+  const [endsAtError, setEndsAtError] = useState(false);
   const [attendanceCodeError, setAttendanceCodeError] = useState(false);
   const [locationIdError, setLocationIdError] = useState(false);
   const [fbEventError, setFbEventError] = useState(false);
@@ -85,7 +85,7 @@ const EventsForm = props => {
       case EventFields.NAME:
         setName(event.target.value);
         break;
-      case EventFields.START_TIME:
+      case EventFields.STARTS_AT:
         setStartTime(event.target.value);
         break;
       case EventFields.END_TIME:
