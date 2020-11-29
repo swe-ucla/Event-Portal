@@ -76,7 +76,22 @@ router.get("/websites", function(req, res, next) {
       return next(err);
     });
 });
-
+// GET all company names, interviews
+router.get("/interview", function(req, res, next) {
+  knex("company")
+    .select("name", "interview")
+    .orderBy("name", "asc")
+    .then(result => {
+      if (result.length) {
+        res.json(result);
+      } else {
+        util.throwError(404, "No company on-site interviews found");
+      }
+    })
+    .catch(err => {
+      return next(err);
+    });
+});
 // GET company info by company_id
 router.get("/:company_id/id", function(req, res, next) {
   if (isNaN(req.params.company_id)) {
@@ -136,7 +151,44 @@ router.get("/:company_id/positions", function(req, res, next) {
       return next(err);
     });
 });
-
+//GET all locations a given company is hiring
+router.get("/:company_id/locations", function(req, res, next) {
+  if (isNaN(req.params.company_id)) {
+    util.throwError(400, "Company ID is invalid");
+  }
+  knex("company_hiringlocations")
+    .select()
+    .where({ company_id: req.params.company_id })
+    .then(result => {
+      if (result.length) {
+        res.json(result);
+      } else {
+        util.throwError(404, "No locations found");
+      }
+    })
+    .catch(err => {
+      return next(err);
+    });
+});
+//GET all years a given company is hiring
+router.get("/:company_id/years", function(req, res, next) {
+  if (isNaN(req.params.company_id)) {
+    util.throwError(400, "Company ID is invalid");
+  }
+  knex("company_year")
+    .select()
+    .where({ company_id: req.params.company_id })
+    .then(result => {
+      if (result.length) {
+        res.json(result);
+      } else {
+        util.throwError(404, "No years hiring found");
+      }
+    })
+    .catch(err => {
+      return next(err);
+    });
+});
 // GET all majors a given company is hiring
 router.get("/:company_id/majors", function(req, res, next) {
   if (isNaN(req.params.company_id)) {
@@ -279,13 +331,16 @@ router.post("/", function(req, res, next) {
     website: req.body.website,
     logo: req.body.logo,
     citizenship_requirement: req.body.citizenship_requirement,
-    description: req.body.description
+    description: req.body.description,
+    interview: req.body.interview,
   };
 
   let position_ids = req.body.position_id;
   let major_ids = req.body.major_id;
   let contact_ids = req.body.contact_id;
   let event_ids = req.body.event_id;
+  let loc_ids = req.body.loc_id;
+  let years_ids = req.body.years_id;
 
   let companyPositions = [];
   if (position_ids) {
@@ -308,7 +363,26 @@ router.post("/", function(req, res, next) {
       companyMajors.push({ major_id: major_ids });
     }
   }
-
+  let companyLocations = [];
+  if (loc_ids) {
+    if (Array.isArray(loc_ids)) {
+      loc_ids.forEach(function(element) {
+        companyLocations.push({ loc_id: element });
+      });
+    } else {
+      companyLocations.push({ loc_id: loc_ids });
+    }
+  }
+  let companyYears = [];
+  if (years_ids) {
+    if (Array.isArray(years_ids)) {
+      years_ids.forEach(function(element) {
+        companyYears.push({ years_id: element });
+      });
+    } else {
+      companyYears.push({ years_id: years_ids });
+    }
+  }
   let companyContacts = [];
   if (contact_ids) {
     if (Array.isArray(contact_ids)) {
@@ -355,6 +429,20 @@ router.post("/", function(req, res, next) {
             var queryMajor = knex("company_major").insert(companyMajors);
             await queryMajor.transacting(trx);
           }
+          if (loc_ids) {
+            companyLocations.forEach(function(element) {
+              element.company_id = company_id;
+            });
+            var queryLocations = knex("company_hiringlocations").insert(companyLocations);
+            await queryLocations.transacting(trx);
+          }
+          if(years_ids){
+            companyYears.forEach(function(element) {
+              element.company_id = company_id;
+            });
+            var queryYears = knex("company_year").insert(companyYears);
+            await queryYears.transacting(trx);
+          }
 
           if (contact_ids) {
             companyContacts.forEach(function(element) {
@@ -390,18 +478,25 @@ router.put("/:company_id", function(req, res, next) {
     website: req.body.website,
     logo: req.body.logo,
     citizenship_requirement: req.body.citizenship_requirement,
-    description: req.body.description
+    description: req.body.description,
+    interview: req.body.interview
   };
   let position_ids = req.body.position_id;
   let major_ids = req.body.major_id;
   let contact_ids = req.body.contact_id;
   let event_ids = req.body.event_id;
+  let loc_ids = req.body.loc_id;
+  let years_ids = req.body.years_id;
+
 
   let remove_position_ids = req.body.remove_position_id;
   let remove_major_ids = req.body.remove_major_id;
   let remove_contact_ids = req.body.remove_contact_id;
   let remove_event_ids = req.body.remove_event_id;
+  let remove_loc_ids = req.body.remove_loc_id;
+  let remove_years_ids = req.body.remove_years_id;
   let company_id = req.params.company_id;
+
 
   // insert
 
@@ -434,7 +529,34 @@ router.put("/:company_id", function(req, res, next) {
       [knex("company_major").insert(companyMajors)]
     );
   }
-
+  let companyLocations = [];
+  if (loc_ids) {
+    if (Array.isArray(loc_ids)) {
+      major_ids.forEach(function(element) {
+        companyLocations.push({ company_id: company_id, loc_id: element });
+      });
+    } else {
+      companyLocations = { company_id: company_id, loc_id: loc_ids };
+    }
+    var queryLocations = knex.raw(
+      "? ON CONFLICT (company_id,loc_id) DO NOTHING;",
+      [knex("company_hiringlocations").insert(companyLocations)]
+    );
+  }
+  let companyYears = [];
+  if (years_ids) {
+    if (Array.isArray(years_ids)) {
+      years_ids.forEach(function(element) {
+        companyYears.push({ company_id: company_id, years_id: element });
+      });
+    } else {
+      companyYears = { company_id: company_id, years_id: years_ids };
+    }
+    var queryYears = knex.raw(
+      "? ON CONFLICT (company_id,years_id) DO NOTHING;",
+      [knex("company_year").insert(companyYears)]
+    );
+  }
   let companyContacts = [];
   if (contact_ids) {
     if (Array.isArray(contact_ids)) {
@@ -490,6 +612,36 @@ router.put("/:company_id", function(req, res, next) {
     .andWhere("company_id", company_id)
     .del();
 
+  let removeLocations = [];
+  if (remove_loc_ids) {
+    if (Array.isArray(remove_loc_ids)) {
+      remove_loc_ids.forEach(function(element) {
+        removeLocations.push(element);
+      });
+    } else {
+      removeLocations.push(remove_loc_ids);
+    }
+  }
+  let removeQueryLocations = knex("company_hiringlocations")
+    .whereIn("loc_id", removeLocations)
+    .andWhere("company_id", company_id)
+    .del();
+
+  let removeYears = [];
+  if (remove_years_ids) {
+    if (Array.isArray(remove_years_ids)) {
+      remove_years_ids.forEach(function(element) {
+        removeYears.push(element);
+      });
+    } else {
+      removeYears.push(remove_years_ids);
+    }
+  }
+  let removeQueryYears = knex("company_year")
+    .whereIn("years_id", removeYears)
+    .andWhere("company_id", company_id)
+    .del();
+
   let removeContacts = [];
   if (remove_contact_ids) {
     if (Array.isArray(remove_contact_ids)) {
@@ -531,7 +683,8 @@ router.put("/:company_id", function(req, res, next) {
         req.body.website ||
         req.body.logo ||
         req.body.citizenship_requirement ||
-        req.body.description
+        req.body.description ||
+        req.body.interview
       ) {
         await queryCompany;
       }
@@ -545,6 +698,10 @@ router.put("/:company_id", function(req, res, next) {
 
       if (contact_ids) await queryContact.transacting(trx);
 
+      if (loc_ids) await queryLocations.transacting(trx);
+
+      if (years_ids) await queryYears.transacting(trx);
+
       // remove
       if (remove_position_ids) await removeQueryPos.transacting(trx);
 
@@ -553,6 +710,10 @@ router.put("/:company_id", function(req, res, next) {
       if (remove_contact_ids) await removeQueryContact.transacting(trx);
 
       if (remove_event_ids) await removeQueryEvent.transacting(trx);
+
+      if (remove_loc_ids) await removeQueryLocations.transacting(trx);
+
+      if (remove_years_ids) await removeQueryYears.transacting(trx);
 
       return trx.commit;
     })
