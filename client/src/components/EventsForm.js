@@ -37,6 +37,8 @@ const EventsForm = props => {
   /*
    * State variables
    */
+  const [locationMapping, setLocationMapping] = useState([])
+
   const [fbId, setFbId] = useState(false);
   const [name, setName] = useState(false);
   const [startsAt, setStartsAt] = useState(false);
@@ -115,13 +117,30 @@ const EventsForm = props => {
     }
   }
 
+  /*
+   * Upload the locations mapping one time and save it.
+   */
+  useEffect(() => {
+    axios.get('/locations')
+      .then(result => {
+        // Remove any empty locations
+        let cleanLocations = [];
+        for (const key in result.data) {
+          if (result.data[key].name != null) {
+            cleanLocations.push(result.data[key]);
+          }
+        }
+        setLocationMapping(cleanLocations);
+      })
+      .catch(err => console.log(err));
+  }, [])
+
   /* 
    * Error checking
    */
   useEffect(() => {
     const isValid = !fbId || (fbId.length == FB_ID_LEN && isNumeric(fbId));
     setFbIdError(!isValid);
-    console.log(fbIdError)
   }, [fbId])
 
   useEffect(() => {
@@ -198,7 +217,6 @@ const EventsForm = props => {
       is_featured: isFeatured,
       attendance_code: attendanceCode,
     };
-    console.log(body);
     
     // POST
     axios
@@ -218,7 +236,7 @@ const EventsForm = props => {
         setIsFeatured(false);
       })
       .catch(err => {
-        console.log(err)
+        console.log(err);
       })
   }
 
@@ -307,17 +325,19 @@ const EventsForm = props => {
             </Select>
           </FormControl>
 
-          <TextField
-            error={locationIdError}
-            fullWidth
-            id="locationID"
-            label = "Location ID"
-            margin="normal"
-            onChange={handleChange(EventFields.LOCATION_ID)}
-            placeholder=""
-            required
-            value={locationId || ""}
-          />
+          <FormControl>
+            <FormLabel>Location</FormLabel>
+            <Select 
+              value={locationId || ""}
+              onChange={handleChange(EventFields.LOCATION_ID)}
+            >
+            {
+              locationMapping.map((location, index) => {
+                return <MenuItem key={index} value={location.name}>{location.name}</MenuItem>
+              })
+            }
+            </Select>
+          </FormControl>
 
           <TextField
             fullWidth
