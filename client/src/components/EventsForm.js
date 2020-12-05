@@ -311,33 +311,37 @@ const EventsForm = props => {
             value={attendanceCode || ""}
           />
 
-          <FormControl>
-            <FormLabel>Period</FormLabel>
-            <Select
-              value={period || ""}
-              onChange={handleChange(EventFields.PERIOD)}
-            >
-              <MenuItem value={EventPeriods.FALL_QUARTER}>Fall Quarter</MenuItem>
-              <MenuItem value={EventPeriods.WINTER_BREAK}>Winter Break</MenuItem>
-              <MenuItem value={EventPeriods.WINTER_QUARTER}>Winter Quarter</MenuItem>
-              <MenuItem value={EventPeriods.SPRING_BREAK}>Spring Break</MenuItem>
-              <MenuItem value={EventPeriods.SPRING_QUARTER}>Spring Quarter</MenuItem>
-            </Select>
-          </FormControl>
+          <div>
+            <FormControl>
+              <FormLabel required>Period</FormLabel>
+              <Select
+                value={period || ""}
+                onChange={handleChange(EventFields.PERIOD)}
+              >
+                <MenuItem value={EventPeriods.FALL_QUARTER}>Fall Quarter</MenuItem>
+                <MenuItem value={EventPeriods.WINTER_BREAK}>Winter Break</MenuItem>
+                <MenuItem value={EventPeriods.WINTER_QUARTER}>Winter Quarter</MenuItem>
+                <MenuItem value={EventPeriods.SPRING_BREAK}>Spring Break</MenuItem>
+                <MenuItem value={EventPeriods.SPRING_QUARTER}>Spring Quarter</MenuItem>
+              </Select>
+            </FormControl>
+          </div>
 
-          <FormControl>
-            <FormLabel>Location</FormLabel>
-            <Select 
-              value={locationId || ""}
-              onChange={handleChange(EventFields.LOCATION_ID)}
-            >
-            {
-              locationMapping.map((location, index) => {
-                return <MenuItem key={index} value={location.name}>{location.name}</MenuItem>
-              })
-            }
-            </Select>
-          </FormControl>
+          <div>
+            <FormControl>
+              <FormLabel required>Location</FormLabel>
+              <Select 
+                value={locationId || ""}
+                onChange={handleChange(EventFields.LOCATION_ID)}
+              >
+              {
+                locationMapping.map((location, index) => {
+                  return <MenuItem key={index} value={location.name}>{location.name}</MenuItem>
+                })
+              }
+              </Select>
+            </FormControl>
+          </div>
 
           <TextField
             fullWidth
@@ -374,7 +378,7 @@ const EventsForm = props => {
           />
 
           <FormControl>
-            <FormLabel>Featured</FormLabel>
+            <FormLabel required>Featured</FormLabel>
             <Select
               value={isFeatured || ""}
               onChange={handleChange(EventFields.IS_FEATURED)}
