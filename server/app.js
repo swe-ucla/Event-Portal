@@ -15,6 +15,14 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 
+var session = require('express-session');
+app.set('trust proxy', 1);
+app.use(session({
+  secret: "***",
+  resave: false,
+  saveUninitialized: true,
+}));
+
 // Register API routes in app, REST endpoints
 var routes = require('./routes');
 routes(app)
