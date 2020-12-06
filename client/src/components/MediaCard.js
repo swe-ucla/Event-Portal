@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
@@ -15,7 +16,25 @@ function MediaCard(props) {
   const { classes } = props;
   const [displayDescription, setDisplayDescription] = useState(false);
   const [displayLink, setDisplayLink] = useState(false);
-  const [registered, setRegistered] = useState(false);
+  const [isFavorite, setIsFavorite] = useState(false);
+  const [isRegistered, setIsRegistered] = useState(false);
+
+  /* First render. */
+  useEffect(() => {
+    // Check if event is a favorite event if user is signed in
+    if (props.userID !== false) {
+			axios.get('/users/' + props.userID + '/favorite')
+      .then(result => {
+				for (const i in result.data) {
+					if (result.data[i].event_id == props.event.fb_id) {
+            setIsFavorite(true);
+            break;
+          }
+				}
+      })
+      .catch(err => console.log(err));
+    }
+  }, [])
 
   const getTime = () => {
     /* Get month. */
@@ -76,10 +95,28 @@ function MediaCard(props) {
   }
 
   const handleRegisterClick = () => {
-    setRegistered(!registered);
+    setIsRegistered(!isRegistered);
 
     // TODO: if not logged in, redirect to login page
     // if logged in, just register
+  }
+
+  const handleFavoriteClick = () => {
+    if (props.userID == false) { // not logged in; redirect to login page
+      // TO-DO: redirect to login
+    } else if (isFavorite) { // already favorited; unfavorite event
+      axios.delete('/users/' + props.userID + '/favorite/' + props.event.fb_id)
+      .then(() => {
+        setIsFavorite(false);
+      })
+      .catch(err => console.log(err));
+    } else { // not favorited; favorite event
+      axios.post('/users/' + props.userID + '/favorite/' + props.event.fb_id)
+      .then(() => {
+        setIsFavorite(true);
+      })
+      .catch(err => console.log(err));
+    }
   }
 
   return ( 
@@ -103,8 +140,11 @@ function MediaCard(props) {
       </CardActionArea>
       <Divider className={classes.line}></Divider>
       <CardActions>
-        <Button className={registered ? classes.registeredBtn : classes.registerBtn} size="small" onClick={() => handleRegisterClick()}>
-          {registered ? "Registered" : "Register"}
+        {props.userID && (
+          <Button size="small" onClick={handleFavoriteClick}>{isFavorite ? "Unlike" : "Like"}</Button>
+        )}
+        <Button className={isRegistered ? classes.registeredBtn : classes.registerBtn} size="small" onClick={handleRegisterClick}>
+          {isRegistered ? "Registered" : "Register"}
         </Button>
       </CardActions>
     </Card>

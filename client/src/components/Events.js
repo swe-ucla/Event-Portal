@@ -20,6 +20,7 @@ class Events extends Component {
       prevY: 0,
       popUp: false,
       checkedIn: false,
+      userID: false,
     };
 
     this.getEvents = this.getEvents.bind(this);
@@ -43,6 +44,9 @@ class Events extends Component {
     );
 
     this.observer.observe(this.loadingRef);
+
+    // TO-DO: set USER ID according to session
+    this.setState({ userID: 1 });
   }
 
   componentWillUnmount() {
@@ -208,6 +212,7 @@ class Events extends Component {
             key={start_date}
             events={this.state.eventsByDayArray[start_date]}
             name={this.getFormattedDate(new Date(start_date))}
+            userID={this.state.userID}
           />
         );
         eventRows.push(
