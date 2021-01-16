@@ -27,7 +27,7 @@ import {
 } from '../utils/misc-hooks.js';
 
 function RegisterEWI(props) {
-	const user_id = 2;
+	const user_id = 1;
 	const INITIAL_USER = {
 		first_name: '',
 		last_name: '',
