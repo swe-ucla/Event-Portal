@@ -9,9 +9,6 @@ import Checkout from './components/Checkout.js';
 import ExamplePostForm from './components/ExamplePostForm.js'
 import ExamplePutForm from './components/ExamplePutForm.js'
 import ExampleDeleteForm from './components/ExampleDeleteForm.js'
-
-import Login from './components/Login.js'
-
 import Companies from './components/Companies.js'
 import CompaniesForm from './components/CompaniesForm.js'
 import CompaniesUpdateForm from './components/CompaniesUpdateForm.js'
@@ -23,6 +20,7 @@ import RegisterEWI from './components/RegisterEWI.js';
 import Profile from './components/Profile.js';
 import EditProfile from './components/EditProfile.js';
 import UsersSummary from './components/UsersSummary.js';
+import Login from './components/Login.js';
 
 require('typeface-roboto');
 
@@ -49,8 +47,7 @@ class App extends Component {
   render() {
     return (
       <Router history={history}>
-        <NavBar />
-        <Route path="/login" component={Login} />
+        <NavBar />        
         <Route path="/checkout" component={Checkout} />
         <Route path="/post" component={ExamplePostForm} />
         <Route path="/put" component={ExamplePutForm} />
@@ -64,6 +61,7 @@ class App extends Component {
 				<Route path='/profile' component={Profile} />
 				<Route path='/registerEWI' component={RegisterEWI} />
 				<Route path='/users/admin' component={UsersSummary} />
+        <Route path='/login' component={Login} />
 				<Footer />
       </Router>
     )
