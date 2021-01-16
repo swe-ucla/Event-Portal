@@ -4,6 +4,8 @@
 CREATE DATABASE swedevdb;
 \c swedevdb;
 
+-- CREATE DATABASE swetestdb;
+-- \c swetestdb;
 -- enums: \dT+, DROP TYPE enum_name
 -- VARCHAR Lengths
 -- short: 50, medium: 100, long: 255, very long: 1000
@@ -66,9 +68,10 @@ CREATE TABLE company (
     id SERIAL PRIMARY KEY,
     name VARCHAR (100) UNIQUE NOT NULL,
     website VARCHAR (255) UNIQUE, 
-    logo VARCHAR (255),
+    logo text,
     citizenship_requirement requirement,
     description text,
+    interview requirement,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
@@ -113,6 +116,19 @@ CREATE TABLE major (
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE years (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR (100) UNIQUE NOT NULL,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE hiring_locations(
+    id SERIAL PRIMARY KEY,
+    location VARCHAR (100) UNIQUE NOT NULL,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
 CREATE TABLE company_major (
     company_id INT REFERENCES company(id) ON DELETE CASCADE,
     major_id INT REFERENCES major(id) ON DELETE CASCADE,
@@ -134,6 +150,22 @@ CREATE TABLE company_position (
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (company_id, position_id)
+);
+
+CREATE TABLE company_hiringlocations (
+    company_id INT REFERENCES company(id) ON DELETE CASCADE,
+    loc_id INT REFERENCES hiring_locations(id) ON DELETE CASCADE,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (company_id, loc_id)
+);
+
+CREATE TABLE company_year(
+    company_id INT REFERENCES company(id) ON DELETE CASCADE,
+    years_id INT REFERENCES years(id) ON DELETE CASCADE,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (company_id, years_id)
 );
 
 --
@@ -210,7 +242,13 @@ CREATE TABLE swe_user (
     swe_id VARCHAR (7) UNIQUE DEFAULT NULL,
     gpa VARCHAR (4) DEFAULT NULL,
     is_admin BOOL DEFAULT false,
+    is_national_swe_member BOOL DEFAULT false,
+    is_international BOOL DEFAULT false,
+    additional_diet VARCHAR (255),
+    schedule_conflicts VARCHAR (255),
     last_login_at TIMESTAMP,
+    registered_at TIMESTAMP DEFAULT NULL,
+    payment_made BOOL DEFAULT false,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
@@ -250,7 +288,7 @@ CREATE TABLE event_registration (
 );
 
 -- TODO: associate with event?
-CREATE TYPE preference AS ENUM ('First Choice', 'Second Choice', 'Third Choice');
+CREATE TYPE preference AS ENUM ('First Choice', 'Second Choice', 'Third Choice', 'Fourth Choice', 'Fifth Choice');
 CREATE TABLE user_company_rank (
     user_id INT REFERENCES swe_user(id) ON DELETE CASCADE,
     company_id INT REFERENCES company(id) ON DELETE CASCADE,
@@ -335,6 +373,18 @@ CREATE TRIGGER update_timestamp BEFORE UPDATE
     ON company_position FOR EACH ROW EXECUTE PROCEDURE update_timestamp_column();
 
 CREATE TRIGGER update_timestamp BEFORE UPDATE
+    ON company_hiringlocations FOR EACH ROW EXECUTE PROCEDURE update_timestamp_column();
+
+CREATE TRIGGER update_timestamp BEFORE UPDATE
+    ON company_year FOR EACH ROW EXECUTE PROCEDURE update_timestamp_column();
+
+CREATE TRIGGER update_timestamp BEFORE UPDATE
+    ON years FOR EACH ROW EXECUTE PROCEDURE update_timestamp_column();
+
+CREATE TRIGGER update_timestamp BEFORE UPDATE
+    ON hiring_locations FOR EACH ROW EXECUTE PROCEDURE update_timestamp_column();
+
+CREATE TRIGGER update_timestamp BEFORE UPDATE
     ON contact FOR EACH ROW EXECUTE PROCEDURE update_timestamp_column();
 
 CREATE TRIGGER update_timestamp BEFORE UPDATE
@@ -405,14 +455,19 @@ CREATE TRIGGER update_timestamp BEFORE UPDATE
 \copy major (id,name,ucla_id) FROM '/docker-entrypoint-initdb.d/data/misc/major.csv' DELIMITER ',' CSV HEADER;
 \copy occupation (id,name)  FROM '/docker-entrypoint-initdb.d/data/misc/occupation.csv' DELIMITER ',' CSV HEADER;
 \copy position (id,role) FROM '/docker-entrypoint-initdb.d/data/misc/position.csv' DELIMITER ',' CSV HEADER;
+\copy years(id, name) FROM '/docker-entrypoint-initdb.d/data/misc/years.csv' DELIMITER ',' CSV HEADER;
+\copy hiring_locations(id, location) FROM '/docker-entrypoint-initdb.d/data/misc/hiring_locations.csv' DELIMITER ',' CSV HEADER;
 
-\copy company (id,name,website,logo,citizenship_requirement,description) FROM '/docker-entrypoint-initdb.d/data/company/company.csv' DELIMITER ',' CSV HEADER;
+
+\copy company (id,name,website,logo,citizenship_requirement,description,interview) FROM '/docker-entrypoint-initdb.d/data/company/company.csv' DELIMITER ',' CSV HEADER;
 \copy event (fb_id,name,starts_at,ends_at,attendance_code,period,week,location_id,description,fb_event,picture,is_featured)  FROM '/docker-entrypoint-initdb.d/data/event/event.csv' DELIMITER ',' CSV HEADER;
 \copy swe_user (id,first_name,last_name,password,email,phone,university_id,is_admin)  FROM '/docker-entrypoint-initdb.d/data/user/swe_user.csv' DELIMITER ',' CSV HEADER;
 
 \copy company_contact (company_id,contact_id) FROM '/docker-entrypoint-initdb.d/data/company/company_contact.csv' DELIMITER ',' CSV HEADER;
 \copy company_major (company_id,major_id) FROM '/docker-entrypoint-initdb.d/data/company/company_major.csv' DELIMITER ',' CSV HEADER;
 \copy company_position (company_id,position_id) FROM '/docker-entrypoint-initdb.d/data/company/company_position.csv' DELIMITER ',' CSV HEADER;
+\copy company_hiringlocations (company_id,loc_id) FROM '/docker-entrypoint-initdb.d/data/company/company_hiringlocations.csv' DELIMITER ',' CSV HEADER;
+\copy company_year (company_id,years_id) FROM '/docker-entrypoint-initdb.d/data/company/company_year.csv' DELIMITER ',' CSV HEADER;
 
 \copy event_category (event_id,category_id)  FROM '/docker-entrypoint-initdb.d/data/event/event_category.csv' DELIMITER ',' CSV HEADER;
 \copy event_checkin (event_id,user_id)  FROM '/docker-entrypoint-initdb.d/data/event/event_checkin.csv' DELIMITER ',' CSV HEADER;

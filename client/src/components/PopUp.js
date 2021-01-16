@@ -33,7 +33,7 @@ class PopUp extends Component {
                         Code:
                     </label>
                     <input className={classes.popUpInput} type="text" value={this.state.value} onChange={this.handleChange} />
-                    <button className={classes.submitButton} type="submit">Submit</button>
+                    <button disabled={this.props.checkedIn} className={classes.submitButton} type="submit">Submit</button>
                 </form>
             </div>
         )
