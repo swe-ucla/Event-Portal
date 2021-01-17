@@ -1,5 +1,7 @@
 /* Route Prefix: /users */
 var express = require('express');
+
+// Session management
 var router = express.Router();
 
 // Require database file (not node-postgres directly)
@@ -14,6 +16,29 @@ router.get('/ping', function(req, res, next) {
 // GET all users.
 router.get('/', function(req, res, next) {
   knex('swe_user').select('id')
+    .then(result => {
+      if (result.length) {
+        res.json(result);
+      } else {
+        util.throwError(404, 'No users found');
+      }
+    })
+    .catch(err => { return next(err) });
+});
+
+// Login a user
+router.post('/login', function(req, res, next) {
+  knex('swe_user').select().where({ email: req.body.email, password: req.body.password })
+    .then(function() {
+      req.session.email = req.body.email;
+      res.send(util.message('Successfully logged in user with email: ' + req.body.email));
+    })
+    .catch(err => {return next(err) });
+});
+
+// GET user for current session.
+router.get('/session', function(req, res, next) {
+  knex('swe_user').select('id').where({ email: req.session.email })
     .then(result => {
       if (result.length) {
         res.json(result);
@@ -85,6 +110,12 @@ router.post('/register', function(req, res, next) {
     is_admin: req.body.is_admin,
     swe_id: req.body.swe_id,
     gpa: req.body.gpa,
+    is_national_swe_member: req.body.is_national_swe_member,
+    is_international: req.body.is_international,
+    additional_diet: req.body.additional_diet,
+    schedule_conflicts: req.body.schedule_conflicts,
+    registered_at: req.body.registered_at,
+    payment_made: req.body.payment_made
   }
 
   if (company_ids && ranks) {
@@ -139,16 +170,6 @@ router.post('/register', function(req, res, next) {
   .catch(err => {return next(err) });
 });
 
-
-// Login a user
-router.put('/login', function(req, res, next) {
-  knex('swe_user').where({ email: req.body.email, password: req.body.password })
-    .then(result => {
-      res.send(util.message('Successfully logged in user with email: ' + req.body.email));
-    })
-    .catch(err => { return next(err) });
-});
-
 // GET user info by user_id
 router.get('/:user_id/id', function(req, res, next) {
   if (isNaN(req.params.user_id)) {
@@ -195,7 +216,13 @@ router.put('/:user_id', function(req, res, next) {
     university_id: req.body.university_id,
     is_admin: req.body.is_admin,
     swe_id: req.body.swe_id,
-    gpa: req.body.gpa
+    gpa: req.body.gpa,
+    is_national_swe_member: req.body.is_national_swe_member,
+    is_international: req.body.is_international,
+    additional_diet: req.body.additional_diet,
+    schedule_conflicts: req.body.schedule_conflicts,
+    registered_at: req.body.registered_at,
+    payment_made: req.body.payment_made
   }
 
   let user_id = req.params.user_id;

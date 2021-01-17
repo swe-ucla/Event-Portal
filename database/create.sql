@@ -242,7 +242,13 @@ CREATE TABLE swe_user (
     swe_id VARCHAR (7) UNIQUE DEFAULT NULL,
     gpa VARCHAR (4) DEFAULT NULL,
     is_admin BOOL DEFAULT false,
+    is_national_swe_member BOOL DEFAULT false,
+    is_international BOOL DEFAULT false,
+    additional_diet VARCHAR (255),
+    schedule_conflicts VARCHAR (255),
     last_login_at TIMESTAMP,
+    registered_at TIMESTAMP DEFAULT NULL,
+    payment_made BOOL DEFAULT false,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
@@ -282,7 +288,7 @@ CREATE TABLE event_registration (
 );
 
 -- TODO: associate with event?
-CREATE TYPE preference AS ENUM ('First Choice', 'Second Choice', 'Third Choice');
+CREATE TYPE preference AS ENUM ('First Choice', 'Second Choice', 'Third Choice', 'Fourth Choice', 'Fifth Choice');
 CREATE TABLE user_company_rank (
     user_id INT REFERENCES swe_user(id) ON DELETE CASCADE,
     company_id INT REFERENCES company(id) ON DELETE CASCADE,
