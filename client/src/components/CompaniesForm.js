@@ -51,6 +51,11 @@ class CompaniesForm extends Component {
       console.log("ERROR: fill out Company Name field.");
       return;
     }
+    if (!this.state.website) {
+      // Do not add major if no name specified
+      console.log("ERROR: fill out Company Website field.");
+      return;
+    }
 
     /*
     let allMajors = this.state.allMajors;
@@ -94,6 +99,7 @@ class CompaniesForm extends Component {
       description: this.state.description,
       website: this.state.website,
       citizenship_requirement: this.state.citizenship,
+      interview: this.state.interview,
       major_id: majorIDs,
       position_id: positionIDs
     };
@@ -176,7 +182,7 @@ class CompaniesForm extends Component {
     this.addCompany();
     // Prevent site refresh after submission
     event.preventDefault();
-    this.props.router.push("/companiesadmin");
+    // this.props.router.push("/companiesadmin");
   };
 
   handleChange = name => event => {
@@ -266,6 +272,7 @@ class CompaniesForm extends Component {
               margin="normal"
             />
             <TextField
+              required
               fullWidth
               id="website"
               label="Company Website"

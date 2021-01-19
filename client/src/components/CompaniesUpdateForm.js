@@ -102,6 +102,11 @@ class CompaniesForm extends Component {
       console.log("ERROR: fill out Company Name field.");
       return;
     }
+    if (!this.state.website) {
+      // Do not add major if no name specified
+      console.log("ERROR: fill out Company Website field.");
+      return;
+    }
 
     let majorIDs = [];
     let removeMajorIDs = [];
@@ -569,7 +574,7 @@ class CompaniesForm extends Component {
   render() {
     const { classes } = this.props;
     const { citizenship_requirement } = this.state.citizenship;
-    const {onsite_interview} = this.state.interview;
+    // const {onsite_interview} = this.state.interview;
     //const error = [check1, check2, check3].filter(v => v).length !== 2;
     const allMajors = this.state.allMajors;
     const majors = this.state.majors;
@@ -644,7 +649,7 @@ const yearChecks = Object.getOwnPropertyNames(years).map(elem => {
       <main className={classes.main}>
         <Paper className={classes.paper}>
           <Typography component="h1" variant="h5">
-            Add Company
+            Update Company
           </Typography>
           <form className={classes.form} onSubmit={this.handleSubmit}>
             <TextField
@@ -659,6 +664,7 @@ const yearChecks = Object.getOwnPropertyNames(years).map(elem => {
               margin="normal"
             />
             <TextField
+              required
               fullWidth
               id="website"
               label="Company Website"
