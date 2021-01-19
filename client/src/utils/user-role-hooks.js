@@ -8,7 +8,7 @@ export const useAdmin = initialState => {
 		//axios.get('/users/session')
 		//.then(result => {
 			//result.data.forEach(function(user) {
-				axios.get('/users/'+ 3 + '/id')
+				axios.get('/users/'+ 1 + '/id')
 					.then(result => {
 						result.data.forEach(function(user) {
 							setAdmin(user.is_admin)
@@ -37,7 +37,7 @@ export const useUserId = initialState => {
 		//axios.get('/users/session')
 		//.then(result => {
 			//result.data.forEach(function(user) {
-				axios.get('/users/'+ 3 + '/id')
+				axios.get('/users/'+ 1 + '/id')
 					.then(result => {
 						result.data.forEach(function(user) {
 							setUserId(user.id)

@@ -181,6 +181,7 @@ class CompaniesForm extends Component {
       .put("/companies/" + this.props.location.companyid, body)
       .then(result => {
         // any post submission handling (maybe a confirmation message?)
+        console.log(body)
       })
       .catch(err => {
         // TODO: use user-friendly error message

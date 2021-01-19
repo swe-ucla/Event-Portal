@@ -485,18 +485,19 @@ router.put("/:company_id", function(req, res, next) {
   let major_ids = req.body.major_id;
   let contact_ids = req.body.contact_id;
   let event_ids = req.body.event_id;
-  let loc_ids = req.body.loc_id;
-  let years_ids = req.body.years_id;
+  let loc_ids = req.body.location_id;
+  let years_ids = req.body.year_id;
 
 
   let remove_position_ids = req.body.remove_position_id;
   let remove_major_ids = req.body.remove_major_id;
   let remove_contact_ids = req.body.remove_contact_id;
   let remove_event_ids = req.body.remove_event_id;
-  let remove_loc_ids = req.body.remove_loc_id;
-  let remove_years_ids = req.body.remove_years_id;
+  let remove_loc_ids = req.body.remove_location_id;
+  let remove_years_ids = req.body.remove_year_id;
   let company_id = req.params.company_id;
 
+  console.log(req)
 
   // insert
 
@@ -532,7 +533,7 @@ router.put("/:company_id", function(req, res, next) {
   let companyLocations = [];
   if (loc_ids) {
     if (Array.isArray(loc_ids)) {
-      major_ids.forEach(function(element) {
+      loc_ids.forEach(function(element) {
         companyLocations.push({ company_id: company_id, loc_id: element });
       });
     } else {
