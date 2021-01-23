@@ -1,5 +1,7 @@
 /* Route Prefix: /users */
 var express = require('express');
+
+// Session management
 var router = express.Router();
 
 // Require database file (not node-postgres directly)
@@ -14,6 +16,29 @@ router.get('/ping', function(req, res, next) {
 // GET all users.
 router.get('/', function(req, res, next) {
   knex('swe_user').select('id')
+    .then(result => {
+      if (result.length) {
+        res.json(result);
+      } else {
+        util.throwError(404, 'No users found');
+      }
+    })
+    .catch(err => { return next(err) });
+});
+
+// Login a user
+router.post('/login', function(req, res, next) {
+  knex('swe_user').select().where({ email: req.body.email, password: req.body.password })
+    .then(function() {
+      req.session.email = req.body.email;
+      res.send(util.message('Successfully logged in user with email: ' + req.body.email));
+    })
+    .catch(err => {return next(err) });
+});
+
+// GET user for current session.
+router.get('/session', function(req, res, next) {
+  knex('swe_user').select('id').where({ email: req.session.email })
     .then(result => {
       if (result.length) {
         res.json(result);
@@ -72,7 +97,8 @@ router.post('/register', function(req, res, next) {
   let company_ids = req.body.company_id;
   let major_ids = req.body.major_id;
   let ranks = req.body.rank;
-  let company_rank_values = []
+  let swe_id = req.body.swe_id;
+  let gpa = req.body.gpa;
 
   values = {
     first_name: req.body.first_name,
@@ -87,7 +113,9 @@ router.post('/register', function(req, res, next) {
     is_national_swe_member: req.body.is_national_swe_member,
     is_international: req.body.is_international,
     additional_diet: req.body.additional_diet,
-    schedule_conflicts: req.body.schedule_conflicts
+    schedule_conflicts: req.body.schedule_conflicts,
+    registered_at: req.body.registered_at,
+    payment_made: req.body.payment_made
   }
 
   if (company_ids && ranks) {
@@ -142,16 +170,6 @@ router.post('/register', function(req, res, next) {
   .catch(err => {return next(err) });
 });
 
-
-// Login a user
-router.put('/login', function(req, res, next) {
-  knex('swe_user').where({ email: req.body.email, password: req.body.password })
-    .then(result => {
-      res.send(util.message('Successfully logged in user with email: ' + req.body.email));
-    })
-    .catch(err => { return next(err) });
-});
-
 // GET user info by user_id
 router.get('/:user_id/id', function(req, res, next) {
   if (isNaN(req.params.user_id)) {
@@ -202,7 +220,9 @@ router.put('/:user_id', function(req, res, next) {
     is_national_swe_member: req.body.is_national_swe_member,
     is_international: req.body.is_international,
     additional_diet: req.body.additional_diet,
-    schedule_conflicts: req.body.schedule_conflicts
+    schedule_conflicts: req.body.schedule_conflicts,
+    registered_at: req.body.registered_at,
+    payment_made: req.body.payment_made
   }
 
   let user_id = req.params.user_id;
@@ -211,12 +231,12 @@ router.put('/:user_id', function(req, res, next) {
   let position_ids = req.body.position_ids;
   let major_ids = req.body.major_ids;
   let company_ids = req.body.company_ids;
+  let ranks = req.body.ranks;
 
   let remove_diet_ids = [];
   let remove_occupation_ids = [];
   let remove_position_ids = [];
   let remove_major_ids = [];
-  let insert_company_ids = [];
   let remove_company_ids = [];
 
   if (diet_ids) {
@@ -276,7 +296,6 @@ router.put('/:user_id', function(req, res, next) {
       element.user_id = user_id;
       remove_major_ids.push([ user_id, element.major_id ]); 
     })
-
     if (major_ids.length > 0) {
       var query_major = knex.raw(
         '? ON CONFLICT (user_id,major_id) DO NOTHING;', [knex('user_major').insert(major_ids)],
@@ -285,10 +304,11 @@ router.put('/:user_id', function(req, res, next) {
     var query_remove_major = knex('user_major').del().where('user_id', user_id).whereNotIn(['user_id', 'major_id'], remove_major_ids);
   } 
 
-  if (company_ids) {
-      company_ids.forEach(function(element) {
+  if (company_ids && ranks) {
+      company_ids.forEach(function(element, i) {
+        element.rank = ranks[i];
         element.user_id = user_id;
-        remove_company_ids.push([ user_id, element.company_id, element.rank ])
+        remove_company_ids.push([ user_id, element, ranks[i] ])
       });
     if (company_ids.length > 0) {
       var query_company = knex.raw(
@@ -308,11 +328,7 @@ router.put('/:user_id', function(req, res, next) {
          req.body.university_id || 
          req.body.is_admin ||
          req.body.swe_id || 
-         req.body.gpa ||
-         req.body.is_international ||
-         req.body.is_national_swe_member ||
-         req.body.additional_diet ||
-         req.body.schedule_conflicts) {
+         req.body.gpa) {
       await query_user;
     }
 

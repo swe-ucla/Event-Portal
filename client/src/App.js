@@ -21,6 +21,7 @@ import RegisterEWI from './components/RegisterEWI.js';
 import Profile from './components/Profile.js';
 import EditProfile from './components/EditProfile.js';
 import UsersSummary from './components/UsersSummary.js';
+import Login from './components/Login.js';
 
 require('typeface-roboto');
 
@@ -62,6 +63,7 @@ class App extends Component {
 				<Route path='/profile' component={Profile} />
 				<Route path='/registerEWI' component={RegisterEWI} />
 				<Route path='/users/admin' component={UsersSummary} />
+        <Route path='/login' component={Login} />
 				<Footer />
       </Router>
     )

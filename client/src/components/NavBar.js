@@ -8,12 +8,13 @@ import Typography from '@material-ui/core/Typography'
 import { withStyles } from '@material-ui/core/styles'
 
 import NavBarStyles from '../styles/NavBar.js'
+import { useAdmin } from '../utils/user-role-hooks.js';
 
 const NavBar = (props) => {
   const { classes } = props;
 
   // GET information on whether current user is an admin
-  const admin = true; // Change when sessions is fixed
+  const { admin } = useAdmin({});
 
   if (admin) {
     return(
