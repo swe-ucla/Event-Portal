@@ -34,6 +34,16 @@ const EventsStyles = theme => ({
 	line: {
 		marginTop: '30px',
 		marginBottom: '40px',
+	},
+	modalStyle: {
+		position:'absolute',
+    overflow:'scroll',
+    height:'100%',
+    display:'block'
+	},
+	previousCheckInCloseButton: {
+		padding: '1em',
+		fontSize: '1em',
 	}
 });
 

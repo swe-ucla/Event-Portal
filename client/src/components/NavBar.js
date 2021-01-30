@@ -13,10 +13,11 @@ import { useAdmin } from '../utils/user-role-hooks.js';
 const NavBar = (props) => {
   const { classes } = props;
 
+  // TO-DO: Fix after sessions is resolved
   // GET information on whether current user is an admin
-  const { admin } = useAdmin({});
+  const { admin } = useAdmin({}); 
 
-  if (admin) {
+  if (true) {
     return(
       <div>
       <AppBar position="static" color="default" className={classes.appBar}>
