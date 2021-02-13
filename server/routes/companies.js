@@ -326,6 +326,7 @@ router.get("/filter", function(req, res, next) {
 
 // Add a single company or related data
 router.post("/", function(req, res, next) {
+  console.log(req.body)
   values = {
     name: req.body.name,
     website: req.body.website,
@@ -339,8 +340,8 @@ router.post("/", function(req, res, next) {
   let major_ids = req.body.major_id;
   let contact_ids = req.body.contact_id;
   let event_ids = req.body.event_id;
-  let loc_ids = req.body.loc_id;
-  let years_ids = req.body.years_id;
+  let loc_ids = req.body.location_id;
+  let years_ids = req.body.year_id;
 
   let companyPositions = [];
   if (position_ids) {

@@ -121,6 +121,19 @@ class CompaniesForm extends Component {
         }
       }
     }
+    console.log(majors); 
+    if (majorIDs.length > 0 && !removeMajorIDs.includes(13))
+      removeMajorIDs.push(13); // hardcoded ID for "Undeclared Engineering"
+    if (majorIDs.length == 0)
+      {
+        majorIDs.push(13); 
+        removeMajorIDs.pop(); // remove last item, 13, from the "removeID" array
+      }
+    // if item is in both arrays, "add" takes precedence
+    if (majorIDs.includes(13) && removeMajorIDs.includes(13))
+      removeMajorIDs.pop();
+    console.log(majorIDs)
+    console.log(removeMajorIDs)
 
     let positionIDs = [];
     let removePositionIDs = [];
@@ -135,6 +148,19 @@ class CompaniesForm extends Component {
         }
       }
     }
+    console.log(positions); 
+    if (positionIDs.length > 0 && !removePositionIDs.includes(4))
+      removePositionIDs.push(4); // hardcoded ID for "Undecided"
+    if (positionIDs.length == 0)
+    {
+      positionIDs.push(4);
+      removePositionIDs.pop(); // remove last item, 4
+    }
+    // if item is in both arrays, "add" takes precedence
+    if (positionIDs.includes(4) && removePositionIDs.includes(4))
+      removePositionIDs.pop();
+    console.log(positionIDs)
+    console.log(removePositionIDs)
 
     let yearIDs = [];
     let removeYearIDs = [];
@@ -149,6 +175,19 @@ class CompaniesForm extends Component {
         }
       }
     }
+    console.log(years); 
+    if (yearIDs.length > 0 && !removeYearIDs.includes(6))
+      removeYearIDs.push(6); // hardcoded ID for "Undecided"
+    if (yearIDs.length == 0)
+    {
+      yearIDs.push(6); 
+      removeYearIDs.pop(); // remove last item, 6
+    }
+    // if item is in both arrays, "add" takes precedence
+    if (yearIDs.includes(6) && removeYearIDs.includes(6))
+      removeYearIDs.pop();
+    console.log(yearIDs)
+    console.log(removeYearIDs)
 
     let locationIDs = [];
     let removeLocationIDs = [];
@@ -163,6 +202,19 @@ class CompaniesForm extends Component {
         }
       }
     }
+    console.log(locations); 
+    if (locationIDs.length > 0 && !removeLocationIDs.includes(5))
+      removeLocationIDs.push(5); // hardcoded ID for "Undecided"
+    if (locationIDs.length == 0)
+    {  
+      locationIDs.push(5); 
+      removeLocationIDs.pop(); // remove last item
+    }
+    // if item is in both arrays, "add" takes precedence
+    if (locationIDs.includes(5) && removeLocationIDs.includes(5))
+      removeLocationIDs.pop();
+    console.log(locationIDs)
+    console.log(removeLocationIDs)
 
     let body = {
       name: this.state.name,
@@ -382,162 +434,162 @@ class CompaniesForm extends Component {
       .catch(err => console.log(err));
     };
 
-  getCompanyData = async () => {
-    //invert mapping of enum, yielding mapping from id to name
-    let idToMajor = {};
-    console.log(this.state.allMajors);
-    Object.keys(this.state.allMajors).forEach(key => {
-      console.log(key);
-      idToMajor[this.state.allMajors[key]] = key;
-    });
-    console.log(idToMajor);
+  // getCompanyData = async () => {
+  //   //invert mapping of enum, yielding mapping from id to name
+  //   let idToMajor = {};
+  //   console.log(this.state.allMajors);
+  //   Object.keys(this.state.allMajors).forEach(key => {
+  //     console.log(key);
+  //     idToMajor[this.state.allMajors[key]] = key;
+  //   });
+  //   console.log(idToMajor);
 
-    axios
-      .get("/companies/" + this.props.location.companyid + "/id") // "/companies/1/id"
-      .then(result => {
-        let nam = result.data[0].name;
-        let log = result.data[0].logo;
-        let web = result.data[0].website;
-        let desc = result.data[0].description;
-        let cit_req = result.data[0].citizenship_requirement;
-        let interv = result.data[0].interview;
-        console.log(nam);
-        this.setState({
-          name: nam,
-          logo: log,
-          description: desc,
-          website: web,
-          citizenship: cit_req,
-          interview: interv,
-        });
-      })
-      .catch(err => console.log(err));
-    axios
-      .get("/companies/" + this.props.location.companyid + "majors") ///companies/1/majors
-      .then(result => {
-        let majs = result.data;
-        let majorsChecked = {};
-        console.log(majs);
-        for (let am in this.state.allMajors) {
-          majorsChecked[idToMajor[am.major_id]] = false;
-        }
-        for (let m in majs) {
-          console.log(majs[m].major_id);
-          console.log(idToMajor[majs[m].major_id]);
-          majorsChecked[idToMajor[majs[m].major_id]] = true;
-        }
-        this.setState({
-          majors: majorsChecked
-        });
-        console.log("majoRS: \n");
-        console.log(this.majors);
-      })
-      .catch(err => console.log(err));
-    //majorsChecked[major.name] = false;
-    return 1;
-  };
+  //   axios
+  //     .get("/companies/" + this.props.location.companyid + "/id") // "/companies/1/id"
+  //     .then(result => {
+  //       let nam = result.data[0].name;
+  //       let log = result.data[0].logo;
+  //       let web = result.data[0].website;
+  //       let desc = result.data[0].description;
+  //       let cit_req = result.data[0].citizenship_requirement;
+  //       let interv = result.data[0].interview;
+  //       console.log(nam);
+  //       this.setState({
+  //         name: nam,
+  //         logo: log,
+  //         description: desc,
+  //         website: web,
+  //         citizenship: cit_req,
+  //         interview: interv,
+  //       });
+  //     })
+  //     .catch(err => console.log(err));
+  //   axios
+  //     .get("/companies/" + this.props.location.companyid + "/majors") ///companies/1/majors
+  //     .then(result => {
+  //       let majs = result.data;
+  //       let majorsChecked = {};
+  //       console.log(majs);
+  //       for (let am in this.state.allMajors) {
+  //         majorsChecked[idToMajor[am.major_id]] = false;
+  //       }
+  //       for (let m in majs) {
+  //         console.log(majs[m].major_id);
+  //         console.log(idToMajor[majs[m].major_id]);
+  //         majorsChecked[idToMajor[majs[m].major_id]] = true;
+  //       }
+  //       this.setState({
+  //         majors: majorsChecked
+  //       });
+  //       console.log("majoRS: \n");
+  //       console.log(this.majors);
+  //     })
+  //     .catch(err => console.log(err));
+  //   //majorsChecked[major.name] = false;
+  //   return 1;
+  // };
 
-  getAllMajors = async () => {
-    var options = {
-      params: {
-        sort: "id"
-      }
-    };
-    axios
-      .get("/majors", options)
-      .then(result => {
-        let majorsEnum = {};
-        let majorsChecked = {};
-        result.data.forEach(function(major) {
-          majorsEnum[major.name] = major.id;
-          majorsChecked[major.name] = false;
-        });
+  // getAllMajors = async () => {
+  //   var options = {
+  //     params: {
+  //       sort: "id"
+  //     }
+  //   };
+  //   axios
+  //     .get("/companies/" + this.props.location.companyid + "/majors", options)
+  //     .then(result => {
+  //       let majorsEnum = {};
+  //       let majorsChecked = {};
+  //       result.data.forEach(function(major) {
+  //         majorsEnum[major.name] = major.id;
+  //         majorsChecked[major.name] = false;
+  //       });
 
-        this.setState({
-          allMajors: majorsEnum,
-          majors: majorsChecked
-        });
-        console.log(this.state.allMajors);
-      })
-      .catch(err => console.log(err));
-    return 1;
-  };
+  //       this.setState({
+  //         allMajors: majorsEnum,
+  //         majors: majorsChecked
+  //       });
+  //       console.log(this.state.allMajors);
+  //     })
+  //     .catch(err => console.log(err));
+  //   return 1;
+  // };
 
-  getAllPositions = async () => {
-    var options = {
-      params: {
-        sort: "id"
-      }
-    };
-    axios
-      .get("/positions", options)
-      .then(result => {
-        let positionsEnum = {};
-        let positionsChecked = {};
-        result.data.forEach(function(position) {
-          positionsEnum[position.role] = position.id;
-          positionsChecked[position.role] = false;
-        });
+  // getAllPositions = async () => {
+  //   var options = {
+  //     params: {
+  //       sort: "id"
+  //     }
+  //   };
+  //   axios
+  //     .get("/companies/" + this.props.location.companyid + "/positions", options)
+  //     .then(result => {
+  //       let positionsEnum = {};
+  //       let positionsChecked = {};
+  //       result.data.forEach(function(position) {
+  //         positionsEnum[position.role] = position.id;
+  //         positionsChecked[position.role] = false;
+  //       });
 
-        this.setState({
-          allPositions: positionsEnum,
-          positions: positionsChecked
-        });
-      })
-      .catch(err => console.log(err));
-    return 1;
-  };
+  //       this.setState({
+  //         allPositions: positionsEnum,
+  //         positions: positionsChecked
+  //       });
+  //     })
+  //     .catch(err => console.log(err));
+  //   return 1;
+  // };
 
-  getAllLocations = async () => {
-    var options = {
-      params: {
-        sort: "id"
-      }
-    };
-    axios
-      .get("/hiringlocations", options)
-      .then(result => {
-        let locationsEnum = {};
-        let locationsChecked = {};
-        result.data.forEach(function(location) {
-          locationsEnum[location.location] = location.id;
-          locationsChecked[location.location] = false;
-        });
+  // getAllLocations = async () => {
+  //   var options = {
+  //     params: {
+  //       sort: "id"
+  //     }
+  //   };
+  //   axios
+  //     .get("/hiringlocations", options)
+  //     .then(result => {
+  //       let locationsEnum = {};
+  //       let locationsChecked = {};
+  //       result.data.forEach(function(location) {
+  //         locationsEnum[location.location] = location.id;
+  //         locationsChecked[location.location] = false;
+  //       });
 
-        this.setState({
-          allLocations: locationsEnum,
-          locations: locationsChecked
-        });
-      })
-      .catch(err => console.log(err));
-    return 1;
-  };
-   getAllYears = async () => {
-      var options = {
-        params: {
-          sort: "id"
-        }
-      };
-      axios
-        .get("/years", options)
-        .then(result => {
-          let yearsEnum = {};
-          let yearsChecked = {};
-          result.data.forEach(function(year) {
-            yearsEnum[year.name] = year.id;
-            yearsChecked[year.name] = false;
-          });
+  //       this.setState({
+  //         allLocations: locationsEnum,
+  //         locations: locationsChecked
+  //       });
+  //     })
+  //     .catch(err => console.log(err));
+  //   return 1;
+  // };
+  //  getAllYears = async () => {
+  //     var options = {
+  //       params: {
+  //         sort: "id"
+  //       }
+  //     };
+  //     axios
+  //       .get("/years", options)
+  //       .then(result => {
+  //         let yearsEnum = {};
+  //         let yearsChecked = {};
+  //         result.data.forEach(function(year) {
+  //           yearsEnum[year.name] = year.id;
+  //           yearsChecked[year.name] = false;
+  //         });
 
-          this.setState({
-            allYears: yearsEnum,
-            years: yearsChecked
-          });
-          console.log(this.state.years);
-          console.log(yearsChecked);
-        })
-        .catch(err => console.log(err));
-      return 1;
-    };
+  //         this.setState({
+  //           allYears: yearsEnum,
+  //           years: yearsChecked
+  //         });
+  //         console.log(this.state.years);
+  //         console.log(yearsChecked);
+  //       })
+  //       .catch(err => console.log(err));
+  //     return 1;
+  //   };
 
   handleSubmit = event => {
     this.changeCompany();
@@ -586,6 +638,7 @@ class CompaniesForm extends Component {
     const years = this.state.years;
 
     const majorChecks = Object.getOwnPropertyNames(majors).map(elem => {
+      if (elem !== "Undeclared Engineering")
       return (
         <FormControlLabel
           control={
@@ -601,22 +654,24 @@ class CompaniesForm extends Component {
     });
 
     const locationChecks = Object.getOwnPropertyNames(locations).map(elem => {
-          return (
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={locations[elem]}
-                  onChange={this.handleCheckChange("locations")}
-                  value={elem}
-                />
-              }
-              label={elem}
-            />
-          );
-        });
+      if (elem !== "Undecided")    
+      return (
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={locations[elem]}
+                onChange={this.handleCheckChange("locations")}
+                value={elem}
+              />
+            }
+            label={elem}
+          />
+        );
+      });
 
 const yearChecks = Object.getOwnPropertyNames(years).map(elem => {
-      return (
+  if (elem !== "All")   
+  return (
         <FormControlLabel
           control={
             <Checkbox
@@ -631,6 +686,7 @@ const yearChecks = Object.getOwnPropertyNames(years).map(elem => {
     });
 
     const positionChecks = Object.getOwnPropertyNames(positions).map(elem => {
+      if (elem !== "Undecided")
       return (
         <FormControlLabel
           control={
