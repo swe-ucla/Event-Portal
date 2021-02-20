@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="BranchesTreeState">
     <expand>
       <path>
@@ -50,8 +53,8 @@
   <component name="ChangeListManager">
     <list default="true" id="a79a745b-6036-4cc2-b10a-2411a862e6ff" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/components/CompaniesForm.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/CompaniesForm.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/components/CompaniesUpdateForm.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/CompaniesUpdateForm.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/database/data/company/company.csv" beforeDir="false" afterPath="$PROJECT_DIR$/database/data/company/company.csv" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -99,9 +102,10 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="512" y="404" width="670" height="676" key="search.everywhere.popup" timestamp="1610850073894">
-      <screen x="0" y="23" width="3360" height="1338" />
+    <state x="512" y="404" width="670" height="673" key="search.everywhere.popup" timestamp="1613790009072">
+      <screen x="0" y="25" width="3360" height="1331" />
     </state>
     <state x="512" y="404" width="670" height="676" key="search.everywhere.popup/0.23.3360.1338@0.23.3360.1338" timestamp="1610850073894" />
+    <state x="512" y="404" width="670" height="673" key="search.everywhere.popup/0.25.3360.1331@0.25.3360.1331" timestamp="1613790009072" />
   </component>
 </project>

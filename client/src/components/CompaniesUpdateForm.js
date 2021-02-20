@@ -458,20 +458,21 @@ class CompaniesForm extends Component {
     });
 
     const locationChecks = Object.getOwnPropertyNames(locations).map(elem => {
-      if (elem !== "Undecided")    
-      return (
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={locations[elem]}
-                onChange={this.handleCheckChange("locations")}
-                value={elem}
+      if (elem !== "Undecided"){
+          return (
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={locations[elem]}
+                    onChange={this.handleCheckChange("locations")}
+                    value={elem}
+                  />
+                }
+                label={elem}
               />
-            }
-            label={elem}
-          />
-        );
-      });
+            );
+       }
+     });
 
 const yearChecks = Object.getOwnPropertyNames(years).map(elem => {
   if (elem !== "All")   
