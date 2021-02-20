@@ -49,9 +49,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a79a745b-6036-4cc2-b10a-2411a862e6ff" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/components/CompaniesForm.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/CompaniesForm.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/data/misc/hiring_locations.csv" beforeDir="false" afterPath="$PROJECT_DIR$/database/data/misc/hiring_locations.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/data/misc/position.csv" beforeDir="false" afterPath="$PROJECT_DIR$/database/data/misc/position.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/components/CompaniesUpdateForm.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/CompaniesUpdateForm.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

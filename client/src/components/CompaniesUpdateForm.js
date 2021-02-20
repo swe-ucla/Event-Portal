@@ -16,7 +16,7 @@ import Paper from "@material-ui/core/Paper";
 import Input from "@material-ui/core/Input";
 import CompaniesStyles from "../styles/CompaniesForm.js";
 import CardMedia from "@material-ui/core/CardMedia";
-
+import { withRouter } from 'react-router';
 
 class CompaniesForm extends Component {
   constructor() {
@@ -38,7 +38,8 @@ class CompaniesForm extends Component {
       allMajors: {},
       allPositions: {},
       allYears: {},
-      allLocations: {}
+      allLocations: {},
+      redirect: false,
     };
     //   const [citizenship, setCitizen] = React.useState(''),
 
@@ -46,51 +47,6 @@ class CompaniesForm extends Component {
   }
 
   async componentDidMount() {
-    //console.log("1")
-    // let response1 = await this.getAllMajors();
-    // //console.log("2")
-    // let response2 = await this.getAllPositions();
-    // //console.log("3")
-    // let response3 = await this.getCompanyData();
-    // let fulfill1 = this.getAllMajors()
-    // let fulfill2 = this.getAllPositions();
-    // let fulfill3 = this.getCompanyData();
-    // new Promise(function(fulfill1, reject){
-    //     //do something for 5 seconds
-    //     fulfill1();
-    // }).then(function(result){
-    //     return new Promise(function(fulfill2, reject){
-    //         //do something for 5 seconds
-    //         fulfill2();
-    //     });
-    // }).then(function(result){
-    //     return new Promise(function(fulfill3, reject){
-    //         //do something for 8 seconds
-    //         fulfill3();
-    //         //fulfill(result);
-    //     });
-    // }).then(function(result){
-    //     //do something with the result
-    // });
-    // this.getAllMajors().then(function() {
-    //   this.getAllPositions().then(function() {
-    //     this.getCompanyData();
-    //   })
-    // })
-    // this.getAllMajors(function() {
-    //   this.getAllPositions(function() {
-    //     this.getCompanyData(function() {
-    //       //work?
-    //     });
-    //   });
-    // });
-    /*some_3secs_function(some_value, function() {
-  some_5secs_function(other_value, function() {
-    some_8secs_function(third_value, function() {
-      //All three functions have completed, in order.
-    });
-  });
-});*/
     this.getEverything();
   }
 
@@ -433,168 +389,11 @@ class CompaniesForm extends Component {
       })
       .catch(err => console.log(err));
     };
-
-  // getCompanyData = async () => {
-  //   //invert mapping of enum, yielding mapping from id to name
-  //   let idToMajor = {};
-  //   console.log(this.state.allMajors);
-  //   Object.keys(this.state.allMajors).forEach(key => {
-  //     console.log(key);
-  //     idToMajor[this.state.allMajors[key]] = key;
-  //   });
-  //   console.log(idToMajor);
-
-  //   axios
-  //     .get("/companies/" + this.props.location.companyid + "/id") // "/companies/1/id"
-  //     .then(result => {
-  //       let nam = result.data[0].name;
-  //       let log = result.data[0].logo;
-  //       let web = result.data[0].website;
-  //       let desc = result.data[0].description;
-  //       let cit_req = result.data[0].citizenship_requirement;
-  //       let interv = result.data[0].interview;
-  //       console.log(nam);
-  //       this.setState({
-  //         name: nam,
-  //         logo: log,
-  //         description: desc,
-  //         website: web,
-  //         citizenship: cit_req,
-  //         interview: interv,
-  //       });
-  //     })
-  //     .catch(err => console.log(err));
-  //   axios
-  //     .get("/companies/" + this.props.location.companyid + "/majors") ///companies/1/majors
-  //     .then(result => {
-  //       let majs = result.data;
-  //       let majorsChecked = {};
-  //       console.log(majs);
-  //       for (let am in this.state.allMajors) {
-  //         majorsChecked[idToMajor[am.major_id]] = false;
-  //       }
-  //       for (let m in majs) {
-  //         console.log(majs[m].major_id);
-  //         console.log(idToMajor[majs[m].major_id]);
-  //         majorsChecked[idToMajor[majs[m].major_id]] = true;
-  //       }
-  //       this.setState({
-  //         majors: majorsChecked
-  //       });
-  //       console.log("majoRS: \n");
-  //       console.log(this.majors);
-  //     })
-  //     .catch(err => console.log(err));
-  //   //majorsChecked[major.name] = false;
-  //   return 1;
-  // };
-
-  // getAllMajors = async () => {
-  //   var options = {
-  //     params: {
-  //       sort: "id"
-  //     }
-  //   };
-  //   axios
-  //     .get("/companies/" + this.props.location.companyid + "/majors", options)
-  //     .then(result => {
-  //       let majorsEnum = {};
-  //       let majorsChecked = {};
-  //       result.data.forEach(function(major) {
-  //         majorsEnum[major.name] = major.id;
-  //         majorsChecked[major.name] = false;
-  //       });
-
-  //       this.setState({
-  //         allMajors: majorsEnum,
-  //         majors: majorsChecked
-  //       });
-  //       console.log(this.state.allMajors);
-  //     })
-  //     .catch(err => console.log(err));
-  //   return 1;
-  // };
-
-  // getAllPositions = async () => {
-  //   var options = {
-  //     params: {
-  //       sort: "id"
-  //     }
-  //   };
-  //   axios
-  //     .get("/companies/" + this.props.location.companyid + "/positions", options)
-  //     .then(result => {
-  //       let positionsEnum = {};
-  //       let positionsChecked = {};
-  //       result.data.forEach(function(position) {
-  //         positionsEnum[position.role] = position.id;
-  //         positionsChecked[position.role] = false;
-  //       });
-
-  //       this.setState({
-  //         allPositions: positionsEnum,
-  //         positions: positionsChecked
-  //       });
-  //     })
-  //     .catch(err => console.log(err));
-  //   return 1;
-  // };
-
-  // getAllLocations = async () => {
-  //   var options = {
-  //     params: {
-  //       sort: "id"
-  //     }
-  //   };
-  //   axios
-  //     .get("/hiringlocations", options)
-  //     .then(result => {
-  //       let locationsEnum = {};
-  //       let locationsChecked = {};
-  //       result.data.forEach(function(location) {
-  //         locationsEnum[location.location] = location.id;
-  //         locationsChecked[location.location] = false;
-  //       });
-
-  //       this.setState({
-  //         allLocations: locationsEnum,
-  //         locations: locationsChecked
-  //       });
-  //     })
-  //     .catch(err => console.log(err));
-  //   return 1;
-  // };
-  //  getAllYears = async () => {
-  //     var options = {
-  //       params: {
-  //         sort: "id"
-  //       }
-  //     };
-  //     axios
-  //       .get("/years", options)
-  //       .then(result => {
-  //         let yearsEnum = {};
-  //         let yearsChecked = {};
-  //         result.data.forEach(function(year) {
-  //           yearsEnum[year.name] = year.id;
-  //           yearsChecked[year.name] = false;
-  //         });
-
-  //         this.setState({
-  //           allYears: yearsEnum,
-  //           years: yearsChecked
-  //         });
-  //         console.log(this.state.years);
-  //         console.log(yearsChecked);
-  //       })
-  //       .catch(err => console.log(err));
-  //     return 1;
-  //   };
-
   handleSubmit = event => {
     this.changeCompany();
     // Prevent site refresh after submission
     event.preventDefault();
+    this.props.history.push('/companiesadmin?redirect=true');
   };
 
   handleChange = name => event => {
@@ -636,6 +435,11 @@ class CompaniesForm extends Component {
     const locations = this.state.locations;
     const allYears = this.state.allYears;
     const years = this.state.years;
+
+    const {path} = window.location.href;
+    if(path == "http://localhost:3000/companiesadmin?redirect=true"){
+        window.location.reload(true);
+    }
 
     const majorChecks = Object.getOwnPropertyNames(majors).map(elem => {
       if (elem !== "Undeclared Engineering")

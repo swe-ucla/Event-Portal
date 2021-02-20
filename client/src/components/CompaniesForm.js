@@ -16,6 +16,8 @@ import Paper from "@material-ui/core/Paper";
 import Input from "@material-ui/core/Input";
 import CompaniesStyles from "../styles/CompaniesForm.js";
 import CardMedia from "@material-ui/core/CardMedia";
+import { withRouter } from 'react-router';
+import { Link } from "react-router-dom";
 
 class CompaniesForm extends Component {
   constructor() {
@@ -38,6 +40,7 @@ class CompaniesForm extends Component {
       allLocations: {},
       allYears: {},
       logo: "",
+      redirect:false,
     };
     this.handleChange = this.handleChange.bind(this);
   }
@@ -62,17 +65,6 @@ class CompaniesForm extends Component {
       console.log("ERROR: fill out Company Website field.");
       return;
     }
-
-    /*
-    let allMajors = this.state.allMajors;
-    let majors = this.state.majors.map(name => {
-      return (allMajors[name])
-    })
-    let allPositions = this.state.allPositions;
-    let positions = this.state.positions.map(role => {
-      return (allPositions[role])
-    })
-    */
 
     let majorIDs = [];
     let majors = this.state.majors;
@@ -284,11 +276,12 @@ class CompaniesForm extends Component {
       .catch(err => console.log(err));
   };
 
-  handleSubmit = event => {
-    this.addCompany();
-    // Prevent site refresh after submission
+  handleSubmit = async(event) => {
     event.preventDefault();
-    // this.props.router.push("/companiesadmin");
+    await this.addCompany();
+    // Prevent site refresh after submission
+    this.setState({ redirect:true});
+    this.props.history.push('/companiesadmin?redirect=true');
   };
 
   handleChange = name => event => {
@@ -321,6 +314,11 @@ class CompaniesForm extends Component {
   }
 
   render() {
+    const {path} = window.location.href;
+    if(path == "http://localhost:3000/companiesadmin?redirect=true"){
+        window.location.reload(true);
+    }
+    const {redirect} = this.props;
     const { classes } = this.props;
     const { citizenship_requirement } = this.state;
     //const error = [check1, check2, check3].filter(v => v).length !== 2;
