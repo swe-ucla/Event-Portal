@@ -16,6 +16,8 @@ import Paper from "@material-ui/core/Paper";
 import Input from "@material-ui/core/Input";
 import CompaniesStyles from "../styles/CompaniesForm.js";
 import CardMedia from "@material-ui/core/CardMedia";
+import { withRouter } from 'react-router';
+import { Link } from "react-router-dom";
 
 class CompaniesForm extends Component {
   constructor() {
@@ -31,9 +33,14 @@ class CompaniesForm extends Component {
       interview: "N",
       majors: {},
       positions: {},
+      locations: {},
+      years: {},
       allMajors: {},
       allPositions: {},
+      allLocations: {},
+      allYears: {},
       logo: "",
+      redirect:false,
     };
     this.handleChange = this.handleChange.bind(this);
   }
@@ -41,6 +48,8 @@ class CompaniesForm extends Component {
   componentDidMount() {
     this.getAllMajors();
     this.getAllPositions();
+    this.getAllLocations();
+    this.getAllYears();
   }
 
   addCompany = () => {
@@ -51,42 +60,79 @@ class CompaniesForm extends Component {
       console.log("ERROR: fill out Company Name field.");
       return;
     }
-
-    /*
-    let allMajors = this.state.allMajors;
-    let majors = this.state.majors.map(name => {
-      return (allMajors[name])
-    })
-
-    let allPositions = this.state.allPositions;
-    let positions = this.state.positions.map(role => {
-      return (allPositions[role])
-    })
-    */
+    if (!this.state.website) {
+      // Do not add major if no name specified
+      console.log("ERROR: fill out Company Website field.");
+      return;
+    }
 
     let majorIDs = [];
     let majors = this.state.majors;
     let allMajors = this.state.allMajors;
+    console.log(majors); 
+    console.log(allMajors); 
     for (let property in majors) {
       if (majors.hasOwnProperty(property)) {
         if (majors[property] === true) {
           majorIDs.push(allMajors[property]);
+          console.log(allMajors[property]); 
         }
       }
     }
+    console.log(majorIDs.length); 
+    if (majorIDs.length == 0)
+      majorIDs.push(13); // hardcoded ID for "Undeclared Engineering"
 
     let positionIDs = [];
     let allPositions = this.state.allPositions;
     let positions = this.state.positions;
+    console.log(allPositions); 
+    console.log(positions); 
     for (let property in positions) {
       if (positions.hasOwnProperty(property)) {
         console.log(property);
         if (positions[property] === true) {
           positionIDs.push(allPositions[property]);
+          console.log(allPositions[property]); 
         }
       }
     }
+    if (positionIDs.length == 0)
+      positionIDs.push(4); // hardcoded ID for "Undecided"
+
     console.log(majorIDs);
+    let locationIDs = [];
+    let allLocations = this.state.allLocations;
+    let locations = this.state.locations;
+    console.log(allLocations); 
+    console.log(locations); 
+    for (let property in locations) {
+      if (locations.hasOwnProperty(property)) {
+        console.log(property);
+        if (locations[property] === true) {
+          locationIDs.push(allLocations[property]);
+          console.log(allLocations[property]);
+        }
+      }
+    }
+    if (locationIDs.length == 0)
+      locationIDs.push(5); // hardcoded ID for "Undecided"
+
+    let yearIDs = [];
+    let years = this.state.years;
+    let allYears = this.state.allYears;
+    console.log(years); 
+    console.log(allYears); 
+    for (let property in years) {
+      if (years.hasOwnProperty(property)) {
+        if (years[property] === true) {
+          yearIDs.push(allYears[property]);
+          console.log(allYears[property]); 
+        }
+      }
+    }
+    if (yearIDs.length == 0)
+      yearIDs.push(6); // hardcoded ID for "All"
 
     let body = {
       name: this.state.name,
@@ -94,9 +140,13 @@ class CompaniesForm extends Component {
       description: this.state.description,
       website: this.state.website,
       citizenship_requirement: this.state.citizenship,
+      interview: this.state.interview,
       major_id: majorIDs,
-      position_id: positionIDs
+      position_id: positionIDs,
+      location_id: locationIDs,
+      year_id: yearIDs
     };
+    console.log(body)
 
     // Make POST request to add major
     axios
@@ -138,6 +188,8 @@ class CompaniesForm extends Component {
         result.data.forEach(function(major) {
           majorsEnum[major.name] = major.id;
           majorsChecked[major.name] = false;
+          // if(major.name = "Undeclared Engineering")
+          //   majorsChecked[major.name] = true;
         });
 
         this.setState({
@@ -162,6 +214,8 @@ class CompaniesForm extends Component {
         result.data.forEach(function(position) {
           positionsEnum[position.role] = position.id;
           positionsChecked[position.role] = false;
+          // if(position.role = "Undecided")
+          //   positionsChecked[position.role] = true;
         });
 
         this.setState({
@@ -171,12 +225,63 @@ class CompaniesForm extends Component {
       })
       .catch(err => console.log(err));
   };
+  getAllLocations = () => {
+    var options = {
+      params: {
+        sort: "id"
+      }
+    };
+    axios
+      .get("/hiringlocations", options)
+      .then(result => {
+        let locationsEnum = {};
+        let locationsChecked = {};
+        result.data.forEach(function(location) {
+          locationsEnum[location.location] = location.id;
+          locationsChecked[location.location] = false;
+          // if(location.location = "Undecided")
+          //   locationsChecked[location.location] = true;
+        });
 
-  handleSubmit = event => {
-    this.addCompany();
-    // Prevent site refresh after submission
+        this.setState({
+          allLocations: locationsEnum,
+          locations: locationsChecked
+        });
+      })
+      .catch(err => console.log(err));
+  };
+  getAllYears = () => {
+    var options = {
+      params: {
+        sort: "id"
+      }
+    };
+    axios
+      .get("/years", options)
+      .then(result => {
+        let yearsEnum = {};
+        let yearsChecked = {};
+        result.data.forEach(function(year) {
+          yearsEnum[year.name] = year.id;
+          yearsChecked[year.name] = false;
+          // if(year.name = "All")
+          //   yearsChecked[year.name] = true;
+        });
+
+        this.setState({
+          allYears: yearsEnum,
+          years: yearsChecked
+        });
+      })
+      .catch(err => console.log(err));
+  };
+
+  handleSubmit = async(event) => {
     event.preventDefault();
-    this.props.router.push("/companiesadmin");
+    await this.addCompany();
+    // Prevent site refresh after submission
+    this.setState({ redirect:true});
+    this.props.history.push('/companiesadmin?redirect=true');
   };
 
   handleChange = name => event => {
@@ -195,7 +300,7 @@ class CompaniesForm extends Component {
     console.log(this.state[name]);
   };
 
-  // image upload 
+  // image upload
   handleLogoChange = name => input => {
     console.log(input.target.files[0]);
     var reader = new FileReader();
@@ -209,6 +314,11 @@ class CompaniesForm extends Component {
   }
 
   render() {
+    const {path} = window.location.href;
+    if(path == "http://localhost:3000/companiesadmin?redirect=true"){
+        window.location.reload(true);
+    }
+    const {redirect} = this.props;
     const { classes } = this.props;
     const { citizenship_requirement } = this.state;
     //const error = [check1, check2, check3].filter(v => v).length !== 2;
@@ -216,8 +326,13 @@ class CompaniesForm extends Component {
     const majors = this.state.majors;
     const allPositions = this.state.allPositions;
     const positions = this.state.positions;
+    const allLocations = this.state.allLocations;
+    const locations = this.state.locations;
+    const allYears = this.state.allYears;
+    const years = this.state.years;
 
     const majorChecks = Object.getOwnPropertyNames(majors).map(elem => {
+      if (elem != "Undeclared Engineering")
       return (
         <FormControlLabel
           control={
@@ -233,6 +348,7 @@ class CompaniesForm extends Component {
     });
 
     const positionChecks = Object.getOwnPropertyNames(positions).map(elem => {
+      if (elem != "Undecided")
       return (
         <FormControlLabel
           control={
@@ -246,6 +362,36 @@ class CompaniesForm extends Component {
         />
       );
     });
+    const locationChecks = Object.getOwnPropertyNames(locations).map(elem => {
+      if (elem != "Undecided")    
+      return (
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={locations[elem]}
+                  onChange={this.handleCheckChange("locations")}
+                  value={elem}
+                />
+              }
+              label={elem}
+            />
+          );
+        });
+    const yearChecks = Object.getOwnPropertyNames(years).map(elem => {
+        if (elem != "All")  
+        return (
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={years[elem]}
+                  onChange={this.handleCheckChange("years")}
+                  value={elem}
+                />
+              }
+              label={elem}
+            />
+          );
+        });
 
     return (
       <main className={classes.main}>
@@ -266,6 +412,7 @@ class CompaniesForm extends Component {
               margin="normal"
             />
             <TextField
+              required
               fullWidth
               id="website"
               label="Company Website"
@@ -283,6 +430,14 @@ class CompaniesForm extends Component {
             <FormGroup>
               <div>{positionChecks}</div>
             </FormGroup>
+            <FormLabel>Hiring Locations:</FormLabel>
+            <FormGroup>
+              <div>{locationChecks}</div>
+            </FormGroup>
+            <FormLabel>Years Hiring:</FormLabel>
+            <FormGroup>
+              <div>{yearChecks}</div>
+            </FormGroup>
             <FormHelperText error className={classes.formHelperText}>
               {this.state.errorMessage}
             </FormHelperText>
@@ -293,6 +448,16 @@ class CompaniesForm extends Component {
                 id="demo-simple-select"
                 value={this.state.citizenship}
                 onChange={this.handleChange("citizenship")}
+              >
+                <MenuItem value={"Y"}>Yes</MenuItem>
+                <MenuItem value={"N"}>No</MenuItem>
+              </Select>
+              <FormLabel id="demo-simple-select-label">On Site Interview</FormLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={this.state.interview}
+                onChange={this.handleChange("interview")}
               >
                 <MenuItem value={"Y"}>Yes</MenuItem>
                 <MenuItem value={"N"}>No</MenuItem>
