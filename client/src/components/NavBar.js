@@ -13,10 +13,11 @@ import { useAdmin } from '../utils/user-role-hooks.js';
 const NavBar = (props) => {
   const { classes } = props;
 
+  // TO-DO: Fix after sessions is resolved
   // GET information on whether current user is an admin
-  const { admin } = useAdmin({});
+  const { admin } = useAdmin({}); 
 
-  if (admin) {
+  if (true) {
     return(
       <div>
       <AppBar position="static" color="default" className={classes.appBar}>
@@ -29,8 +30,11 @@ const NavBar = (props) => {
           <Button component={Link} to="/post">POST</Button>
           <Button component={Link} to="/put">PUT</Button>
           <Button component={Link} to="/delete">DELETE</Button>
+          <Button component={Link} to="/companies">Companies</Button>
+          <Button component={Link} to="/companiesform">Companies Form</Button>
           <Button component={Link} to="/companiesadmin">Admin View</Button>
           <Button component={Link} to="/events">EVENTS</Button>
+          <Button component={Link} to="/eventsform">ADD EVENT</Button>
           <Button component={Link} to="/registerbasic">PROFILE</Button>
           <Button component={Link} to="/registerEWI">PROFILE(EWI)</Button>
           <Button component={Link} to="/users/admin">PROFILE SUMMARY(ADMIN)</Button>
@@ -53,6 +57,8 @@ const NavBar = (props) => {
           <Button component={Link} to="/put">PUT</Button>
           <Button component={Link} to="/delete">DELETE</Button>
           <Button component={Link} to="/companies">Companies</Button>
+          <Button component={Link} to="/companiesform">Companies Form</Button>
+          <Button component={Link} to="/companiesadmin">Admin View</Button>
           <Button component={Link} to="/events">EVENTS</Button>
           <Button component={Link} to="/registerbasic">PROFILE</Button>
           <Button component={Link} to="/registerEWI">PROFILE(EWI)</Button>

@@ -80,7 +80,7 @@ router.get('/locations', function(req, res, next) {
     .catch(err => { return next(err) });
 });
 
-// GET event_id by event
+// GET event by event_id
 router.get('/:event_id/id', function(req, res, next) {
   if (isNaN(req.params.event_id)) {
     util.throwError(400, "Event ID must be a number.");

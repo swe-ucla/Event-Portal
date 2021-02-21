@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import EventRow from "./EventRow.js";
 import PopUp from "./PopUp.js"
+import EventsCheckedInPopUp from "./EventsCheckedIn.js";
 import axios from "axios";
 import { withStyles } from "@material-ui/core/styles";
 import EventsStyles from "../styles/Events.js";
@@ -15,17 +16,22 @@ class Events extends Component {
 
     this.state = {
       eventsByDayArray: {},
+      checkedInEvents: [],
       loading: false,
       date: "", // TO-DO: change to today's date. E.G.: 2019-03-02T15:30:00.000Z
       prevY: 0,
-      popUp: false,
+      previousCheckInPopUp: false,
+      checkInPopUp: false,
       checkedIn: false,
+      userID: 1,
     };
 
     this.getEvents = this.getEvents.bind(this);
     this.handlePastEvents = this.handlePastEvents.bind(this);
     this.handleOpenPopUp = this.handleOpenPopUp.bind(this);
     this.handleClosePopUp = this.handleClosePopUp.bind(this);
+    // this.handleOpenPreviousCheckIn = this.handleOpenPreviousCheckIn(this);
+    // this.handleClosePreviousCheckIn = this.handleClosePreviousCheckIn(this);
   }
 
   componentDidMount() {
@@ -43,6 +49,8 @@ class Events extends Component {
     );
 
     this.observer.observe(this.loadingRef);
+
+    this.getCheckedInEvents();
   }
 
   componentWillUnmount() {
@@ -165,6 +173,27 @@ class Events extends Component {
       .catch(err => console.log(err));
   };
 
+  getCheckedInEvents = () => {
+    let events_list = [];
+
+    axios.get('/users/' + this.state.userID + "/events")
+    .then(res => {
+      let events = res.data;
+      for(let index in events) {
+        let event_id = events[index].event_id;
+        axios.get('/events/' + event_id + '/id')
+        .then (res => {
+          let event_data = res.data[0];
+          events_list.push(event_data);
+        })
+        .catch(err => console.log(err))
+      }
+    })
+    .catch(err => console.log(err));
+
+    this.setState({ checkedInEvents: events_list });
+  }
+
   // Little hacky: compares non-UTC to UTC time because new Date() doesn't give UTC time
   sameDay = (d1, d2) => {
     return (
@@ -208,6 +237,7 @@ class Events extends Component {
             key={start_date}
             events={this.state.eventsByDayArray[start_date]}
             name={this.getFormattedDate(new Date(start_date))}
+            userID={this.state.userID}
           />
         );
         eventRows.push(
@@ -233,13 +263,25 @@ class Events extends Component {
 
   handleOpenPopUp = () => {
     this.setState({
-      popUp: true,
+      checkInPopUp: true,
     })
   }
 
   handleClosePopUp = () => {
     this.setState ({
-      popUp: false,
+      checkInPopUp: false,
+    })
+  }
+
+  handleOpenPreviousCheckIn = () => {
+    this.setState({
+      previousCheckInPopUp: true,
+    })
+  }
+
+  handleClosePreviousCheckIn = () => {
+    this.setState({
+      previousCheckInPopUp: false,
     })
   }
 
@@ -253,13 +295,12 @@ class Events extends Component {
     axios.get("/events", options)
     .then(result => {
       let event_fb_id = result.data[0].fb_id;
-      let user_id = 3; // TO-DO: change user_id after OATH is settled
+      let userID = 3; // TO-DO: change userID after OATH is settled
 
       // TO-DO: UI components for success/failed
       
       // Checkin user based on event ID.
-      console.log(this.state.checkedIn)
-      axios.post('/events/' + event_fb_id + '/checkin/' + user_id)
+      axios.post('/events/' + event_fb_id + '/checkin/' + userID)
       .then(response => {
         alert('Checked in successfully!');
         this.setState({
@@ -269,15 +310,16 @@ class Events extends Component {
       .catch(error => {
         alert('Already checked in!');
         this.setState({ checkedIn: true });
-        console.log(error);
       })
     })
     .catch(
       error => {
         alert('Wrong submission code!')
-        console.log(error)
       }
     );
+
+    // Update checked in events list
+    this.getCheckedInEvents();
   }
 
   render() {
@@ -299,10 +341,19 @@ class Events extends Component {
             </svg>
             <p className={classes.buttonLabel}>see past events</p>
           </button>
+          <button className={classes.previousCheckInButton} onClick={this.handleOpenPreviousCheckIn}>
+            See Previously Checked In Events
+          </button>
+          <Modal className={classes.modalStyle} open={this.state.previousCheckInPopUp} onClose={this.handleClosePreviousCheckIn} >
+            <div>
+              <button className={classes.previousCheckInCloseButton} onClick={this.handleClosePreviousCheckIn}>CLOSE</button>
+              <EventsCheckedInPopUp userID={this.state.userID} events={this.state.checkedInEvents}/>
+            </div>
+          </Modal>
           <button disabled={this.state.checkedIn} className={classes.checkInButton} onClick={this.handleOpenPopUp}>
             Check In
           </button>
-          <Modal open={this.state.popUp} onClose={this.handleClosePopUp} >
+          <Modal open={this.state.checkInPopUp} onClose={this.handleClosePopUp} >
             <PopUp checkedIn={this.state.checkedIn} onPopUpSubmit={this.handlePopUpSubmit}/>
           </Modal>
           <div className={classes.events}>{this.renderEventRows()}</div>
