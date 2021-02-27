@@ -15,6 +15,7 @@ import { useDiets } from '../utils/misc-hooks';
 function UsersSummary(props) {
 	const [users, setUsers] = useState([]);
 	const [loading, setLoading] = useState(true);
+	const [meetsRequirementsFilter, setMeetsRequirementsFilter] = useState(false);
 
 	const diets = useDiets({});
 
@@ -117,7 +118,11 @@ function UsersSummary(props) {
 			});
 	};
 
-	const entries = users.map(user => (
+	const entries = users.map(user => {
+		// Filter options for members that have met the number of events attended
+		// requirement.
+		if (meetsRequirementsFilter && user.past < 3) { return; }
+		return (
 		<TableRow key={user.id}>
 			<TableCell component='th' scope='row'>
 				{`${user.first_name} ${user.last_name}`}
@@ -146,7 +151,11 @@ function UsersSummary(props) {
 			</TableCell>
 			<TableCell align='center'>{user.additional_diet || 'None'}</TableCell>
 		</TableRow>
-	));
+	)});
+
+	const handleMeetsRequirementsButton = () => {
+		setMeetsRequirementsFilter(!meetsRequirementsFilter);
+	}
 
 	return (
 		<>
@@ -162,7 +171,10 @@ function UsersSummary(props) {
 									<TableCell align='center'>National SWE Member</TableCell>
 									<TableCell align='center'>Payment Verified</TableCell>
 									<TableCell align='center'>Events Attending</TableCell>
-									<TableCell align='center'>Past Events Attended</TableCell>
+									<TableCell align='center'>
+										Past Events Attended
+										<button onClick={handleMeetsRequirementsButton}>Filter</button>
+									</TableCell>
 									<TableCell align='center'>Vegetarian?</TableCell>
 									<TableCell align='center'>Additional Diet Restrictions</TableCell>
 								</TableRow>
