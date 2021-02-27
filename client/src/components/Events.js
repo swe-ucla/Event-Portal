@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import EventRow from "./EventRow.js";
 import PopUp from "./PopUp.js"
-import EventsCheckedInPopUp from "./PopUp.js";
+import EventsCheckedInPopUp from "./EventsCheckedIn.js";
 import axios from "axios";
 import { withStyles } from "@material-ui/core/styles";
 import EventsStyles from "../styles/Events.js";
