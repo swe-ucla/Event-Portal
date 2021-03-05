@@ -249,6 +249,7 @@ CREATE TABLE swe_user (
     last_login_at TIMESTAMP,
     registered_at TIMESTAMP DEFAULT NULL,
     payment_made BOOL DEFAULT false,
+    venmo_photo text,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );

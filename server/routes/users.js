@@ -115,7 +115,8 @@ router.post('/register', function(req, res, next) {
     additional_diet: req.body.additional_diet,
     schedule_conflicts: req.body.schedule_conflicts,
     registered_at: req.body.registered_at,
-    payment_made: req.body.payment_made
+    payment_made: req.body.payment_made,
+    venmo_photo: req.body.venmo_photo
   }
 
   if (company_ids && ranks) {
@@ -222,7 +223,8 @@ router.put('/:user_id', function(req, res, next) {
     additional_diet: req.body.additional_diet,
     schedule_conflicts: req.body.schedule_conflicts,
     registered_at: req.body.registered_at,
-    payment_made: req.body.payment_made
+    payment_made: req.body.payment_made,
+    venmo_photo: req.body.venmo_photo
   }
 
   let user_id = req.params.user_id;

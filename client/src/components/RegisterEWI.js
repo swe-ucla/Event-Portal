@@ -50,6 +50,7 @@ function RegisterEWI(props) {
 			{ rank: 'Second Choice' },
 			{ rank: 'Third Choice' },
 		],
+		venmo_photo: '',
 	};
 
 	// get relevant information from database
