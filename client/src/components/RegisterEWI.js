@@ -155,7 +155,12 @@ function RegisterEWI(props) {
         var reader = new FileReader();
         const _this = this;
         reader.onload = function(e) {
-          _this.setState({venmo_photo: e.target.result});
+			setUserDetails(prev => {
+				return{
+					...prev,
+					venmo_photo: e.target.result
+				}
+			})
         };
 
         reader.readAsDataURL(input.target.files[0]);
