@@ -14,6 +14,8 @@ import Checkbox from '@material-ui/core/Checkbox';
 import Paper from '@material-ui/core/Paper';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
+import Input from "@material-ui/core/Input";
+import CardMedia from "@material-ui/core/CardMedia";
 
 import ExamplePostFormStyles from '../styles/ExamplePostForm.js';
 import {
@@ -149,6 +151,16 @@ function RegisterEWI(props) {
 		});
 	};
 
+	 const handlePhotoChange = name => input => {
+        var reader = new FileReader();
+        const _this = this;
+        reader.onload = function(e) {
+          _this.setState({venmo_photo: e.target.result});
+        };
+
+        reader.readAsDataURL(input.target.files[0]);
+      }
+
 	// handle POST request for new users
 	const addUser = () => {
 		// Add registration time as current time
@@ -201,6 +213,7 @@ function RegisterEWI(props) {
 		phone,
 		university_id,
 		swe_id,
+		venmo_photo,
 		is_admin,
 		is_national_swe_member,
 		is_international,
@@ -387,6 +400,16 @@ function RegisterEWI(props) {
 							name="is_national_swe_member" />}
 						label="Yes"
 					/>
+					<br />
+					<FormLabel id="demo-simple-select-label">Venmo Payment Screenshot</FormLabel>
+					<br />
+                    <Input type="file" disableUnderline="true" accept="image/*" onChange={handlePhotoChange()}/>
+                    <CardMedia
+                      style={{width: '350px', height: '197px'}}
+                      component="img"
+                      image={venmo_photo}
+                      title="Uploaded Image"
+                    />
 					<TextField
 						fullWidth
 						id='additional_diet'
@@ -418,6 +441,7 @@ function RegisterEWI(props) {
 					>
 						{user_id ? 'Update Profile' : 'Create Your Account'}
 					</Button>
+
 				</form>
 			</Paper>
 		</main>
