@@ -27,7 +27,7 @@ import {
 } from '../utils/misc-hooks.js';
 
 function RegisterEWI(props) {
-	const user_id = 1;
+	const user_id = 2;
 	const INITIAL_USER = {
 		first_name: '',
 		last_name: '',
@@ -152,7 +152,7 @@ function RegisterEWI(props) {
 	const addUser = () => {
 		// Add registration time as current time
 		userDetails.registered_at = new Date(Date.now()).toISOString();
-	
+
 		console.log(userDetails);
 		axios
 			.post('/users/register', userDetails)
@@ -168,7 +168,7 @@ function RegisterEWI(props) {
 		// Add registration time as the current time
 		userDetails.registered_at = new Date(Date.now()).toISOString();
 		console.log(Date.now())
-	
+
 		console.log(userDetails);
 		axios
 			.put(`/users/${user_id}`, userDetails)

@@ -10,13 +10,15 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 
 import { withStyles } from '@material-ui/core/styles';
-import { useDiets } from '../utils/misc-hooks';
+import { useCompanies, useDiets } from '../utils/misc-hooks';
 
 function UsersSummary(props) {
 	const [users, setUsers] = useState([]);
+	const [csvData, setCSVData] = useState([]);
 	const [loading, setLoading] = useState(true);
 
 	const diets = useDiets({});
+	const { companies } = useCompanies({});
 
 	useEffect(() => {
 		axios
@@ -34,23 +36,36 @@ function UsersSummary(props) {
 							axios.get(`/users/${id}/id`),
 							axios.get(`/users/${id}/events`),
 							axios.get(`/users/${id}/past`),
-							axios.get(`/users/${id}/diet`)
+							axios.get(`/users/${id}/diet`),
+							axios.get(`/users/${id}/companies`)
 						])
 						.then(result => {
 							console.log(result);
 							console.log("hello")
 							const user_data = { ...result[0].data[0] };
 							console.log(user_data)
-							const { first_name, last_name, is_national_swe_member, registered_at, payment_made, additional_diet } = user_data;
+							const { first_name, last_name, email, is_national_swe_member, registered_at, payment_made, additional_diet } = user_data;
 							const events = [...result[1].data];
 							const past = [...result[2].data];
 							const diets = [...result[3].data];
+							let companies_data = [...result[4].data];
 							let diet_ids = [];
 							console.log(diets)
 							for (const diet_obj of diets) {
 								diet_ids.push(diet_obj.diet_id);
 							}
 							console.log(events);
+							let user_companies = [];
+							console.log(companies)
+							console.log(companies_data)
+							companies_data.forEach((company) => {
+								user_companies.push(company.company_id);
+							})
+							while (user_companies.length < 5) {
+								user_companies.push(null);
+							}
+							console.log(user_companies);
+
 							setUsers(prev => {
 								return [
 									...prev,
@@ -58,13 +73,15 @@ function UsersSummary(props) {
 										id,
 										first_name,
 										last_name,
+										email,
 										is_national_swe_member,
 										registration_date: new Intl.DateTimeFormat('en-US').format(new Date(registered_at)),
 										payment_made,
 										additional_diet,
 										events: events.length,
 										past: past.length,
-										diet_ids
+										diet_ids,
+										user_companies
 									},
 								];
 							});
@@ -88,6 +105,36 @@ function UsersSummary(props) {
 			setLoading(true);
 		};
 	}, [setUsers, setLoading]);
+
+	const getCSVData = () => {
+		console.log(users)
+		let rows = [
+			["Registration Date", "First Name", "Last Name", "Email", "National SWE Member", "First Choice", "Second Choice", "Third Choice", "Fourth Choice", "Fifth Choice"]
+		];
+		users.forEach((user) => {
+			const { registration_date, first_name, last_name, email, is_national_swe_member, user_companies } = user;
+			let companyNames = user_companies.map((id) => {
+				return companies[id] || "None";
+			})
+			let row = [
+				registration_date,
+				first_name,
+				last_name,
+				email,
+				is_national_swe_member ? "Yes" : "No",
+				...companyNames
+			];
+			console.log(row);
+			rows.push(row);
+		});
+		setCSVData(rows);
+	}
+
+	useEffect(() => {
+		getCSVData();
+	}, [loading])
+
+	console.log(csvData);
 
 	const handleCheckChange = event => {
 		const target = event.target;
@@ -131,8 +178,8 @@ function UsersSummary(props) {
 					name={`payment-${user.id}`}
 					onChange={(event) => {
 						const confirmMsg = event.target.checked ?
-						`Are you sure you want to verify ${user.first_name} ${user.last_name}'s payment?` :
-						`Are you sure you want to revoke ${user.first_name} ${user.last_name}'s payment verification?`;
+							`Are you sure you want to verify ${user.first_name} ${user.last_name}'s payment?` :
+							`Are you sure you want to revoke ${user.first_name} ${user.last_name}'s payment verification?`;
 						if (window.confirm(confirmMsg)) {
 							handleCheckChange(event);
 						}
