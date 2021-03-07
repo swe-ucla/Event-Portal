@@ -408,6 +408,8 @@ function RegisterEWI(props) {
 					<br />
 					<FormLabel id="demo-simple-select-label">Venmo Payment Screenshot</FormLabel>
 					<br />
+					<FormLabel id="demo-simple-select-label" style={{fontSize: 12}}>(Please crop the screenshot so the relevant information is comfortably visible in the preview below.)</FormLabel>
+					<br />
                     <Input type="file" disableUnderline="true" accept="image/*" onChange={handlePhotoChange()}/>
                     <CardMedia
                       style={{width: '350px', height: '197px'}}
