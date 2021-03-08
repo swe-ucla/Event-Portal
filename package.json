@@ -1,5 +1,6 @@
 {
   "dependencies": {
-    "@material-ui/core": "^3.9.3"
+    "@material-ui/core": "^3.9.3",
+    "react-csv": "^2.0.3"
   }
 }
