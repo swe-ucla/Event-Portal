@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { CSVLink } from "react-csv";
 
 import { Typography, Checkbox } from '@material-ui/core';
 import Table from '@material-ui/core/Table';
@@ -200,24 +201,25 @@ function UsersSummary(props) {
 			{loading ? (
 				<Typography>Loading...</Typography>
 			) : (
-					<Paper>
-						<Table aria-label='summary table'>
-							<TableHead>
-								<TableRow>
-									<TableCell>Name</TableCell>
-									<TableCell>Registration Date</TableCell>
-									<TableCell align='center'>National SWE Member</TableCell>
-									<TableCell align='center'>Payment Verified</TableCell>
-									<TableCell align='center'>Events Attending</TableCell>
-									<TableCell align='center'>Past Events Attended</TableCell>
-									<TableCell align='center'>Vegetarian?</TableCell>
-									<TableCell align='center'>Additional Diet Restrictions</TableCell>
-								</TableRow>
-							</TableHead>
-							<TableBody>{entries}</TableBody>
-						</Table>
-					</Paper>
-				)}
+				<Paper>
+					<CSVLink data={csvData} filename="EWI_Data.csv">Download Me</CSVLink>
+					<Table aria-label='summary table'>
+						<TableHead>
+							<TableRow>
+								<TableCell>Name</TableCell>
+								<TableCell>Registration Date</TableCell>
+								<TableCell align='center'>National SWE Member</TableCell>
+								<TableCell align='center'>Payment Verified</TableCell>
+								<TableCell align='center'>Events Attending</TableCell>
+								<TableCell align='center'>Past Events Attended</TableCell>
+								<TableCell align='center'>Vegetarian?</TableCell>
+								<TableCell align='center'>Additional Diet Restrictions</TableCell>
+							</TableRow>
+						</TableHead>
+						<TableBody>{entries}</TableBody>
+					</Table>
+				</Paper>
+			)}
 		</>
 	);
 }
