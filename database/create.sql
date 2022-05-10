@@ -4,8 +4,8 @@
 CREATE DATABASE swedevdb;
 \c swedevdb;
 
--- CREATE DATABASE swetestdb;
--- \c swetestdb;
+CREATE DATABASE swetestdb;
+\c swetestdb;
 -- enums: \dT+, DROP TYPE enum_name
 -- VARCHAR Lengths
 -- short: 50, medium: 100, long: 255, very long: 1000
