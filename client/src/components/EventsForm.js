@@ -26,13 +26,13 @@ const EventsForm = props => {
   const MAX_URL_LEN = 255;
 
   const EventPeriods = {
-    FALL_QUARTER : "Fall Quarter",
-    WINTER_BREAK : "Winter Break",
-    WINTER_QUARTER : "Winter Quarter",
-    SPRING_BREAK : "Spring Break",
-    SPRING_QUARTER : "Spring Quarter",
-    SUMMER_QUARTER : "Summer Quarter"
-  }  
+    FALL_QUARTER: "Fall Quarter",
+    WINTER_BREAK: "Winter Break",
+    WINTER_QUARTER: "Winter Quarter",
+    SPRING_BREAK: "Spring Break",
+    SPRING_QUARTER: "Spring Quarter",
+    SUMMER_QUARTER: "Summer Quarter"
+  }
 
   /*
    * State variables
@@ -90,7 +90,7 @@ const EventsForm = props => {
       case EventFields.STARTS_AT:
         setStartsAt(event.target.value);
         break;
-      case EventFields.END_TIME:
+      case EventFields.ENDS_AT:
         setEndsAt(event.target.value);
         break;
       case EventFields.ATTENDANCE_CODE:
@@ -184,10 +184,10 @@ const EventsForm = props => {
     // Do not post event if errors exist or a required field has not been
     // properly submitted.
     if (!fbId || !name || !startsAt || !endsAt || !attendanceCode ||
-        !period || !locationId || !description || !fbEvent || !picture ||
-        !isFeatured || fbIdError || nameError || startsAtError ||
-        endsAtError || attendanceCodeError || locationIdError ||
-        fbEventError) {
+      !period || !locationId || !description || !fbEvent || !picture ||
+      !isFeatured || fbIdError || nameError || startsAtError ||
+      endsAtError || attendanceCodeError || locationIdError ||
+      fbEventError) {
       return
     }
 
@@ -217,7 +217,7 @@ const EventsForm = props => {
       is_featured: isFeatured,
       attendance_code: attendanceCode,
     };
-    
+
     // POST
     axios
       .post("/events", body)
@@ -259,7 +259,7 @@ const EventsForm = props => {
             error={fbIdError}
             fullWidth
             id="fb_id"
-            label = "Facebook ID"
+            label="Facebook ID"
             margin="normal"
             onChange={handleChange(EventFields.FB_ID)}
             placeholder=""
@@ -270,7 +270,7 @@ const EventsForm = props => {
             error={nameError}
             fullWidth
             id="name"
-            label = "Name"
+            label="Name"
             margin="normal"
             onChange={handleChange(EventFields.NAME)}
             placeholder=""
@@ -281,9 +281,9 @@ const EventsForm = props => {
             error={startsAtError}
             fullWidth
             id="startsAt"
-            label = "Start Time"
+            label="Start Time"
             margin="normal"
-            onChange={handleChange(EventFields.START_TIME)}
+            onChange={handleChange(EventFields.STARTS_AT)}
             placeholder=""
             required
             value={startsAt || ""}
@@ -292,9 +292,9 @@ const EventsForm = props => {
             error={endsAtError}
             fullWidth
             id="endsAt"
-            label = "End Time"
+            label="End Time"
             margin="normal"
-            onChange={handleChange(EventFields.END_TIME)}
+            onChange={handleChange(EventFields.ENDS_AT)}
             placeholder=""
             required
             value={endsAt || ""}
@@ -303,7 +303,7 @@ const EventsForm = props => {
             error={attendanceCodeError}
             fullWidth
             id="attendanceCode"
-            label = "Attendance Code"
+            label="Attendance Code"
             margin="normal"
             onChange={handleChange(EventFields.ATTENDANCE_CODE)}
             placeholder=""
@@ -330,15 +330,15 @@ const EventsForm = props => {
           <div>
             <FormControl>
               <FormLabel required>Location</FormLabel>
-              <Select 
+              <Select
                 value={locationId || ""}
                 onChange={handleChange(EventFields.LOCATION_ID)}
               >
-              {
-                locationMapping.map((location, index) => {
-                  return <MenuItem key={index} value={location.name}>{location.name}</MenuItem>
-                })
-              }
+                {
+                  locationMapping.map((location, index) => {
+                    return <MenuItem key={index} value={location.name}>{location.name}</MenuItem>
+                  })
+                }
               </Select>
             </FormControl>
           </div>
@@ -346,7 +346,7 @@ const EventsForm = props => {
           <TextField
             fullWidth
             id="description"
-            label = "Description"
+            label="Description"
             margin="normal"
             onChange={handleChange(EventFields.DESCRIPTION)}
             placeholder=""
@@ -358,7 +358,7 @@ const EventsForm = props => {
             error={fbEventError}
             fullWidth
             id="fbEvent"
-            label = "Facebook Event"
+            label="Facebook Event"
             margin="normal"
             onChange={handleChange(EventFields.FB_EVENT)}
             placeholder=""
@@ -370,7 +370,7 @@ const EventsForm = props => {
           <TextField
             fullWidth
             id="picture"
-            label = "Picture"
+            label="Picture"
             margin="normal"
             onChange={handleChange(EventFields.PICTURE)}
             placeholder=""
