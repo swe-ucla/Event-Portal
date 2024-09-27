@@ -7,7 +7,7 @@ id,name,website,logo,citizenship_requirement,description,interview
 6,Booz Allen Hamilton,bah.com,logo,Y,description,N
 7,California Energy Commission,energy.ca.gov,logo,Y,description,N
 8,Fehr & Peers,fehrandpeers.com,logo,N,description,N
-9,Fluor Enterprises Inc.,fluor.com,logo,,description,N
+9,Fluor Enterprises Inc.,fluor.com,logo,N,description,N
 10,FM Global,fmglobal.com,logo,Y,description,N
 11,Gilead,gilead.com,logo,N,description,N
 12,HRL Labs,hrl.com,logo,Y,description,N
